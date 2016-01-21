@@ -1,6 +1,6 @@
 from flask import jsonify, abort, request, make_response
 
-from app import app
+from app import app, bioboxes
 
 BAD_REQUEST = 400
 NOT_IMPLEMENTED = 405
@@ -18,7 +18,7 @@ def not_implemented(error):
 
 @app.route('/bioboxgui/api/bioboxes', methods=[GET_METHOD])
 def get_bioboxes():
-    abort(NOT_IMPLEMENTED)
+    return jsonify({'images': [box.get_dict() for box in bioboxes.get_current_bioboxes()]})
 
 
 @app.route('/bioboxgui/api/bioboxes', methods=[POST_METHOD])
