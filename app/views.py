@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, redirect, url_for
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View, Subgroup, Link
 
@@ -11,11 +11,18 @@ nav.register_element('frontend_top', Navbar(
         View('Bioboxes', '.show_bioboxes'),
         Subgroup(
                 'Sources',
-                Link('Docker Container', 'https://hub.docker.com/r/tlaufkoetter/biobox-gui'),
-                Link('Github Source', 'https://github.com/tlaufkoetter/biobox-gui-app')
+                Link('Docker Container',
+                     'https://hub.docker.com/r/tlaufkoetter/biobox-gui'),
+                Link('Github Source',
+                     'https://github.com/tlaufkoetter/biobox-gui-app')
         )
 ))
 nav.init_app(app)
+
+
+@app.route('/')
+def home():
+    return redirect(url_for('index'))
 
 
 @app.route('/bioboxgui')
