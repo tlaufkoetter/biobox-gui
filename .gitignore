@@ -1,6 +1,12 @@
 
 # Created by https://www.gitignore.io/api/python,pycharm,vim,osx,windows,linux
 
+### Sphinx ###
+
+_build
+_static
+_templates
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
