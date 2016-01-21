@@ -1,8 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Biobox GUI</title>
-</head>
-{% block content %}{% endblock %}
-</html>
+{% extends "bootstrap/base.html" %}
+{% block title %} Biobox GUI {% endblock %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% block head %}
+    {{ super() }}
+    {{ fixes.ie8() }}
+{%- endblock %}
+{% block styles %}
+    {{ super() }}
+{% endblock %}
+{% block navbar %}
+    {{ nav.frontend_top.render() }}
+{% endblock %}
