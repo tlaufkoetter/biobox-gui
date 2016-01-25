@@ -1,6 +1,6 @@
 from flask import jsonify, abort, request, make_response
 
-from app import app, bioboxes
+from bioboxgui import app, bioboxes
 
 BAD_REQUEST = 400
 NOT_IMPLEMENTED = 405

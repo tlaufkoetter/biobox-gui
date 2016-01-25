@@ -3,5 +3,5 @@ from flask_bootstrap import Bootstrap
 app = Flask(__name__)
 Bootstrap(app)
 
-from app import api
-from app import views
+from bioboxgui import api
+from bioboxgui import views

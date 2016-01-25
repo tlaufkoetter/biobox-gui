@@ -1,8 +1,7 @@
-src
-===
+bioboxgui
+=========
 
 .. toctree::
    :maxdepth: 4
 
-   app
-   run
+   bioboxgui

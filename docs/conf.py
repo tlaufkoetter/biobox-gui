@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Biobox GUI documentation build configuration file, created by
-# sphinx-quickstart on Sat Jan 23 17:29:23 2016.
+# sphinx-quickstart on Mon Jan 25 11:35:40 2016.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -18,7 +18,7 @@ import os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.append(os.path.abspath('../src'))
+sys.path.append(os.path.abspath('../'))
 
 # -- General configuration ------------------------------------------------
 

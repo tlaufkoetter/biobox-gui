@@ -1,7 +1,8 @@
+import os
 import requests
 import yaml
-from jsonschema import validate
 import json
+from jsonschema import validate
 
 
 class Biobox():
@@ -24,7 +25,8 @@ class Biobox():
         :param yaml_dict: a dictionary as it is parsed from yaml code.
         :return:  base
         """
-        with open('app/static/image_schema.json', 'r') as schema_file:
+        with open(os.path.join(os.path.dirname(__file__), 'static/image_schema.json'), 'r') as schema_file:
+
             schema_string = schema_file.read()
             schema = json.loads(schema_string)
             validate(yaml_dict, schema)
