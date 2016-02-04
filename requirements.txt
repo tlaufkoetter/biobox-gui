@@ -13,8 +13,6 @@ itsdangerous==0.24
 Jinja2==2.8
 jsonschema==2.5.1
 MarkupSafe==0.23
-mesos==0.26.0
-mesos.interface==0.26.0
 protobuf==2.6.1
 Pygments==2.1
 pytz==2015.7

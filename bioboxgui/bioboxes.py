@@ -1,7 +1,8 @@
+import json
 import os
+
 import requests
 import yaml
-import json
 from jsonschema import validate
 
 
@@ -74,6 +75,10 @@ class Biobox():
 
 
 def get_current_bioboxes():
+    """
+    fetches the current image list.
+    :return: list of images.
+    """
     response = requests.get(
         'https://raw.githubusercontent.com'
         '/pbelmann/data/feature/new-image-list/images.yml'
