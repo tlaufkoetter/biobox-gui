@@ -7,7 +7,7 @@ Flask-Bootstrap==3.3.5.7
 Flask-HTTPAuth==2.7.0
 flask-nav==0.5
 Flask-SQLAlchemy==2.1
-functools32==3.2.3.post2
+functools32==3.2.3-2
 google-common==0.0.1
 itsdangerous==0.24
 Jinja2==2.8
