@@ -18,6 +18,10 @@ def not_implemented(error):
 
 @app.route('/bioboxgui/api/bioboxes', methods=[GET_METHOD])
 def get_bioboxes():
+    """
+    queries a list of available bioboxes.
+    :return: json formatted biobox meta data.
+    """
     return jsonify({'images': [box.get_dict() for box in bioboxes.get_current_bioboxes()]})
 
 
