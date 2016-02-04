@@ -74,6 +74,10 @@ class Biobox():
             self.interface = yaml_dict.get(self.KEY_INTERFACE)
 
 
+class BioboxType():
+    pass
+
+
 def get_current_bioboxes():
     """
     fetches the current image list.

@@ -1,6 +1,7 @@
 from flask import jsonify, abort, request, make_response
 
 from bioboxgui import app, bioboxes
+from bioboxgui import models
 
 BAD_REQUEST = 400
 NOT_IMPLEMENTED = 405
@@ -23,6 +24,20 @@ def get_bioboxes():
     :return: json formatted biobox meta data.
     """
     return jsonify({'images': [box.get_dict() for box in bioboxes.get_current_bioboxes()]})
+
+
+@app.route('/bioboxgui/api/bioboxes/refresh', methods=[GET_METHOD])
+def refresh_bioboxes():
+    models.refresh()
+
+
+@app.route('/bioboxgui/api/bioboxes/types', methods=[GET_METHOD])
+def get_biobox_types():
+    """
+    queries the available types of bioboxes.
+    :return: json formatted list of types.
+    """
+    pass
 
 
 @app.route('/bioboxgui/api/bioboxes', methods=[POST_METHOD])
