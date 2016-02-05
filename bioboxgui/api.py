@@ -25,8 +25,8 @@ def get_bioboxes():
     return jsonify({'images': [biobox.json for biobox in models.Biobox.query.all()]})
 
 
-@app.route('/bioboxgui/api/bioboxes/refresh', methods=[GET_METHOD])
-def refresh_bioboxes():
+@app.route('/bioboxgui/api/bioboxes/update', methods=[GET_METHOD])
+def update_bioboxes():
     models.refresh()
     return get_bioboxes()
 
