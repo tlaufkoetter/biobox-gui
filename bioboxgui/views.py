@@ -3,7 +3,7 @@ from flask_nav import Nav
 from flask_nav.elements import Navbar, View, Subgroup, Link
 
 from bioboxgui import app
-from bioboxgui import bioboxes
+from bioboxgui import models
 
 nav = Nav()
 nav.register_element('frontend_top', Navbar(
@@ -32,5 +32,5 @@ def index():
 
 @app.route('/bioboxgui/bioboxes')
 def show_bioboxes():
-    boxes = bioboxes.get_current_bioboxes()
+    boxes = models.Biobox.query.all()
     return render_template('bioboxes.html', boxes=boxes)

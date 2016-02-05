@@ -1,7 +1,6 @@
 from flask import jsonify, abort, request, make_response
 
-from bioboxgui import app, bioboxes
-from bioboxgui import models
+from bioboxgui import app, models, db
 
 BAD_REQUEST = 400
 NOT_IMPLEMENTED = 405
@@ -23,21 +22,35 @@ def get_bioboxes():
     queries a list of available bioboxes.
     :return: json formatted biobox meta data.
     """
-    return jsonify({'images': [box.get_dict() for box in bioboxes.get_current_bioboxes()]})
+    return jsonify({'images': [biobox.json for biobox in models.Biobox.query.all()]})
 
 
 @app.route('/bioboxgui/api/bioboxes/refresh', methods=[GET_METHOD])
 def refresh_bioboxes():
     models.refresh()
+    return get_bioboxes()
 
 
-@app.route('/bioboxgui/api/bioboxes/types', methods=[GET_METHOD])
+@app.route('/bioboxgui/api/bioboxes/interfaces', methods=[GET_METHOD])
 def get_biobox_types():
     """
-    queries the available types of bioboxes.
-    :return: json formatted list of types.
+    queries the available interfaces of bioboxes.
+    :return: json formatted list of interfaces.
     """
-    pass
+    return jsonify({'interfaces': list(set([task.interface for task in models.Task.query.all()]))})
+
+
+@app.route('/bioboxgui/api/bioboxes/interfaces/<string:interface>', methods=[GET_METHOD])
+def get_interface(interface):
+    return jsonify({
+        'images': [
+            biobox.json
+            for biobox in db.session \
+                .query(models.Biobox) \
+                .join((models.Task, models.Biobox.tasks)) \
+                .filter(models.Task.interface == interface)
+            ]
+    })
 
 
 @app.route('/bioboxgui/api/bioboxes', methods=[POST_METHOD])
