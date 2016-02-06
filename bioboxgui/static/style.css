@@ -1,0 +1,8 @@
+.scroller {
+    height: 50%;
+    overflow: scroll;
+}
+
+.clickable tr {
+    cursor: pointer;
+}

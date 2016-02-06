@@ -40,6 +40,15 @@
         }
     };
 
+    BioboxController.prototype.selectBiobox = function (selectedBiobox) {
+        var _this = this;
+        if (selectedBiobox !== null) {
+            _this.bioboxService.getBiobox(selectedBiobox.pmid).success(function (result) {
+                _this.biobox = result;
+            });
+        }
+    };
+
 
     BioboxController.$inject = ['bioboxService'];
 

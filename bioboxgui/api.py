@@ -78,7 +78,7 @@ def create_biobox():
 
 @app.route('/bioboxgui/api/bioboxes/<int:biobox_id>', methods=[GET_METHOD])
 def get_biobox(biobox_id):
-    abort(NOT_IMPLEMENTED)
+    return jsonify(models.Biobox.query.get(biobox_id).json)
 
 
 @app.route('/bioboxgui/api/bioboxes/<int:biobox_id>', methods=[PUT_METHOD])
