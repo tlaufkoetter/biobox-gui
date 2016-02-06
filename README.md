@@ -4,7 +4,7 @@ A web application for running biobox containers.
 
 ## What it does
 
-Shows your the available bioboxes and interfaces at /bioboxgui/bioboxes. Provides a REST API.
+Shows your the available bioboxes and interfaces at /bioboxgui. Provides a REST API.
 
 ## Quickstart
 
@@ -19,6 +19,7 @@ Shows your the available bioboxes and interfaces at /bioboxgui/bioboxes. Provide
 > python3 -m venv venv     #setting up a virtual environment to avoid possible conflicts.
 > source venv/bin/activate #switch to virtual environment
 > pip install -r requirements.txt
+> ./db_handler.py
 > ./run.py
 ```
 * visit ``http://localhost:5000/bioboxgui`` in your favourite webbrowser.

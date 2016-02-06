@@ -12,10 +12,10 @@ bioboxgui.api module
     :undoc-members:
     :show-inheritance:
 
-bioboxgui.bioboxes module
--------------------------
+bioboxgui.models module
+-----------------------
 
-.. automodule:: bioboxgui.bioboxes
+.. automodule:: bioboxgui.models
     :members:
     :undoc-members:
     :show-inheritance:

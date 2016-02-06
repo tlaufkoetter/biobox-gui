@@ -191,3 +191,5 @@ $RECYCLE.BIN/
 .Trash-*
 
 venv/
+db_repository/
+*.db

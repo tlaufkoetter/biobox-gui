@@ -1,6 +1,54 @@
-{% extends "base.html" %}
-{% block content %}
-    <div class="container">
-        <h1>{{ title }}</h1>
+<html ng-app="BioboxGui">
+<head>
+    <link data-require="bootstrap-css@3.1.1" data-semver="3.1.1" rel="stylesheet"
+          href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+    <script data-require="angular.js@*" data-semver="1.2.14" src="http://code.angularjs.org/1.2.14/angular.js"></script>
+    <script data-require="angular-resource@*" data-semver="1.2.13"
+            src="http://code.angularjs.org/1.2.13/angular-resource.js"></script>
+    <script src="{{ url_for('static', filename='controllers.js') }}"></script>
+    <script src="{{ url_for('static', filename='services.js') }}"></script>
+</head>
+<body>
+<div class="container" ng-controller="BioboxController as main">
+    <h1>Biobox GUI</h1>
+    <div class="breadcrumb">
+        <h3>Welcome!</h3>
+        Please have a look around.
     </div>
-{% endblock %}
+    <h2>Interfaces</h2>
+    {% raw %}
+    <select ng-init="selectedInterface = main.getInterface(null)" ng-model="selectedInterface" class="form-control"
+            ng-change="main.getInterface(selectedInterface)"
+            ng-options="interface.name for interface in main.interfaces">
+        <option value="">
+            Select an interface
+        </option>
+    </select>
+    {% endraw %}
+    <h2>Bioboxes</h2>
+    <div id="results">
+        <div ng-hide="!main.bioboxes.length">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="biobox in main.bioboxes">
+                    {% raw %}
+                    <td ng-show="biobox.title"><b>{{ biobox.title }}</b></td>
+                    <td ng-show="biobox.description">{{ biobox.description }}</td>
+                    {% endraw %}
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <form role="form" ng-submit="main.updateBioboxes()">
+            <button type="submit" class="btn btn-default">update</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
