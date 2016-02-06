@@ -81,53 +81,52 @@
                             </a>
                         </td>
                     </tr>
-                    <tr>
+                    <tr ng-hide="!main.biobox.homepage">
                         <td>
-                            <span ng-hide="!main.biobox.homepage"
-                                  class="glyphicon glyphicon-ok biobox-item-good"></span>
-                            <span ng-hide="main.biobox.homepage"
-                                  class="glyphicon glyphicon-remove biobox-item-bad"></span>
+                            <span class="glyphicon glyphicon-ok biobox-item-good"></span>
                         </td>
                         <td>
-                            <a ng-hide="!main.biobox.homepage" ng-href="{{ main.biobox.homepage }}">
+                            <a ng-href="{{ main.biobox.homepage }}">
                                 Homepage
                             </a>
-                            <div ng-hide="main.biobox.homepage">
-                                No homepage available
-                            </div>
                         </td>
                     </tr>
-                    <tr>
+                    <tr ng-hide="main.biobox.homepage">
                         <td>
-                            <span ng-hide="!main.biobox.image.source"
-                                  class="glyphicon glyphicon-ok biobox-item-good"></span>
-                            <span ng-hide="main.biobox.image.source"
-                                  class="glyphicon glyphicon-remove biobox-item-bad"></span>
+                            <span class="glyphicon glyphicon-remove biobox-item-bad"></span>
+                        </td>
+                        <td> No homepage available</td>
+                    </tr>
+                    <tr ng-hide="!main.biobox.image.source">
+                        <td>
+                            <span class="glyphicon glyphicon-ok biobox-item-good"></span>
                         </td>
                         <td>
-                            <a ng-hide="!main.biobox.image.source" ng-href="{{ main.biobox.image.source }}">
+                            <a ng-href="{{ main.biobox.image.source }}">
                                 Source Code Repository
-                            </a>
-                            <div ng-hide="main.biobox.image.source">
-                                No source code repository available
-                            </div>
                         </td>
                     </tr>
-                    <tr>
+                    <tr ng-hide="main.biobox.image.source">
                         <td>
-                            <span ng-hide="!main.biobox.mailing_list"
-                                  class="glyphicon glyphicon-ok biobox-item-good"></span>
-                            <span ng-hide="main.biobox.mailing_list"
-                                  class="glyphicon glyphicon-remove biobox-item-bad"></span>
+                            <span class="glyphicon glyphicon-remove biobox-item-bad"></span>
+                        </td>
+                        <td> No source code repository available</td>
+                    </tr>
+                    <tr ng-hide="!main.biobox.mailing_list">
+                        <td>
+                            <span class="glyphicon glyphicon-ok biobox-item-good"></span>
                         </td>
                         <td>
-                            <a ng-hide="!main.biobox.mailing_list" ng-href="{{ main.biobox.mailing_list }}">
+                            <a ng-href="{{ main.biobox.mailing_list }}">
                                 Mailing List
                             </a>
-                            <div ng-hide="main.biobox.mailing_list">
-                                No mailing list available
-                            </div>
                         </td>
+                    </tr>
+                    <tr ng-hide="main.biobox.mailing_list">
+                        <td>
+                            <span class="glyphicon glyphicon-remove biobox-item-bad"></span>
+                        </td>
+                        <td> No mailing list available</td>
                     </tr>
                     </tbody>
                 </table>
