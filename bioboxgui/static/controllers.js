@@ -1,16 +1,17 @@
 (function () {
-    var app = angular.module('BioboxGui', ['ngResource']);
+    'use strict';
+    var app = angular.module('BioboxGui', ['ngResource']),
 
-    var BioboxController = function (bioboxService) {
-        this.bioboxService = bioboxService;
-        this.getInterfaces();
-    };
+        BioboxController = function (bioboxService) {
+            this.bioboxService = bioboxService;
+            this.getInterfaces();
+        };
 
     BioboxController.prototype.getBioboxes = function () {
         var _this = this;
         _this.bioboxService.getBioboxes().success(function (result) {
             _this.bioboxes = result.images;
-        })
+        });
     };
 
     BioboxController.prototype.updateBioboxes = function () {

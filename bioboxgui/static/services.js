@@ -1,9 +1,10 @@
 (function () {
-    var app = angular.module('BioboxGui');
+    'use strict';
+    var app = angular.module('BioboxGui'),
 
-    var BioboxService = function ($http) {
-        this.$http = $http;
-    };
+        BioboxService = function ($http) {
+            this.$http = $http;
+        };
 
     BioboxService.prototype.getBioboxes = function () {
         return this.$http.get('/bioboxgui/api/bioboxes');
