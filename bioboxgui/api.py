@@ -37,7 +37,8 @@ def get_biobox_types():
     queries the available interfaces of bioboxes.
     :return: json formatted list of interfaces.
     """
-    return jsonify({'interfaces': list(set([task.interface for task in models.Task.query.all()]))})
+    interfaces = set([task.interface for task in models.Task.query.all()])
+    return jsonify({'interfaces': [{'name': interface} for interface in interfaces]})
 
 
 @app.route('/bioboxgui/api/bioboxes/interfaces/<string:interface>', methods=[GET_METHOD])

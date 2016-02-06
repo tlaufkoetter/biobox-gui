@@ -1,6 +1,5 @@
 import json
 import os.path
-
 import requests
 import yaml
 from jsonschema import validate
@@ -90,26 +89,26 @@ def refresh():
         img_yaml = bb_yaml[Biobox.KEY_IMAGE]
         image = Image.query.filter(Image.dockerhub == img_yaml[Image.KEY_CONTAINER_URI]).first()
         image = image if image else Image(
-                dockerhub=img_yaml[Image.KEY_CONTAINER_URI],
-                repo=img_yaml.get(Image.KEY_REPO_URL),
-                source=img_yaml.get(Image.KEY_SRC_URL)
+            dockerhub=img_yaml[Image.KEY_CONTAINER_URI],
+            repo=img_yaml.get(Image.KEY_REPO_URL),
+            source=img_yaml.get(Image.KEY_SRC_URL)
         )
         biobox = Biobox.query.get(bb_yaml[Biobox.KEY_ID])
         biobox = biobox if biobox else Biobox(
-                title=bb_yaml.get(Biobox.KEY_TITLE),
-                pmid=bb_yaml.get(Biobox.KEY_ID),
-                homepage=bb_yaml.get(Biobox.KEY_HOME_PAGE),
-                mailing_list=bb_yaml.get(Biobox.KEY_MAILING_LIST),
-                description=bb_yaml.get(Biobox.KEY_DESCRIPTION),
-                image=image,
-                tasks=[]
+            title=bb_yaml.get(Biobox.KEY_TITLE),
+            pmid=bb_yaml.get(Biobox.KEY_ID),
+            homepage=bb_yaml.get(Biobox.KEY_HOME_PAGE),
+            mailing_list=bb_yaml.get(Biobox.KEY_MAILING_LIST),
+            description=bb_yaml.get(Biobox.KEY_DESCRIPTION),
+            image=image,
+            tasks=[]
         )
         for tsk_yaml in bb_yaml[Biobox.KEY_TASKS]:
             task = Task.query.filter(Task.name == tsk_yaml[Task.KEY_NAME]
                                      and Task.interface == tsk_yaml[Task.KEY_INTERFACE]).first()
             task = task if task else Task(
-                    name=tsk_yaml[Task.KEY_NAME],
-                    interface=tsk_yaml[Task.KEY_INTERFACE]
+                name=tsk_yaml[Task.KEY_NAME],
+                interface=tsk_yaml[Task.KEY_INTERFACE]
             )
             if not task in biobox.tasks:
                 biobox.tasks.append(task)

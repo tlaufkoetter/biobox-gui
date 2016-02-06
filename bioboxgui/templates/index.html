@@ -16,13 +16,15 @@
         Please have a look around.
     </div>
     <h2>Interfaces</h2>
-    <table class="table table-striped">
-        <tr ng-repeat="interface in main.interfaces">
-            {% raw %}
-            <td ng-show="interface">{{ interface }}</td>
-            {% endraw %}
-        </tr>
-    </table>
+    {% raw %}
+    <select ng-init="selectedInterface = main.getInterface(null)" ng-model="selectedInterface" class="form-control"
+            ng-change="main.getInterface(selectedInterface)"
+            ng-options="interface.name for interface in main.interfaces">
+        <option value="">
+            Select an interface
+        </option>
+    </select>
+    {% endraw %}
     <h2>Bioboxes</h2>
     <div id="results">
         <div ng-hide="!main.bioboxes.length">

@@ -17,6 +17,10 @@
         return this.$http.get('/bioboxgui/api/bioboxes/interfaces');
     };
 
+    BioboxService.prototype.getInterface = function (selectedInterface) {
+        return this.$http.get('/bioboxgui/api/bioboxes/interfaces/' + selectedInterface);
+    };
+
     BioboxService.$inject = ['$http'];
 
     app.service('bioboxService', BioboxService);

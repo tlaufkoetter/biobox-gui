@@ -3,7 +3,7 @@
 
     var BioboxController = function (bioboxService) {
         this.bioboxService = bioboxService;
-        this.getBioboxes();
+        //this.getBioboxes();
         this.getInterfaces();
     };
 
@@ -26,6 +26,17 @@
         _this.bioboxService.getInterfaces().success(function (result) {
             _this.interfaces = result.interfaces;
         });
+    };
+
+    BioboxController.prototype.getInterface = function (selectedInterface) {
+        var _this = this;
+        if (selectedInterface !== null) {
+            _this.bioboxService.getInterface(selectedInterface.name).success(function (result) {
+                _this.bioboxes = result.images;
+            });
+        } else {
+            _this.getBioboxes();
+        }
     };
 
 

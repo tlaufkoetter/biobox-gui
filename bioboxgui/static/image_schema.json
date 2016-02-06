@@ -1,69 +1,82 @@
 {
-        "$schema"     : "http://json-schema.org/draft-04/schema#",
-        "title"       : "Image",
-        "description" : "the image of a biobox",
-        "type"        : "object",
-        "properties"  : {
-                "title": {
-                        "description" : "The title of the image.",
-                        "type"        : "string"
-                },
-                "image": {
-                        "description": "Links to image relevant contents.",
-                        "type": "object",
-                        "properties": {
-                                "dockerhub": {
-                                        "description": "Name of the dockerhub repo.",
-                                        "type": "string",
-                                        "pattern": "^[^/]+/[^/]+"
-                                },
-                                "repo": {
-                                        "description": "Linkt to the official repository.",
-                                        "type": "string"
-                                },
-                                "source": {
-                                        "description": "Link to the sourcecode.",
-                                        "type": [
-                                                "string",
-                                                "null"
-                                        ]
-                                }
-                        },
-                        "required": ["dockerhub", "repo"]
-                },
-                "pmid": {
-                        "description": "Unique numeral identifier of the image",
-                        "type": "integer"
-                },
-                "homepage": {
-                        "description": "Link to the homepage of the project.",
-                        "type": [
-                                "string", "null"
-                        ]
-                },
-                "description": {
-                        "description": "Description of the image.",
-                        "type": "string"
-                },
-                "tasks": {
-                        "description": "The tasks that can be executed by the biobox.",
-                        "type": "array",
-                        "items": {
-                                "type": "object",
-                                "properties": {
-                                        "name": {
-                                                "description": "The task's name",
-                                                "type": "string"
-                                        },
-                                        "interface": {
-                                                "description": "The interface from which this biobox inherits."
-                                        }
-                                },
-                                "required": ["name", "interface"]
-                        },
-                        "minItems": 1,
-                        "uniqueItems": true
-                }
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Image",
+  "description": "the image of a biobox",
+  "type": "object",
+  "properties": {
+    "title": {
+      "description": "The title of the image.",
+      "type": "string"
+    },
+    "image": {
+      "description": "Links to image relevant contents.",
+      "type": "object",
+      "properties": {
+        "dockerhub": {
+          "description": "Name of the dockerhub repo.",
+          "type": "string",
+          "pattern": "^[^/]+/[^/]+"
         },
-        "required": ["title", "image", "pmid", "description", "tasks"]
+        "repo": {
+          "description": "Linkt to the official repository.",
+          "type": "string"
+        },
+        "source": {
+          "description": "Link to the sourcecode.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "dockerhub",
+        "repo"
+      ]
+    },
+    "pmid": {
+      "description": "Unique numeral identifier of the image",
+      "type": "integer"
+    },
+    "homepage": {
+      "description": "Link to the homepage of the project.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "description": {
+      "description": "Description of the image.",
+      "type": "string"
+    },
+    "tasks": {
+      "description": "The tasks that can be executed by the biobox.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "The task's name",
+            "type": "string"
+          },
+          "interface": {
+            "description": "The interface from which this biobox inherits."
+          }
+        },
+        "required": [
+          "name",
+          "interface"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "title",
+    "image",
+    "pmid",
+    "description",
+    "tasks"
+  ]
 }
