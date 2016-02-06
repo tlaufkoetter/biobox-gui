@@ -8,13 +8,18 @@ For now you can view a list of bioboxes on /bioboxgui/bioboxes or query JSON for
 
 ## Quickstart
 
-* install the requirements
+### Docker
 
-``pip install -r requirements.txt``
+``> docker run -p 5000:5000 tlaufkoetter/biobox-gui:latest``
 
-* launch the application
+### Standalone
 
-``./run.py``
+``> git clone https://github.com/tlaufkoetter/biobox-gui``
+``> cd biobox-gui``
+``> python3 -m venv venv`` setting up a virtual environment to avoid possible conflicts.
+``> source venv/bin/activate`` switch to virtual environment, use ``> deactivate`` when done
+``> pip install -r requirements.txt``
+``> ./run.py``
 
 * visit ``http://localhost:5000/bioboxgui`` in your favourite webbrowser.
 * or query the REST API with
