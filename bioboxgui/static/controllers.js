@@ -3,7 +3,6 @@
 
     var BioboxController = function (bioboxService) {
         this.bioboxService = bioboxService;
-        //this.getBioboxes();
         this.getInterfaces();
     };
 

@@ -20,13 +20,20 @@ def not_implemented(error):
 def get_bioboxes():
     """
     queries a list of available bioboxes.
-    :return: json formatted biobox meta data.
+
+    will be empty when no bioboxes are stored.
+    :return: json formatted bioboxes.
     """
     return jsonify({'images': [biobox.json for biobox in models.Biobox.query.all()]})
 
 
 @app.route('/bioboxgui/api/bioboxes/update', methods=[GET_METHOD])
 def update_bioboxes():
+    """
+    updates the stored bioboxes.
+
+    :return: json formatted bioboxes.
+    """
     models.refresh()
     return get_bioboxes()
 
@@ -35,6 +42,7 @@ def update_bioboxes():
 def get_biobox_types():
     """
     queries the available interfaces of bioboxes.
+
     :return: json formatted list of interfaces.
     """
     interfaces = set([task.interface for task in models.Task.query.all()])
@@ -43,6 +51,12 @@ def get_biobox_types():
 
 @app.route('/bioboxgui/api/bioboxes/interfaces/<string:interface>', methods=[GET_METHOD])
 def get_interface(interface):
+    """
+    fetches all the bioboxes that implemnt the given interface.
+
+    :param interface: the interface to query.
+    :return: json formatted bioboxes.
+    """
     return jsonify({
         'images': [
             biobox.json

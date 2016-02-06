@@ -9,6 +9,7 @@ from config import basedir
 
 IMAGES_URL = 'https://raw.githubusercontent.com/pbelmann/data/feature/new-image-list/images.yml'
 
+# linking bioboxes with tasks since 2016.
 association_table = db.Table('association', db.Model.metadata,
                              db.Column('biobox_id', db.Integer, db.ForeignKey('biobox.pmid')),
                              db.Column('task_id', db.Integer, db.ForeignKey('task.id'))
@@ -16,6 +17,11 @@ association_table = db.Table('association', db.Model.metadata,
 
 
 class Biobox(db.Model):
+    """
+    represents a standard biobox.
+
+    is used for ORM.
+    """
     KEY_IMAGE = 'image'
     KEY_ID = 'pmid'
     KEY_HOME_PAGE = 'homepage'
@@ -34,6 +40,12 @@ class Biobox(db.Model):
 
     @property
     def json(self):
+        """
+        creates a JSON representation of the object.
+
+
+        :return: dictionary of object data.
+        """
         return {
             self.KEY_ID: self.pmid,
             self.KEY_TITLE: self.title,
@@ -46,6 +58,11 @@ class Biobox(db.Model):
 
 
 class Image(db.Model):
+    """
+    represents the image part of a biobox.
+
+    existence is based solely on the quest for conformity with the schema.
+    """
     KEY_CONTAINER_URI = 'dockerhub'
     KEY_REPO_URL = 'repo'
     KEY_SRC_URL = 'source'
@@ -59,6 +76,14 @@ class Image(db.Model):
 
     @property
     def json(self):
+        """
+        creates a JSON representation of the object.
+
+        censors out the id that is used in the database.
+
+
+        :return: dict of the object.
+        """
         return {
             self.KEY_CONTAINER_URI: self.dockerhub,
             self.KEY_REPO_URL: self.repo,
@@ -67,6 +92,9 @@ class Image(db.Model):
 
 
 class Task(db.Model):
+    """
+    represents the tasks a biobox can perform.
+    """
     KEY_NAME = 'name'
     KEY_INTERFACE = 'interface'
 
@@ -76,6 +104,14 @@ class Task(db.Model):
 
     @property
     def json(self):
+        """
+        creates a JSON representtion of the object.
+
+        censors out the id that is used in the database.
+
+
+        :return: dict of the object.
+        """
         return {
             self.KEY_NAME: self.name,
             self.KEY_INTERFACE: self.interface
@@ -83,6 +119,11 @@ class Task(db.Model):
 
 
 def refresh():
+    """
+    fetches the currently available bioboxes and updates the dataase if necessary.
+
+    :return:  all the bioboxes.
+    """
     yaml_dict = fetch_images(IMAGES_URL)
     validate_images(yaml_dict)
     for bb_yaml in yaml_dict['images']:
@@ -117,6 +158,12 @@ def refresh():
 
 
 def validate_images(yaml_dict):
+    """
+    validates the given images with the json schema.
+
+    :param yaml_dict: a read yaml file as dictionary.
+    :return:  None
+    """
     with open(os.path.join(basedir, 'bioboxgui/static/image_schema.json'), 'r') as schema_file:
         schema_string = schema_file.read()
         schema = json.loads(schema_string)
@@ -125,5 +172,11 @@ def validate_images(yaml_dict):
 
 
 def fetch_images(url):
+    """
+    fetches the images from the given url.
+
+    :param url: the url from where to load the images.
+    :return: images as dictionary.
+    """
     response = requests.get(url)
     return yaml.load(response.text)
