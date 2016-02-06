@@ -69,6 +69,12 @@ def get_interface(interface):
 
 @app.route('/bioboxgui/api/bioboxes/<int:biobox_id>', methods=[GET_METHOD])
 def get_biobox(biobox_id):
+    """
+    fetches a single biobox with the given id.
+
+    :param biobox_id: the pmid of the biobox.
+    :return: a json formatted biobox.
+    """
     return jsonify(models.Biobox.query.get(biobox_id).json)
 
 
