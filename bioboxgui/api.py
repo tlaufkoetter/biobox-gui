@@ -24,7 +24,8 @@ def get_bioboxes():
     will be empty when no bioboxes are stored.
     :return: json formatted bioboxes.
     """
-    return jsonify({'images': [biobox.json for biobox in models.Biobox.query.all()]})
+    bioboxes = models.Biobox.query.order_by(models.Biobox.title).all()
+    return jsonify({'images': [biobox.json for biobox in bioboxes]})
 
 
 @app.route('/bioboxgui/api/bioboxes/update', methods=[GET_METHOD])
@@ -45,7 +46,8 @@ def get_biobox_types():
 
     :return: json formatted list of interfaces.
     """
-    interfaces = set([task.interface for task in models.Task.query.all()])
+    tasks = models.Task.query.order_by(models.Task.interface).all()
+    interfaces = set([task.interface for task in tasks])
     return jsonify({'interfaces': [{'name': interface} for interface in interfaces]})
 
 
@@ -57,15 +59,17 @@ def get_interface(interface):
     :param interface: the interface to query.
     :return: json formatted bioboxes.
     """
-    return jsonify({
-        'images': [
-            biobox.json
-            for biobox in db.session \
-                .query(models.Biobox) \
-                .join((models.Task, models.Biobox.tasks)) \
-                .filter(models.Task.interface == interface)
-            ]
-    })
+    bioboxes = db.session \
+        .query(models.Biobox) \
+        .join((models.Task, models.Biobox.tasks)) \
+        .filter(models.Task.interface == interface) \
+        .order_by(models.Biobox.title)
+    return jsonify({'images': [biobox.json for biobox in bioboxes]})
+
+
+@app.route('/bioboxgui/api/bioboxes/<int:biobox_id>', methods=[GET_METHOD])
+def get_biobox(biobox_id):
+    return jsonify(models.Biobox.query.get(biobox_id).json)
 
 
 @app.route('/bioboxgui/api/bioboxes', methods=[POST_METHOD])
@@ -74,11 +78,6 @@ def create_biobox():
         abort(NOT_IMPLEMENTED)
     else:
         abort(BAD_REQUEST)
-
-
-@app.route('/bioboxgui/api/bioboxes/<int:biobox_id>', methods=[GET_METHOD])
-def get_biobox(biobox_id):
-    return jsonify(models.Biobox.query.get(biobox_id).json)
 
 
 @app.route('/bioboxgui/api/bioboxes/<int:biobox_id>', methods=[PUT_METHOD])
