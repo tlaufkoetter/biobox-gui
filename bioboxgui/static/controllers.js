@@ -19,6 +19,7 @@
         _this.bioboxService.updateBioboxes().success(function (result) {
             _this.bioboxes = result.images;
         });
+        _this.getInterfaces();
     };
 
     BioboxController.prototype.getInterfaces = function () {
