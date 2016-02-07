@@ -4,37 +4,55 @@
 
         BioboxController = function (bioboxService) {
             this.bioboxService = bioboxService;
+            this.biobox = null;
             this.getInterfaces();
         };
 
     BioboxController.prototype.getBioboxes = function () {
         var _this = this;
-        _this.bioboxService.getBioboxes().success(function (result) {
-            _this.bioboxes = result.images;
+        _this.bioboxService.getBioboxes().success(function (response) {
+            _this.bioboxes = response.images;
         });
     };
 
     BioboxController.prototype.updateBioboxes = function () {
         var _this = this;
-        _this.bioboxService.updateBioboxes().success(function (result) {
-            _this.bioboxes = result.images;
-        });
+        _this.bioboxService.updateBioboxes()
+            .then(
+                function success(response) {
+                    _this.bioboxes = response.images;
+                },
+                function failure(response) {
+                    _this.bioboxes = null;
+                }
+            )
+        ;
         _this.getInterfaces();
     };
 
     BioboxController.prototype.getInterfaces = function () {
         var _this = this;
-        _this.bioboxService.getInterfaces().success(function (result) {
-            _this.interfaces = result.interfaces;
-        });
+        _this.bioboxService.getInterfaces()
+            .then(
+                function success(response) {
+                    _this.interfaces = response.data.interfaces;
+                },
+                function failure(response) {
+                    _this.interfaces = null;
+                });
     };
 
     BioboxController.prototype.getInterface = function (selectedInterface) {
         var _this = this;
         if (selectedInterface !== null) {
-            _this.bioboxService.getInterface(selectedInterface.name).success(function (result) {
-                _this.bioboxes = result.images;
-            });
+            _this.bioboxService.getInterface(selectedInterface.name)
+                .then(
+                    function success(response) {
+                        _this.bioboxes = response.data.images;
+                    },
+                    function failure(response) {
+                        _this.bioboxes = null;
+                    });
         } else {
             _this.getBioboxes();
         }
@@ -43,9 +61,17 @@
     BioboxController.prototype.selectBiobox = function (selectedBiobox) {
         var _this = this;
         if (selectedBiobox !== null) {
-            _this.bioboxService.getBiobox(selectedBiobox.pmid).success(function (result) {
-                _this.biobox = result;
-            });
+            _this.bioboxService.getBiobox(selectedBiobox.pmid)
+                .then(
+                    function success(response) {
+                        console.log(response);
+                        _this.biobox = response.data;
+                    },
+                    function failure(response) {
+                        console.log(response);
+                        _this.biobox = 'fail';
+                    }
+                );
         }
     };
 

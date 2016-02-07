@@ -54,7 +54,11 @@
                 <button type="submit" class="btn btn-default">update</button>
             </form>
         </div>
-        <div class="col-xs-6" ng-hide="!main.biobox">
+        <div class="col-xs-6" ng_hide="main.biobox || main.biobox == 'fail'">
+            <h2>Hello there!</h2>
+            <p>Please select a Biobox from the left table. Can't see any? Hit the update button!</p>
+        </div>
+        <div class="col-xs-6" ng-hide="!main.biobox || main.biobox == 'fail'">
             {% raw %}
             <div id="bioboxes-{{ main.biobox.title }}">
                 <h3> {{ main.biobox.image.dockerhub }} </h3>
@@ -145,6 +149,10 @@
                 </table>
             </div>
             {% endraw %}
+        </div>
+        <div class="col-xs-6" ng-hide="main.biobox != 'fail'">
+            <h2>Error</h2>
+            <p>You requested Biobox could not be delivered.</p>
         </div>
     </div>
 </div>
