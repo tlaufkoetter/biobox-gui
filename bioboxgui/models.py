@@ -10,10 +10,11 @@ from config import basedir
 IMAGES_URL = 'https://raw.githubusercontent.com/pbelmann/data/feature/new-image-list/images.yml'
 
 # linking bioboxes with tasks since 2016.
-association_table = db.Table('association', db.Model.metadata,
-                             db.Column('biobox_id', db.Integer, db.ForeignKey('biobox.pmid')),
-                             db.Column('task_id', db.Integer, db.ForeignKey('task.id'))
-                             )
+association_table = db.Table(
+    'association', db.Model.metadata,
+    db.Column('biobox_id', db.Integer, db.ForeignKey('biobox.pmid')),
+    db.Column('task_id', db.Integer, db.ForeignKey('task.id'))
+)
 
 
 class Interface(db.Model):
@@ -66,7 +67,6 @@ class Image(db.Model):
     biobox = db.relationship("Biobox", back_populates='image', uselist=False)
 
 
-
 class Task(db.Model):
     """
     represents the tasks a biobox can perform.
@@ -77,7 +77,6 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     interface_id = db.Column(db.Integer, db.ForeignKey('interface.id'), nullable=False)
-
 
 
 def refresh():

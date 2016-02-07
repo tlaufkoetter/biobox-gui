@@ -25,7 +25,6 @@ regular_task = {
 }
 
 regular_biobox = minimal_biobox.copy()
-
 regular_biobox['description'] = fields.String
 regular_biobox['image'] = fields.Nested(regular_image)
 regular_biobox['homepage'] = fields.String
@@ -93,8 +92,8 @@ class Interfaces(Resource):
         return models.Interface.query.all()
 
 
-api.add_resource(Biobox, '/bioboxgui/api/bioboxes/<int:biobox_id>')
 api.add_resource(Bioboxes, '/bioboxgui/api/bioboxes')
+api.add_resource(Biobox, '/bioboxgui/api/bioboxes/<int:biobox_id>')
 api.add_resource(BioboxesUpdate, '/bioboxgui/api/bioboxes/update')
-api.add_resource(Interface, '/bioboxgui/api/bioboxes/interfaces/<string:interface>')
 api.add_resource(Interfaces, '/bioboxgui/api/bioboxes/interfaces')
+api.add_resource(Interface, '/bioboxgui/api/bioboxes/interfaces/<string:interface>')
