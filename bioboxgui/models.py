@@ -16,6 +16,12 @@ association_table = db.Table('association', db.Model.metadata,
                              )
 
 
+class Interface(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True, nullable=False)
+    tasks = db.relationship('Task', backref='interface', lazy='dynamic')
+
+
 class Biobox(db.Model):
     """
     represents a standard biobox.
@@ -100,7 +106,7 @@ class Task(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    interface = db.Column(db.String, nullable=False)
+    interface_id = db.Column(db.Integer, db.ForeignKey('interface.id'), nullable=False)
 
     @property
     def json(self):
@@ -145,16 +151,23 @@ def refresh():
             tasks=[]
         )
         for tsk_yaml in bb_yaml[Biobox.KEY_TASKS]:
-            task = Task.query.filter(Task.name == tsk_yaml[Task.KEY_NAME]
-                                     and Task.interface == tsk_yaml[Task.KEY_INTERFACE]).first()
+            task = Task.query \
+                .join(Task, Interface.tasks) \
+                .filter(Task.name == tsk_yaml[Task.KEY_NAME]
+                        and Interface.name == tsk_yaml[Task.KEY_INTERFACE]) \
+                .first()
+            interface = Interface.query.filter(Interface.name == tsk_yaml[Task.KEY_INTERFACE]).first()
+            interface = interface if interface else Interface(name=tsk_yaml[Task.KEY_INTERFACE])
+            db.session.add(interface)
             task = task if task else Task(
                 name=tsk_yaml[Task.KEY_NAME],
-                interface=tsk_yaml[Task.KEY_INTERFACE]
+                interface=interface
             )
+            db.session.add(task)
             if not task in biobox.tasks:
                 biobox.tasks.append(task)
         db.session.add(biobox)
-        db.session.commit()
+    db.session.commit()
 
 
 def validate_images(yaml_dict):
@@ -169,6 +182,16 @@ def validate_images(yaml_dict):
         schema = json.loads(schema_string)
         for image in yaml_dict['images']:
             validate(image, schema)
+
+
+def get_bioboxes(interface):
+    return Biobox.query \
+        .join(association_table) \
+        .join(Task) \
+        .join(Interface) \
+        .filter(Interface.name == interface) \
+        .order_by(Biobox.title) \
+        .all()
 
 
 def fetch_images(url):
