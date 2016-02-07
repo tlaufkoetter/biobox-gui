@@ -16,6 +16,15 @@ association_table = db.Table('association', db.Model.metadata,
                              )
 
 
+class Interface(db.Model):
+    """
+    represents an interface a biobox or task can implement.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True, nullable=False)
+    tasks = db.relationship('Task', backref='interface', lazy='dynamic')
+
+
 class Biobox(db.Model):
     """
     represents a standard biobox.
@@ -38,24 +47,6 @@ class Biobox(db.Model):
     tasks = db.relationship('Task', secondary=association_table)
     image = db.relationship('Image', uselist=False, back_populates='biobox')
 
-    @property
-    def json(self):
-        """
-        creates a JSON representation of the object.
-
-
-        :return: dictionary of object data.
-        """
-        return {
-            self.KEY_ID: self.pmid,
-            self.KEY_TITLE: self.title,
-            self.KEY_HOME_PAGE: self.homepage,
-            self.KEY_MAILING_LIST: self.mailing_list,
-            self.KEY_DESCRIPTION: self.description,
-            self.KEY_IMAGE: self.image.json,
-            self.KEY_TASKS: [task.json for task in self.tasks]
-        }
-
 
 class Image(db.Model):
     """
@@ -74,21 +65,6 @@ class Image(db.Model):
     biobox_id = db.Column(db.Integer, db.ForeignKey("biobox.pmid"), nullable=False)
     biobox = db.relationship("Biobox", back_populates='image', uselist=False)
 
-    @property
-    def json(self):
-        """
-        creates a JSON representation of the object.
-
-        censors out the id that is used in the database.
-
-
-        :return: dict of the object.
-        """
-        return {
-            self.KEY_CONTAINER_URI: self.dockerhub,
-            self.KEY_REPO_URL: self.repo,
-            self.KEY_SRC_URL: self.source
-        }
 
 
 class Task(db.Model):
@@ -100,22 +76,8 @@ class Task(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    interface = db.Column(db.String, nullable=False)
+    interface_id = db.Column(db.Integer, db.ForeignKey('interface.id'), nullable=False)
 
-    @property
-    def json(self):
-        """
-        creates a JSON representtion of the object.
-
-        censors out the id that is used in the database.
-
-
-        :return: dict of the object.
-        """
-        return {
-            self.KEY_NAME: self.name,
-            self.KEY_INTERFACE: self.interface
-        }
 
 
 def refresh():
@@ -145,16 +107,23 @@ def refresh():
             tasks=[]
         )
         for tsk_yaml in bb_yaml[Biobox.KEY_TASKS]:
-            task = Task.query.filter(Task.name == tsk_yaml[Task.KEY_NAME]
-                                     and Task.interface == tsk_yaml[Task.KEY_INTERFACE]).first()
+            task = Task.query \
+                .join(Task, Interface.tasks) \
+                .filter(Task.name == tsk_yaml[Task.KEY_NAME]
+                        and Interface.name == tsk_yaml[Task.KEY_INTERFACE]) \
+                .first()
+            interface = Interface.query.filter(Interface.name == tsk_yaml[Task.KEY_INTERFACE]).first()
+            interface = interface if interface else Interface(name=tsk_yaml[Task.KEY_INTERFACE])
+            db.session.add(interface)
             task = task if task else Task(
                 name=tsk_yaml[Task.KEY_NAME],
-                interface=tsk_yaml[Task.KEY_INTERFACE]
+                interface=interface
             )
+            db.session.add(task)
             if not task in biobox.tasks:
                 biobox.tasks.append(task)
         db.session.add(biobox)
-        db.session.commit()
+    db.session.commit()
 
 
 def validate_images(yaml_dict):
@@ -169,6 +138,22 @@ def validate_images(yaml_dict):
         schema = json.loads(schema_string)
         for image in yaml_dict['images']:
             validate(image, schema)
+
+
+def get_bioboxes(interface):
+    """
+    queries bioboxes that have tasks, that implement a particular interface.
+
+    :param interface: the interface that needs to be implemented.
+    :return: a list of bioboxes that meet the aforementioned criteria.
+    """
+    return Biobox.query \
+        .join(association_table) \
+        .join(Task) \
+        .join(Interface) \
+        .filter(Interface.name == interface) \
+        .order_by(Biobox.title) \
+        .all()
 
 
 def fetch_images(url):

@@ -10,9 +10,14 @@
 
     BioboxController.prototype.getBioboxes = function () {
         var _this = this;
-        _this.bioboxService.getBioboxes().success(function (response) {
-            _this.bioboxes = response.images;
-        });
+        _this.bioboxService.getBioboxes().then(
+            function success(response) {
+                console.log(response);
+                _this.bioboxes = response.data;
+            },
+            function failure(response) {
+                _this.bioboxes = 'fail';
+            });
     };
 
     BioboxController.prototype.updateBioboxes = function () {
@@ -20,7 +25,7 @@
         _this.bioboxService.updateBioboxes()
             .then(
                 function success(response) {
-                    _this.bioboxes = response.images;
+                    _this.bioboxes = response.data;
                 },
                 function failure(response) {
                     _this.bioboxes = null;
@@ -35,7 +40,8 @@
         _this.bioboxService.getInterfaces()
             .then(
                 function success(response) {
-                    _this.interfaces = response.data.interfaces;
+                    console.log(response);
+                    _this.interfaces = response.data;
                 },
                 function failure(response) {
                     _this.interfaces = null;
@@ -48,7 +54,7 @@
             _this.bioboxService.getInterface(selectedInterface.name)
                 .then(
                     function success(response) {
-                        _this.bioboxes = response.data.images;
+                        _this.bioboxes = response.data;
                     },
                     function failure(response) {
                         _this.bioboxes = null;
