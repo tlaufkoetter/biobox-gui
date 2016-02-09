@@ -146,7 +146,7 @@ def get_bioboxes(interface):
     :param interface: the interface that needs to be implemented.
     :return: a list of bioboxes that meet the aforementioned criteria.
     """
-    return Biobox.query \
+    return db.session.query(Biobox, Interface) \
         .join(association_table) \
         .join(Task) \
         .join(Interface) \

@@ -13,7 +13,7 @@
         _this.bioboxService.getBioboxes().then(
             function success(response) {
                 console.log(response);
-                _this.bioboxes = response.data;
+                _this.bioboxes = response.data.bioboxes;
             },
             function failure(response) {
                 _this.bioboxes = 'fail';
@@ -25,10 +25,10 @@
         _this.bioboxService.updateBioboxes()
             .then(
                 function success(response) {
-                    _this.bioboxes = response.data;
+                    _this.bioboxes = response.data.bioboxes;
                 },
                 function failure(response) {
-                    _this.bioboxes = null;
+                    _this.bioboxes = 'fail';
                 }
             )
         ;
@@ -41,7 +41,7 @@
             .then(
                 function success(response) {
                     console.log(response);
-                    _this.interfaces = response.data;
+                    _this.interfaces = response.data.interfaces;
                 },
                 function failure(response) {
                     _this.interfaces = null;
@@ -54,7 +54,7 @@
             _this.bioboxService.getInterface(selectedInterface.name)
                 .then(
                     function success(response) {
-                        _this.bioboxes = response.data;
+                        _this.bioboxes = response.data.bioboxes;
                     },
                     function failure(response) {
                         _this.bioboxes = null;
@@ -71,7 +71,7 @@
                 .then(
                     function success(response) {
                         console.log(response);
-                        _this.biobox = response.data;
+                        _this.biobox = response.data.biobox;
                     },
                     function failure(response) {
                         console.log(response);

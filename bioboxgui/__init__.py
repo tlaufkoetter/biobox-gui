@@ -12,5 +12,6 @@ manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
 # imports here to avoid circular dependencies.
+from bioboxgui import resources
 from bioboxgui import api
 from bioboxgui import views, models
