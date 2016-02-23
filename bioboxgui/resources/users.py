@@ -11,7 +11,9 @@ regular_user = {
 
 class UserName(Resource):
     def get(username):
-        user = models.User.filter_by(models.User.username == username).first()
+        user = models.User.query.filter_by(
+            models.User.username == username
+        ).first()
         if not user:
             abort(404)
         return marshal(user, regular_user)
@@ -49,11 +51,6 @@ class UserCreate(Resource):
         password = user_request['password']
         email = user_request['email']
 
-        user = models.User.filter_by(
-            models.User.username == username or models.User.email == email
-        ).first()
-        if user:
-            abort(404)
         user = models.User(
             username=username,
             email=email,
@@ -61,6 +58,9 @@ class UserCreate(Resource):
         )
 
         db.session.add(user)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except:
+            abort(422)
 
-        return marshal(user, regular_user)
+        return marshal(user, regular_user), 201
