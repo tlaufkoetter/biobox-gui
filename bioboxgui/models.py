@@ -2,12 +2,17 @@ import json
 import os.path
 import requests
 import yaml
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import BadSignature, SignatureExpired
 from jsonschema import validate
-
+from passlib.apps import custom_app_context as pwd_context
 from bioboxgui import db
+from bioboxgui import app
 from config import basedir
 
-IMAGES_URL = 'https://raw.githubusercontent.com/pbelmann/data/feature/new-image-list/images.yml'
+IMAGES_URL =\
+        'https://raw.githubusercontent.com' + \
+        '/pbelmann/data/feature/new-image-list/images.yml'
 
 # linking bioboxes with tasks since 2016.
 association_table = db.Table(
@@ -15,6 +20,36 @@ association_table = db.Table(
     db.Column('biobox_id', db.Integer, db.ForeignKey('biobox.pmid')),
     db.Column('task_id', db.Integer, db.ForeignKey('task.id'))
 )
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String, unique=True, nullable=False)
+    email = db.Column(db.String, unique=True, nullable=False)
+    password_hash = db.Column(db.String, nullable=False)
+
+    def verify_password(self, password):
+        return pwd_context.verify(password, self.password_hash)
+
+    def generate_auth_token(self):
+        serializer = Serializer(app.config['SECRET_KEY'])
+        return serializer.dumps({'id': self.id})
+
+    @staticmethod
+    def hash_password(password):
+        return pwd_context.encrypt(password)
+
+    @staticmethod
+    def verify_auth_token(token):
+        serializer = Serializer(app.config['SECRET_KEY'])
+        try:
+            data = serializer.loads(token)
+        except SignatureExpired:
+            return None
+        except BadSignature:
+            return None
+        user = User.query.get(data['id'])
+        return user
 
 
 class Interface(db.Model):
@@ -63,7 +98,9 @@ class Image(db.Model):
     dockerhub = db.Column(db.String, unique=True, nullable=False)
     repo = db.Column(db.String, unique=True, nullable=False)
     source = db.Column(db.String)
-    biobox_id = db.Column(db.Integer, db.ForeignKey("biobox.pmid"), nullable=False)
+    biobox_id = db.Column(db.Integer,
+                          db.ForeignKey("biobox.pmid"),
+                          nullable=False)
     biobox = db.relationship("Biobox", back_populates='image', uselist=False)
 
 
@@ -76,12 +113,15 @@ class Task(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    interface_id = db.Column(db.Integer, db.ForeignKey('interface.id'), nullable=False)
+    interface_id = db.Column(db.Integer,
+                             db.ForeignKey('interface.id'),
+                             nullable=False)
 
 
 def refresh():
     """
-    fetches the currently available bioboxes and updates the dataase if necessary.
+    fetches the currently available bioboxes
+    and updates the dataase if necessary.
 
     :return:  all the bioboxes.
     """
@@ -89,7 +129,8 @@ def refresh():
     validate_images(yaml_dict)
     for bb_yaml in yaml_dict['images']:
         img_yaml = bb_yaml[Biobox.KEY_IMAGE]
-        image = Image.query.filter(Image.dockerhub == img_yaml[Image.KEY_CONTAINER_URI]).first()
+        image = Image.query.filter(
+            Image.dockerhub == img_yaml[Image.KEY_CONTAINER_URI]).first()
         image = image if image else Image(
             dockerhub=img_yaml[Image.KEY_CONTAINER_URI],
             repo=img_yaml.get(Image.KEY_REPO_URL),
@@ -108,18 +149,20 @@ def refresh():
         for tsk_yaml in bb_yaml[Biobox.KEY_TASKS]:
             task = Task.query \
                 .join(Task, Interface.tasks) \
-                .filter(Task.name == tsk_yaml[Task.KEY_NAME]
-                        and Interface.name == tsk_yaml[Task.KEY_INTERFACE]) \
+                .filter(Task.name == tsk_yaml[Task.KEY_NAME] and
+                        Interface.name == tsk_yaml[Task.KEY_INTERFACE]) \
                 .first()
-            interface = Interface.query.filter(Interface.name == tsk_yaml[Task.KEY_INTERFACE]).first()
-            interface = interface if interface else Interface(name=tsk_yaml[Task.KEY_INTERFACE])
+            interface = Interface.query.filter(
+                Interface.name == tsk_yaml[Task.KEY_INTERFACE]).first()
+            interface = interface if interface\
+                else Interface(name=tsk_yaml[Task.KEY_INTERFACE])
             db.session.add(interface)
             task = task if task else Task(
                 name=tsk_yaml[Task.KEY_NAME],
                 interface=interface
             )
             db.session.add(task)
-            if not task in biobox.tasks:
+            if task not in biobox.tasks:
                 biobox.tasks.append(task)
         db.session.add(biobox)
     db.session.commit()
@@ -132,7 +175,9 @@ def validate_images(yaml_dict):
     :param yaml_dict: a read yaml file as dictionary.
     :return:  None
     """
-    with open(os.path.join(basedir, 'bioboxgui/static/image_schema.json'), 'r') as schema_file:
+    with open(os.path.join(
+            basedir, 'bioboxgui/static/image_schema.json'),
+            'r') as schema_file:
         schema_string = schema_file.read()
         schema = json.loads(schema_string)
         for image in yaml_dict['images']:
@@ -146,7 +191,7 @@ def get_bioboxes(interface):
     :param interface: the interface that needs to be implemented.
     :return: a list of bioboxes that meet the aforementioned criteria.
     """
-    return db.session.query(Biobox, Interface) \
+    return db.session.query(Biobox) \
         .join(association_table) \
         .join(Task) \
         .join(Interface) \

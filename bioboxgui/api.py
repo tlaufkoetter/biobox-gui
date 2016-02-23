@@ -1,13 +1,29 @@
 from flask_restful import Api
-
-from bioboxgui import app
-from bioboxgui.resources import bioboxes, interfaces
+from flask_httpauth import HTTPBasicAuth
+from bioboxgui import app, models
+from bioboxgui.resources import bioboxes, interfaces, users
 
 api = Api(app)
+auth = HTTPBasicAuth()
 
-api.add_resource(bioboxes.BioboxesAll, '/bioboxgui/api/bioboxes')
-api.add_resource(bioboxes.BioboxId, '/bioboxgui/api/bioboxes/<int:biobox_id>')
-api.add_resource(bioboxes.BioboxName, '/bioboxgui/api/bioboxes/<string:biobox_name>')
-api.add_resource(bioboxes.BioboxesUpdate, '/bioboxgui/api/bioboxes/update')
-api.add_resource(interfaces.Interfaces, '/bioboxgui/api/interfaces')
-api.add_resource(interfaces.Interface, '/bioboxgui/api/interfaces/<string:interface>')
+
+@auth.verify_password
+def verify_password(username, password):
+    user = models.User.query.filter_by(
+        models.User.username == username).first()
+    if not user or not user.verify_password(password):
+        return False
+    return True
+
+api.add_resource(bioboxes.BioboxesAll,
+                 '/bioboxgui/api/bioboxes')
+api.add_resource(bioboxes.BioboxId,
+                 '/bioboxgui/api/bioboxes/<int:biobox_id>')
+api.add_resource(bioboxes.BioboxName,
+                 '/bioboxgui/api/bioboxes/<string:biobox_name>')
+api.add_resource(interfaces.Interfaces,
+                 '/bioboxgui/api/interfaces')
+api.add_resource(users.UserName,
+                 '/bioboxgui/api/users/<string:username>')
+api.add_resource(users.UserCreate,
+                 '/bioboxgui/api/users')

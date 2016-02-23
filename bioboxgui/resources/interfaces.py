@@ -1,7 +1,10 @@
-from flask_restful import marshal, Resource
-
+from flask_restful import marshal, Resource, fields
+from flask import abort
 from bioboxgui import models
-from bioboxgui.resources import regular_interface, minimal_biobox
+
+regular_interface = {
+    'name': fields.String
+}
 
 
 class Interface(Resource):
@@ -13,10 +16,9 @@ class Interface(Resource):
         :return: a json formatted interface.
         """
         result = models.get_bioboxes(interface)
-        return {
-            'interface': marshal(result[0][1], regular_interface) if result else None,
-            'bioboxes': marshal([box for box, interface in result], minimal_biobox) if result else []
-        }
+        if not result:
+            abort(404)
+        return marshal(result, regular_interface)
 
 
 class Interfaces(Resource):
@@ -26,6 +28,7 @@ class Interfaces(Resource):
 
         :return: json formatted list of interfaces.
         """
-        return {
-            'interfaces': marshal(models.Interface.query.all(), regular_interface)
-        }
+        result = models.Interface.query.all()
+        if not result:
+            abort(404)
+        return marshal(result, regular_interface)
