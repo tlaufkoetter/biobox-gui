@@ -10,13 +10,23 @@ regular_user = {
 
 
 class UserName(Resource):
-    def get(username):
+    def get(self, username):
         user = models.User.query.filter_by(
-            models.User.username == username
+            username=username
         ).first()
         if not user:
             abort(404)
         return marshal(user, regular_user)
+
+    def delete(self, username):
+        user = models.User.query.filter_by(
+            username=username
+        ).first()
+        if not user:
+            abort(404)
+        db.session.delete(user)
+        db.session.commit()
+        return None, 204
 
 
 class UserCreate(Resource):
@@ -44,6 +54,10 @@ class UserCreate(Resource):
             location='json'
         )
         super(UserCreate, self).__init__()
+
+    def get(self):
+        users = models.User.query.all()
+        return marshal(users, regular_user)
 
     def post(self):
         user_request = self.reqparse.parse_args()

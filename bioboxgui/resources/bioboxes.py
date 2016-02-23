@@ -85,7 +85,7 @@ class BioboxName(Resource):
         :return: a json formatted biobox.
         """
         result = models.Biobox.query.filter(
-            models.Biobox.title == biobox_name
+            title=biobox_name
         ).first()
         if not result:
             abort(404)
