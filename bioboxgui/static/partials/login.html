@@ -1,14 +1,14 @@
 <div class="col-md-6 col-md-offset-3">
     <h2>Login</h2>
     <form name="loginForm" ng-submit="login.login()" role="form">
-        <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
-            <label for="username">Username</label>
-            <input type="text" name="Username" id="username" class="form-control" ng-model="login.username" required/>
-            <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
+        <div class="form-group" ng-class="{ 'has-error': form.email.$dirty && form.email.$error.required }">
+            <label for="email">E-Mail</label>
+            <input type="text" name="E-Mail" id="email" class="form-control" ng-model="login.user.email" required/>
+            <span ng-show="form.email.$dirty && form.email.$error.required" class="help-block">E-Mail is required</span>
         </div>
         <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
             <label for="password">Password</label>
-            <input type="password" name="password" id="password" class="form-control" ng-model="login.password"
+            <input type="password" name="password" id="password" class="form-control" ng-model="login.user.password"
                    required/>
             <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
         </div>

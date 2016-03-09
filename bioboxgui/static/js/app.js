@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('BioboxGui', ['ngRoute']).config(function ($routeProvider, $locationProvider) {
+angular.module('BioboxGui', ['ngRoute']).config(function ($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider.when('/bioboxgui', {
             templateUrl: '/static/partials/home.html',
             name: "Home"

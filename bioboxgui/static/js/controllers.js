@@ -8,8 +8,10 @@ var app = angular.module('BioboxGui'),
         this.getInterfaces();
     },
 
-    LoginController = function () {
-
+    LoginController = function (UserService, $http) {
+        this.userService = UserService;
+        this.$http = $http;
+        this.user = {};
     },
 
     RegisterController = function (UserService, $location) {
@@ -94,8 +96,8 @@ BioboxController.prototype.selectBiobox = function (selectedBiobox) {
 
 RegisterController.prototype.createUser = function () {
     var _this = this;
-    if (this.user !== {}) {
-        _this.userService.createUser(this.user)
+    if (_this.user !== {}) {
+        _this.userService.createUser(_this.user)
             .then(
                 function success(response) {
                     _this.$location.path('/bioboxgui/login');
@@ -104,6 +106,23 @@ RegisterController.prototype.createUser = function () {
                 function failure(response) {
                 }
             );
+    }
+};
+
+LoginController.prototype.login = function () {
+    var _this = this;
+    if (_this.user !== {}) {
+        _this.userService.login(_this.user)
+            .then(
+                function success(response) {
+                    if (response.data.response) {
+                        _this.$http.defaults.headers.common['Authentication-Token'] = response.data.response.user.authentication_token;
+                    }
+                },
+                function failure(response) {
+                    console.log('what now');
+                }
+            )
     }
 };
 

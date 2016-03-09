@@ -51,6 +51,9 @@ UserService.prototype.createUser = function (user_info) {
     return this.$http.post('/bioboxgui/api/users', user_info);
 };
 
+UserService.prototype.login = function (user) {
+    return this.$http.post('/bioboxgui/api/token', user);
+};
 
 BioboxService.$inject = ['$http', '$location'];
 UserService.$inject = ['$http'];
