@@ -14,9 +14,19 @@ angular.module('BioboxGui', ['ngRoute']).config(function ($routeProvider, $locat
         .when('/bioboxgui/about', {
             templateUrl: '/static/partials/about.html'
         })
-        .otherwise({
-            redirectTo: '/bioboxgui'
+        .when('/bioboxgui/login', {
+            templateUrl: '/static/partials/login.html',
+            controller: LoginController,
+            controllerAs: "login"
+        })
+        .when('/bioboxgui/register', {
+            templateUrl: '/static/partials/register.html',
+            controller: RegisterController,
+            controllerAs: "register"
         });
+    //.otherwise({
+    //    redirectTo: '/bioboxgui'
+    //});
     //$locationProvider.html5Mode(true);
 }).run(function ($rootScope, $location, $route) {
     $rootScope.$location = $location;

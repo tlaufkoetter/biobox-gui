@@ -6,6 +6,16 @@ var app = angular.module('BioboxGui'),
         this.bioboxService = BioboxService;
         this.biobox = null;
         this.getInterfaces();
+    },
+
+    LoginController = function () {
+
+    },
+
+    RegisterController = function (UserService, $location) {
+        this.userService = UserService;
+        this.$location = $location;
+        this.user = {};
     };
 
 
@@ -82,6 +92,23 @@ BioboxController.prototype.selectBiobox = function (selectedBiobox) {
     }
 };
 
+RegisterController.prototype.createUser = function () {
+    var _this = this;
+    if (this.user !== {}) {
+        _this.userService.createUser(this.user)
+            .then(
+                function success(response) {
+                    _this.$location.path('/bioboxgui/login');
+                },
+
+                function failure(response) {
+                }
+            );
+    }
+};
+
 app.controller('BioboxController', BioboxController);
+app.controller('LoginController', LoginController);
+app.controller('RegisterController', RegisterController);
 
 

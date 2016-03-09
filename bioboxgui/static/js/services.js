@@ -5,6 +5,10 @@ var app = angular.module('BioboxGui'),
         this.$http = $http;
     },
 
+    UserService = function ($http) {
+        this.$http = $http;
+    },
+
     RouteNavigation = function ($route, $location) {
         var routes = [];
         angular.forEach($route.routes, function (route, path) {
@@ -43,9 +47,15 @@ BioboxService.prototype.getInterface = function (selectedInterface) {
     return this.$http.get('/bioboxgui/api/bioboxes?interface=' + selectedInterface);
 };
 
+UserService.prototype.createUser = function (user_info) {
+    return this.$http.post('/bioboxgui/api/users', user_info);
+};
 
-BioboxService.$inject = ['$http'];
+
+BioboxService.$inject = ['$http', '$location'];
+UserService.$inject = ['$http'];
 RouteNavigation.$inject = ['$route', '$location'];
 
 app.factory('routeNavigation', RouteNavigation);
 app.service('BioboxService', BioboxService);
+app.service('UserService', UserService);

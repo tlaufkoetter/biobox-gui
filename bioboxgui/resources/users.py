@@ -1,8 +1,8 @@
-from flask_restful import Resource, marshal, reqparse
-from bioboxgui import models, db, user_datastore
 from flask import abort
+from flask_restful import Resource, marshal, reqparse
 from flask_restful import fields
-from flask_security.decorators import auth_token_required, roles_accepted
+
+from bioboxgui import models, db, user_datastore
 
 regular_role = {
     'name': fields.String,
@@ -39,10 +39,10 @@ class UserName(Resource):
 
 
 class UserCreate(Resource):
-    decorators = [
-        auth_token_required,
-        roles_accepted('admin')
-    ]
+    # decorators = [
+    #     auth_token_required,
+    #     roles_accepted('admin')
+    # ]
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
@@ -79,7 +79,7 @@ class UserCreate(Resource):
         password = user_request['password']
         email = user_request['email']
         try:
-            user_datastore.create_user(username=username, password=password, email=email)
+            user = user_datastore.create_user(username=username, password=password, email=email)
             db.session.commit()
         except:
             abort(422)
