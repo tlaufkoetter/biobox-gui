@@ -2,12 +2,9 @@ import json
 import os.path
 import requests
 import yaml
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from itsdangerous import BadSignature, SignatureExpired
+from flask_security import UserMixin, RoleMixin
 from jsonschema import validate
-from passlib.apps import custom_app_context as pwd_context
 from bioboxgui import db
-from bioboxgui import app
 from config import basedir
 
 IMAGES_URL =\
@@ -21,35 +18,30 @@ association_table = db.Table(
     db.Column('task_id', db.Integer, db.ForeignKey('task.id'))
 )
 
+roles_users = db.Table(
+    'roles_users',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('role_id', db.Integer, db.ForeignKey('role.id'))
+)
 
-class User(db.Model):
+
+class Role(db.Model, RoleMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True, nullable=False)
+    description = db.Column(db.String)
+
+
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
-    password_hash = db.Column(db.String, nullable=False)
-
-    def verify_password(self, password):
-        return pwd_context.verify(password, self.password_hash)
-
-    def generate_auth_token(self):
-        serializer = Serializer(app.config['SECRET_KEY'])
-        return serializer.dumps({'id': self.id})
-
-    @staticmethod
-    def hash_password(password):
-        return pwd_context.encrypt(password)
-
-    @staticmethod
-    def verify_auth_token(token):
-        serializer = Serializer(app.config['SECRET_KEY'])
-        try:
-            data = serializer.loads(token)
-        except SignatureExpired:
-            return None
-        except BadSignature:
-            return None
-        user = User.query.get(data['id'])
-        return user
+    password = db.Column(db.String, nullable=False)
+    active = db.Column(db.Boolean())
+    confirmed_at = db.Column(db.DateTime())
+    roles = db.relationship(
+        'Role', secondary=roles_users,
+        backref=db.backref('users', lazy='dynamic')
+    )
 
 
 class Interface(db.Model):

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" ng-app="BioboxGui">
+<head>
+    <meta charset="utf-8">
+    <link data-require="bootstrap-css@3.1.1" data-semver="3.1.1" rel="stylesheet"
+          href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/static/css/style.css"/>
+    <script data-require="angular.js@*" data-semver="1.2.29" src="http://code.angularjs.org/1.2.29/angular.js"></script>
+    <script data-require="angular-resource@*" data-semver="1.2.13"
+            src="http://code.angularjs.org/1.2.13/angular-resource.js"></script>
+    <script src="https://code.angularjs.org/1.2.25/angular-route.js"></script>
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/controllers.js"></script>
+    <script src="/static/js/directives.js"></script>
+    <script src="/static/js/services.js"></script>
+
+    <title>Biobox GUI</title>
+</head>
+<body>
+<div class="container page">
+    <navigation></navigation>
+    <div id="content" class="container main" ng-view="">
+    </div>
+
+    <hr>
+    <footer id="footer" class="footer">
+        <div class="footer-left">
+            <a href="#/bioboxgui/about">About</a> |
+            <a href="#/bioboxgui">Home</a>
+        </div>
+        <div class="footer-right">
+            <span>&copy; 2016 Biobox GUI</span>
+        </div>
+    </footer>
+</div>
+</body>
+</html>

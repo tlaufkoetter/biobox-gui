@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, make_response
 
 from bioboxgui import app
 
@@ -12,7 +12,7 @@ def home():
 
     :return: redirection to '/bioboxgui'.
     """
-    return redirect(url_for('index'))
+    return make_response(open('bioboxgui/static/index.html').read())
 
 
 @app.route('/bioboxgui')
@@ -24,4 +24,4 @@ def index():
 
     :return: the template for the main page.
     """
-    return render_template('index.html')
+    return make_response(open('bioboxgui/static/index.html').read())

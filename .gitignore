@@ -193,3 +193,8 @@ $RECYCLE.BIN/
 venv/
 db_repository/
 *.db
+### Bower ###
+bioboxgui/static/libs/
+.bower-cache
+.bower-registry
+.bower-tmp

@@ -1,16 +1,18 @@
 from flask_restful import Api
 from flask_httpauth import HTTPBasicAuth
 from bioboxgui import app, models
-from bioboxgui.resources import bioboxes, interfaces, users
 
 api = Api(app)
 auth = HTTPBasicAuth()
+
+from bioboxgui.resources import bioboxes, interfaces, users
 
 
 @auth.verify_password
 def verify_password(username, password):
     user = models.User.query.filter_by(
-        models.User.username == username).first()
+        username=username
+    ).first()
     if not user or not user.verify_password(password):
         return False
     return True
