@@ -8,6 +8,8 @@ angular.module('BioboxGui', ['ngRoute']).config(function ($routeProvider, $locat
         .when('/bioboxgui/bioboxes', {
             templateUrl: '/static/partials/biobox-list.html',
             name: "Bioboxes",
+            controller: BioboxController,
+            controllerAs: "main"
         })
         .when('/bioboxgui/about', {
             templateUrl: '/static/partials/about.html'
