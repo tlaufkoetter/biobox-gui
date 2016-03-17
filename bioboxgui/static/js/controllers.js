@@ -8,10 +8,12 @@ var app = angular.module('BioboxGui'),
         this.getInterfaces();
     },
 
-    LoginController = function (UserService, $http) {
+    LoginController = function (UserService, $http, $window) {
         this.userService = UserService;
         this.$http = $http;
+        this.$window = $window;
         this.user = {};
+
     },
 
     RegisterController = function (UserService, $location) {
@@ -118,6 +120,7 @@ LoginController.prototype.login = function () {
                     if (response.data.response) {
                         _this.$http.defaults.headers.common['Authentication-Token'] = response.data.response.user.authentication_token;
                     }
+                    _this.$window.location.href = '#/bioboxgui';
                 },
                 function failure(response) {
                     console.log('what now');

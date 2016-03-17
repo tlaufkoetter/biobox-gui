@@ -1,7 +1,11 @@
 'use strict';
 
-angular.module('BioboxGui', ['ngRoute']).config(function ($routeProvider, $locationProvider, $httpProvider) {
-    $routeProvider.when('/bioboxgui', {
+angular.module('BioboxGui', ['ngRoute']).config(function ($routeProvider, $locationProvider, $httpProvider, $windowProvider) {
+    $routeProvider
+        .when('/', {
+            redirectTo: '/bioboxgui'
+        })
+        .when('/bioboxgui', {
             templateUrl: '/static/partials/home.html',
             name: "Home"
         })
@@ -9,7 +13,12 @@ angular.module('BioboxGui', ['ngRoute']).config(function ($routeProvider, $locat
             templateUrl: '/static/partials/biobox-list.html',
             name: "Bioboxes",
             controller: BioboxController,
-            controllerAs: "main"
+            controllerAs: "main",
+            resolve: {
+                authorize: function ($http) {
+                    return $http.get('/bioboxgui/api/bioboxes');
+                }
+            }
         })
         .when('/bioboxgui/about', {
             templateUrl: '/static/partials/about.html'
@@ -24,11 +33,8 @@ angular.module('BioboxGui', ['ngRoute']).config(function ($routeProvider, $locat
             controller: RegisterController,
             controllerAs: "register"
         });
-    //.otherwise({
-    //    redirectTo: '/bioboxgui'
-    //});
-    //$locationProvider.html5Mode(true);
-}).run(function ($rootScope, $location, $route) {
+    $httpProvider.interceptors.push('responseInterceptor');
+}).run(function ($http, $q, $rootScope, $location, $route) {
     $rootScope.$location = $location;
     $rootScope.$route = $route;
     $rootScope.keys = Object.keys;

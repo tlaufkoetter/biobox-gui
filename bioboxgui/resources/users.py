@@ -1,6 +1,6 @@
 from flask import abort
-from flask_restful import Resource, marshal, reqparse
-from flask_restful import fields
+from flask_restful import Resource, marshal, reqparse, fields
+from flask_security import auth_token_required
 
 from bioboxgui import models, db, user_datastore
 
@@ -19,6 +19,8 @@ regular_user = {
 
 
 class UserName(Resource):
+    decorators = [auth_token_required]
+
     def get(self, username):
         user = models.User.query.filter_by(
             username=username
