@@ -25,7 +25,7 @@ api.add_resource(bioboxes.BioboxName,
                  '/bioboxgui/api/bioboxes/<string:biobox_name>')
 api.add_resource(interfaces.Interfaces,
                  '/bioboxgui/api/interfaces')
-api.add_resource(users.UserName,
-                 '/bioboxgui/api/users/<string:username>')
-api.add_resource(users.UserCreate,
-                 '/bioboxgui/api/users')
+# api.add_resource(users.UserName,
+#                  '/bioboxgui/api/users/<string:username>')
+# api.add_resource(users.UserCreate,
+#                  '/bioboxgui/api/users')

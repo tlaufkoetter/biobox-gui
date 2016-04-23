@@ -13,26 +13,27 @@ angular.module('BioboxGui', ['ngRoute']).config(function ($routeProvider, $locat
             templateUrl: '/static/partials/biobox-list.html',
             name: "Bioboxes",
             controller: BioboxController,
-            controllerAs: "main",
-            resolve: {
-                authorize: function ($http) {
-                    return $http.get('/bioboxgui/api/bioboxes');
-                }
-            }
+            controllerAs: "main"
+            // resolve: {
+            //     authorize: function ($http) {
+            //         return $http.get('/bioboxgui/api/bioboxes');
+            //     }
+            // }
         })
         .when('/bioboxgui/about', {
             templateUrl: '/static/partials/about.html'
         })
-        .when('/bioboxgui/login', {
-            templateUrl: '/static/partials/login.html',
-            controller: LoginController,
-            controllerAs: "login"
-        })
-        .when('/bioboxgui/register', {
-            templateUrl: '/static/partials/register.html',
-            controller: RegisterController,
-            controllerAs: "register"
-        });
+        // .when('/bioboxgui/login', {
+        //     templateUrl: '/static/partials/login.html',
+        //     controller: LoginController,
+        //     controllerAs: "login"
+        // })
+        // .when('/bioboxgui/register', {
+        //     templateUrl: '/static/partials/register.html',
+        //     controller: RegisterController,
+        //     controllerAs: "register"
+        // })
+    ;
     $httpProvider.interceptors.push('responseInterceptor');
 }).run(function ($http, $q, $rootScope, $location, $route) {
     $rootScope.$location = $location;
