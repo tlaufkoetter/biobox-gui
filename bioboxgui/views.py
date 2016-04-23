@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, make_response
+from flask import make_response
 
 from bioboxgui import app
 

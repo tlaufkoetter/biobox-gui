@@ -19,7 +19,7 @@ regular_user = {
 
 
 class UserName(Resource):
-    decorators = [auth_token_required]
+    # decorators = [auth_token_required]
 
     def get(self, username):
         user = models.User.query.filter_by(
