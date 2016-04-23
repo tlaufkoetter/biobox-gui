@@ -19,8 +19,7 @@ Shows your the available bioboxes and interfaces at /bioboxgui. Provides a REST 
 > python3 -m venv venv     #setting up a virtual environment to avoid possible conflicts.
 > source venv/bin/activate #switch to virtual environment
 > pip install -r requirements.txt
-> ./db_handler.py db upgrade # repeat  when the
-> ./db_handler.py db migrate # database changes
+> mkdir db data
 > ./run.py
 ```
 * visit ``http://localhost:5000/bioboxgui`` in your favourite webbrowser.
