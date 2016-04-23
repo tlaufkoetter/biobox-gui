@@ -16,7 +16,7 @@ Shows you the available bioboxes and interfaces at /bioboxgui. Provides a REST A
     -v ~/.biobox/data/output:/opt/application/data/output \
     -v ~/.biobox/db:/opt/application/db \
     --name data-biobox \
-    busybox echo Data Created!
+    busybox echo "Data Created!"
 > docker run -d --volumes-from data-biobox tlaufkoetter/biobox-gui:latest
 ```
 ### Standalone
