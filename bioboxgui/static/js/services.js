@@ -9,6 +9,10 @@ var app = angular.module('BioboxGui'),
         this.$http = $http;
     },
 
+    TaskService = function ($http) {
+        this.$http = $http;
+    },
+
     RouteNavigation = function ($route, $location) {
         var routes = [];
         angular.forEach($route.routes, function (route, path) {
@@ -55,6 +59,18 @@ UserService.prototype.login = function (user) {
     return this.$http.post('/bioboxgui/api/token', user);
 };
 
+TaskService.prototype.submitTask = function (user, container, cmd) {
+    var task = {};
+    task.user = user;
+    task.container = container;
+    task.cmd = cmd;
+    return this.$http.post('/bioboxgui/api/tasks', task);
+};
+
+TaskService.prototype.queryStates = function () {
+    return this.$http.get('/bioboxgui/api/tasks');
+};
+
 BioboxService.$inject = ['$http', '$location'];
 UserService.$inject = ['$http'];
 RouteNavigation.$inject = ['$route', '$location'];
@@ -62,3 +78,4 @@ RouteNavigation.$inject = ['$route', '$location'];
 app.factory('routeNavigation', RouteNavigation);
 app.service('BioboxService', BioboxService);
 app.service('UserService', UserService);
+app.service('TaskService', TaskService);
