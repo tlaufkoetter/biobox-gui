@@ -59,11 +59,12 @@ UserService.prototype.login = function (user) {
     return this.$http.post('/bioboxgui/api/token', user);
 };
 
-TaskService.prototype.submitTask = function (user, container, cmd) {
+TaskService.prototype.submitTask = function (user, container, cmd, file) {
     var task = {};
     task.user = user;
     task.container = container;
     task.cmd = cmd;
+    task.file = file;
     return this.$http.post('/bioboxgui/api/tasks', task);
 };
 

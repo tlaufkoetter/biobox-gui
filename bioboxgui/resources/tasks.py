@@ -30,17 +30,27 @@ class TasksAll(Resource):
         self.reqparse.add_argument(
             'cmd', type=str, required=True, location='json'
         )
+        self.reqparse.add_argument(
+            'file', type=str, required=True, location='json'
+        )
 
     def post(self):
         '''
         creates a new task.
         :return: string of the task id
         '''
-        try:
-            s = self.reqparse.parse_args()
-        except:
-            abort(400)
-        response = requests.post(JOB_PROXY_IP + '/submit', json=s)
+        s = self.reqparse.parse_args(strict=True)
+        args = {
+            'user': s['user'],
+            'container': {
+                'image': s['container'],
+                'cmd': s['cmd']
+            },
+            'cores': 1,
+            'memory': 128,
+            'cputime': 10
+        }
+        response = requests.post(JOB_PROXY_IP + '/submit', json=args)
         if response.status_code == 200 and response.content:
             return marshal({'id': response.content.decode('utf-8')}, simple_task), 201
         else:
