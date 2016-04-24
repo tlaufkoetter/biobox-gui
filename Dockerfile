@@ -12,6 +12,7 @@ COPY run.py $PROJECT_ROOT/run.py
 COPY config.py $PROJECT_ROOT/config.py
 COPY bioboxgui $PROJECT_ROOT/bioboxgui
 
+RUN mkdir $PROJECT_ROOT/db
 RUN pip install -r $PROJECT_ROOT/requirements.txt
 
 EXPOSE 5000
