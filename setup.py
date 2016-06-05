@@ -21,7 +21,5 @@ setup(
         license="Apache 2.0 License",
         long_desctiption=readme,
         install_requires=requirements,
-        scripts=[
-            'bin/run.py'
-        ]
+    scripts=[]
 )
