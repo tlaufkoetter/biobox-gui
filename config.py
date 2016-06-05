@@ -26,6 +26,7 @@ FOLDERS = {
     'output': os.path.join(basedir, 'data', 'output')
 }
 HOST_BASE = os.path.join(hostbase, 'data')
+TESTING = False
 
 for name, folder in FOLDERS.items():
     os.makedirs(folder, exist_ok=True)
