@@ -11,15 +11,15 @@ with open('requirements.txt', 'r') as requirements:
     requirements = requirements.read().splitlines()
 
 setup(
-    name="bioboxgui",
-    version="0.0.1dev",
-    packages=[
-        'bioboxgui'
-    ],
-    author='Tobias Laufkötter',
-    url='https://github.com/tlaufkoetter/biobox-gui',
-    license="Apache 2.0 License",
-    long_desctiption=readme,
-    install_requires=requirements,
+        name="bioboxgui",
+        version="0.0.1dev",
+        packages=[
+            'bioboxgui'
+        ],
+        author='Tobias Laufkötter',
+        url='https://github.com/tlaufkoetter/biobox-gui',
+        license="Apache 2.0 License",
+        long_desctiption=readme,
+        install_requires=requirements,
     scripts=[]
 )
