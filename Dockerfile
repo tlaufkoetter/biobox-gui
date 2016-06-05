@@ -17,4 +17,4 @@ RUN pip install -r $PROJECT_ROOT/requirements.txt
 
 EXPOSE 5000
 
-ENTRYPOINT cd $PROJECT_ROOT && python3 run.py
+ENTRYPOINT cd $PROJECT_ROOT && python3 run.py --docker

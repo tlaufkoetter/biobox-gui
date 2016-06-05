@@ -10,9 +10,13 @@ regular_image = {
     'source': fields.String
 }
 
+helper_interface = {
+    'name': fields.String
+}
+
 regular_task = {
     'name': fields.String,
-    'interface': fields.String
+    'interface': fields.Nested(helper_interface)
 }
 
 regular_biobox = {
