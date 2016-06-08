@@ -1,5 +1,11 @@
 # Biobox Gui
 
+| branch  | build status |
+| ------------- | ------------- |
+| master  | [![Build Status](https://travis-ci.org/tlaufkoetter/biobox-gui.svg?branch=master)](https://travis-ci.org/tlaufkoetter/biobox-gui)  |
+| develop  | [![Build Status](https://travis-ci.org/tlaufkoetter/biobox-gui.svg?branch=develop)](https://travis-ci.org/tlaufkoetter/biobox-gui)  |
+
+
 A web application for running biobox containers.
 
 ## What it does
