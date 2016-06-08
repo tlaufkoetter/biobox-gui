@@ -72,6 +72,7 @@ class BioboxesTest(MyTest):
         assert data['tasks'][1]['name'] == 'careful'
         assert data['tasks'][1]['interface']['name'] == 'assembler'
         result = self.client.get('/bioboxgui/api/bioboxes')
+        assert data == yaml.load(result.data.decode())[0]
 
 
 if __name__ == '__main__':
