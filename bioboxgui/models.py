@@ -1,15 +1,16 @@
 import json
 import os.path
+
 import requests
 import yaml
-from flask_security import UserMixin, RoleMixin
-from jsonschema import validate
 from bioboxgui import db
 from config import basedir
+from flask_security import UserMixin, RoleMixin
+from jsonschema import validate
 
-IMAGES_URL =\
-        'https://raw.githubusercontent.com' + \
-        '/pbelmann/data/feature/new-image-list/images.yml'
+IMAGES_URL = \
+    'https://raw.githubusercontent.com' + \
+    '/pbelmann/data/feature/new-image-list/images.yml'
 
 # linking bioboxes with tasks since 2016.
 association_table = db.Table(
@@ -110,6 +111,15 @@ class Task(db.Model):
                              nullable=False)
 
 
+class Source(db.Model):
+    """
+    represents a source from where bioboxes are loaded.
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String, unique=True, nullable=False)
+    name = db.Column(db.String, unique=True, nullable=True)
+
+
 def refresh():
     """
     fetches the currently available bioboxes
@@ -117,46 +127,49 @@ def refresh():
 
     :return:  all the bioboxes.
     """
-    yaml_dict = fetch_images(IMAGES_URL)
-    validate_images(yaml_dict)
-    for bb_yaml in yaml_dict['images']:
-        img_yaml = bb_yaml[Biobox.KEY_IMAGE]
-        image = Image.query.filter(
-            Image.dockerhub == img_yaml[Image.KEY_CONTAINER_URI]).first()
-        image = image if image else Image(
-            dockerhub=img_yaml[Image.KEY_CONTAINER_URI],
-            repo=img_yaml.get(Image.KEY_REPO_URL),
-            source=img_yaml.get(Image.KEY_SRC_URL)
-        )
-        biobox = Biobox.query.get(bb_yaml[Biobox.KEY_ID])
-        biobox = biobox if biobox else Biobox(
-            title=bb_yaml.get(Biobox.KEY_TITLE),
-            pmid=bb_yaml.get(Biobox.KEY_ID),
-            homepage=bb_yaml.get(Biobox.KEY_HOME_PAGE),
-            mailing_list=bb_yaml.get(Biobox.KEY_MAILING_LIST),
-            description=bb_yaml.get(Biobox.KEY_DESCRIPTION),
-            image=image,
-            tasks=[]
-        )
-        for tsk_yaml in bb_yaml[Biobox.KEY_TASKS]:
-            task = Task.query \
-                .join(Task, Interface.tasks) \
-                .filter(Task.name == tsk_yaml[Task.KEY_NAME] and
-                        Interface.name == tsk_yaml[Task.KEY_INTERFACE]) \
-                .first()
-            interface = Interface.query.filter(
-                Interface.name == tsk_yaml[Task.KEY_INTERFACE]).first()
-            interface = interface if interface\
-                else Interface(name=tsk_yaml[Task.KEY_INTERFACE])
-            db.session.add(interface)
-            task = task if task else Task(
-                name=tsk_yaml[Task.KEY_NAME],
-                interface=interface
+    sources = Source.query.all()
+    for source in sources:
+        url = source.url
+        yaml_dict = fetch_images(url)
+        validate_images(yaml_dict)
+        for bb_yaml in yaml_dict['images']:
+            img_yaml = bb_yaml[Biobox.KEY_IMAGE]
+            image = Image.query.filter(
+                Image.dockerhub == img_yaml[Image.KEY_CONTAINER_URI]).first()
+            image = image if image else Image(
+                dockerhub=img_yaml[Image.KEY_CONTAINER_URI],
+                repo=img_yaml.get(Image.KEY_REPO_URL),
+                source=img_yaml.get(Image.KEY_SRC_URL)
             )
-            db.session.add(task)
-            if task not in biobox.tasks:
-                biobox.tasks.append(task)
-        db.session.add(biobox)
+            biobox = Biobox.query.get(bb_yaml[Biobox.KEY_ID])
+            biobox = biobox if biobox else Biobox(
+                title=bb_yaml.get(Biobox.KEY_TITLE),
+                pmid=bb_yaml.get(Biobox.KEY_ID),
+                homepage=bb_yaml.get(Biobox.KEY_HOME_PAGE),
+                mailing_list=bb_yaml.get(Biobox.KEY_MAILING_LIST),
+                description=bb_yaml.get(Biobox.KEY_DESCRIPTION),
+                image=image,
+                tasks=[]
+            )
+            for tsk_yaml in bb_yaml[Biobox.KEY_TASKS]:
+                task = Task.query \
+                    .join(Task, Interface.tasks) \
+                    .filter(Task.name == tsk_yaml[Task.KEY_NAME] and
+                            Interface.name == tsk_yaml[Task.KEY_INTERFACE]) \
+                    .first()
+                interface = Interface.query.filter(
+                    Interface.name == tsk_yaml[Task.KEY_INTERFACE]).first()
+                interface = interface if interface \
+                    else Interface(name=tsk_yaml[Task.KEY_INTERFACE])
+                db.session.add(interface)
+                task = task if task else Task(
+                    name=tsk_yaml[Task.KEY_NAME],
+                    interface=interface
+                )
+                db.session.add(task)
+                if task not in biobox.tasks:
+                    biobox.tasks.append(task)
+            db.session.add(biobox)
     db.session.commit()
 
 

@@ -1,3 +1,4 @@
+import json
 import unittest
 
 import config
@@ -5,6 +6,7 @@ import yaml
 from flask_testing import TestCase
 from mock import patch
 
+source_url = 'https://raw.githubusercontent.com/pbelmann/data/feature/new-image-list/images.yml'
 
 def fetch_images(url):
     content = """
@@ -49,11 +51,13 @@ class MyTest(TestCase):
 
 
 class BioboxesTest(MyTest):
+
     def test_update_get_bioboxes(self):
         result = self.client.get('/bioboxgui/api/bioboxes')
         assert result is not None
         assert result.status_code == 404
-
+        self.client.post('/bioboxgui/api/sources', data=json.dumps({'url': source_url}),
+                         headers={"Content-type": 'application/json'})
         result = self.client.put('/bioboxgui/api/bioboxes')
         assert result is not None
         assert result.status_code == 200
@@ -74,6 +78,21 @@ class BioboxesTest(MyTest):
         result = self.client.get('/bioboxgui/api/bioboxes')
         assert data == yaml.load(result.data.decode())[0]
 
+
+class SourcesTest(MyTest):
+    def test_post_get(self):
+        result = self.client.get('/bioboxgui/api/sources')
+        assert result.status_code == 404
+        source = {
+            'url': source_url,
+            'name': 'peter'
+        }
+        result = self.client.post('/bioboxgui/api/sources', data=json.dumps(source),
+                                  headers={'Content-type': 'application/json'})
+        assert result.status_code == 201
+        data = yaml.load(result.data.decode())
+        assert data['url'] == source['url']
+        assert data['name'] == source['name']
 
 if __name__ == '__main__':
     unittest.main()

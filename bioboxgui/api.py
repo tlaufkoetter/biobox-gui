@@ -5,7 +5,7 @@ from flask_restful import Api
 api = Api(app)
 auth = HTTPBasicAuth()
 
-from bioboxgui.resources import bioboxes, interfaces, tasks
+from bioboxgui.resources import bioboxes, interfaces, tasks, sources
 
 
 @auth.verify_password
@@ -29,6 +29,8 @@ api.add_resource(tasks.TasksAll,
                  '/bioboxgui/api/tasks')
 api.add_resource(tasks.TaskId,
                  '/bioboxgui/api/tasks/<string:task_id>')
+api.add_resource(sources.SourcesAll,
+                 '/bioboxgui/api/sources')
 # api.add_resource(users.UserName,
 #                  '/bioboxgui/api/users/<string:username>')
 # api.add_resource(users.UserCreate,
