@@ -19,6 +19,11 @@ regular_task = {
     'interface': fields.Nested(helper_interface)
 }
 
+regular_source = {
+    'name': fields.String,
+    'url': fields.String
+}
+
 regular_biobox = {
     'title': fields.String,
     'pmid': fields.Integer,
@@ -27,6 +32,7 @@ regular_biobox = {
     'homepage': fields.String,
     'mailing_list': fields.String,
     'tasks': fields.List(fields.Nested(regular_task)),
+    'source': fields.Nested(regular_source)
 }
 
 

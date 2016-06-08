@@ -75,6 +75,7 @@ class Biobox(db.Model):
     description = db.Column(db.String, nullable=False)
     tasks = db.relationship('Task', secondary=association_table)
     image = db.relationship('Image', uselist=False, back_populates='biobox')
+    source_id = db.Column(db.Integer, db.ForeignKey('source.id'), nullable=False)
 
 
 class Image(db.Model):
@@ -118,6 +119,7 @@ class Source(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String, unique=True, nullable=False)
     name = db.Column(db.String, unique=True, nullable=True)
+    bioboxes = db.relationship('Biobox', backref='source', lazy='dynamic')
 
 
 def refresh():
@@ -149,6 +151,7 @@ def refresh():
                 mailing_list=bb_yaml.get(Biobox.KEY_MAILING_LIST),
                 description=bb_yaml.get(Biobox.KEY_DESCRIPTION),
                 image=image,
+                source=source,
                 tasks=[]
             )
             for tsk_yaml in bb_yaml[Biobox.KEY_TASKS]:
