@@ -87,6 +87,24 @@ class BioboxesTest(MyTest):
         assert result.status_code == 200
 
 
+class InterfacesTest(MyTest):
+    def test_interfacestuff(self):
+        result = self.client.get("/bioboxgui/api/interfaces")
+        assert result.status_code == 404
+        self.client.post('/bioboxgui/api/sources', data=json.dumps({'url': source_url}),
+                         headers={"Content-type": 'application/json'})
+        self.client.put('/bioboxgui/api/bioboxes')
+        result = self.client.get("/bioboxgui/api/interfaces")
+        assert result.status_code == 200
+        data = yaml.load(result.data.decode())
+        for interface in data:
+            if interface['name'] == 'assembler':
+                break
+        else:
+            print("done goofed")
+        assert interface['name'] == 'assembler'
+
+
 
 class SourcesTest(MyTest):
     def test_post_get(self):

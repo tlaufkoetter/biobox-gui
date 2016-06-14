@@ -55,7 +55,10 @@ class SourcesAll(Resource):
         else:
             abort(400, "source exists")
 
-        yaml_dict = models.fetch_images(url)
+        try:
+            yaml_dict = models.fetch_images(url)
+        except:
+            abort(400)
         try:
             models.validate_images(yaml_dict)
         except ValidationError as e:
