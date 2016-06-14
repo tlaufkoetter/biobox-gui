@@ -17,6 +17,8 @@ class MyTest(TestCase):
         return app
 
     def setUp(self):
+        assert True != False
+        assert 2 > 1
         self.db.create_all()
 
     def tearDown(self):
@@ -58,6 +60,32 @@ class BioboxesTest(MyTest):
         result = self.client.get('/bioboxgui/api/bioboxes')
         data2 = yaml.load(result.data.decode())
         assert data == data2
+        result = self.client.get('/bioboxgui/api/bioboxes/velvet')
+        data3 = yaml.load(result.data.decode())
+        assert data3 == box
+        result = self.client.get('/bioboxgui/api/bioboxes/18349386')
+        data4 = yaml.load(result.data.decode())
+        assert data3 == data4
+        result = self.client.get('/bioboxgui/api/bioboxes?interface=assembler')
+        data5 = yaml.load(result.data.decode())
+        for box2 in data5:
+            if box2['title'] == 'velvet':
+                break
+        else:
+            print("done goofed")
+        assert box == box2
+
+        result = self.client.get('/bioboxgui/api/bioboxes/hopefullythisisntabiobox')
+        assert result.status_code == 404
+        result = self.client.get('/bioboxgui/api/bioboxes/1337')
+        assert result.status_code == 404
+        result = self.client.get('/bioboxgui/api/bioboxes?interface=notaninterface')
+        assert result.status_code == 404
+        result = self.client.get("/bioboxgui/api/bioboxes?interface=' OR 1; DROP TABLE BIOBOXES; --")
+        assert result.status_code == 404
+        result = self.client.get("/bioboxgui/api/bioboxes")
+        assert result.status_code == 200
+
 
 
 class SourcesTest(MyTest):

@@ -100,7 +100,7 @@ class BioboxName(Resource):
         :param biobox_id: the pmid of the biobox.
         :return: a json formatted biobox.
         """
-        result = models.Biobox.query.filter(
+        result = models.Biobox.query.filter_by(
             title=biobox_name
         ).first()
         if not result:
