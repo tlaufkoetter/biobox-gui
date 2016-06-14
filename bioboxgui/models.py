@@ -183,6 +183,8 @@ def validate_images(yaml_dict):
     :param yaml_dict: a read yaml file as dictionary.
     :return:  None
     """
+    if not isinstance(yaml_dict, dict):
+        raise AttributeError("no yaml")
     with open(os.path.join(
             basedir, 'bioboxgui/static/image_schema.json'),
             'r') as schema_file:

@@ -63,6 +63,8 @@ class SourcesAll(Resource):
             models.validate_images(yaml_dict)
         except ValidationError as e:
             abort(400, e.message)
+        except AttributeError as e:
+            abort(400)
 
         db.session.add(source)
         db.session.commit()

@@ -120,6 +120,15 @@ class SourcesTest(MyTest):
         data = yaml.load(result.data.decode())
         assert data['url'] == source['url']
         assert data['name'] == source['name']
+        result = self.client.post('/bioboxgui/api/sources', data=json.dumps(source),
+                                  headers={'Content-type': 'application/json'})
+        assert result.status_code == 400
+        source_bad = {
+            'url': source_url + 'notathing'
+        }
+        result = self.client.post('/bioboxgui/api/sources', data=json.dumps(source_bad),
+                                  headers={'Content-type': 'application/json'})
+        assert result.status_code == 400
 
 
 if __name__ == '__main__':
