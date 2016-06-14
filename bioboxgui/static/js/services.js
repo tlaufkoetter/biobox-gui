@@ -31,6 +31,10 @@ var app = angular.module('BioboxGui'),
         }
     };
 
+BioboxService.prototype.addSource = function (source) {
+    return this.$http.post('/bioboxgui/api/sources', source)
+};
+
 BioboxService.prototype.getBioboxes = function () {
     return this.$http.get('/bioboxgui/api/bioboxes');
 };

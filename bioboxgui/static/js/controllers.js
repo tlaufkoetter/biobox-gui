@@ -25,6 +25,17 @@ var app = angular.module('BioboxGui'),
         this.user = {};
     };
 
+BioboxController.prototype.addSource = function (source) {
+    var _this = this;
+    _this.bioboxService.addSource(source).then(
+        function success(response) {
+            _this.updateBioboxes();
+        },
+        function failure(response) {
+            _this.bioboxes = 'fail';
+        }
+    );
+};
 
 BioboxController.prototype.getBioboxes = function () {
     var _this = this;
