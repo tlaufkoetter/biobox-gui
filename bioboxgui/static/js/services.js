@@ -76,6 +76,10 @@ TaskService.prototype.queryStates = function () {
     return this.$http.get('/bioboxgui/api/tasks');
 };
 
+TaskService.prototype.deleteTask = function (id) {
+    return this.$http.delete('/bioboxgui/api/tasks/' + id);
+};
+
 BioboxService.$inject = ['$http', '$location'];
 UserService.$inject = ['$http'];
 RouteNavigation.$inject = ['$route', '$location'];

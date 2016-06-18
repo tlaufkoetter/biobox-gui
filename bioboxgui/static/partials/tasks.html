@@ -1,10 +1,27 @@
 <div ng-init="main.queryStates()" ng-model="main.states">
     <h1>Tasks</h1>
     <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <td>Status</td>
+            <td>Command</td>
+            <td>stdout</td>
+            <td>stderr</td>
+        </tr>
+        </thead>
         <tr ng-repeat="state in main.states">
             <td><b>{{ state.id }}</b></td>
             <td>{{ state.code }}</td>
             <td>{{ state.description }}</td>
+            <td>{{ state.stdout }}</td>
+            <td>{{ state.stderr }}</td>
+            <td>
+                <form ng-submit="main.deleteTask(state.id)">
+                    <button type="submit" class="btn btn-danger" ng-action="main.deleteTask(state.id)"><span
+                            class="glyphicon glyphicon-trash"/></button>
+                </form>
+            </td>
         </tr>
     </table>
 </div>

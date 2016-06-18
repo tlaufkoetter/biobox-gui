@@ -133,6 +133,20 @@ BioboxController.prototype.submitTask = function () {
         );
 };
 
+BioboxController.prototype.deleteTask = function (id) {
+    var _this = this;
+    _this.taskService.deleteTask(id)
+        .then(
+            function success(response) {
+                console.log(response);
+                _this.queryStates();
+            },
+            function failure(reponse) {
+                console.log(response);
+            }
+        );
+};
+
 
 BioboxController.prototype.queryStates = function () {
     var _this = this;
