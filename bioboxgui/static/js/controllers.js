@@ -8,6 +8,7 @@ var app = angular.module('BioboxGui'),
         this.biobox = null;
         this.task = null;
         this.interface = null;
+        this.states = null;
         this.getInterfaces();
     },
 
@@ -139,6 +140,7 @@ BioboxController.prototype.queryStates = function () {
         .then(
             function success(response) {
                 console.log(response);
+                _this.states = response.data.states;
             },
             function failure(response) {
                 console.log(response);

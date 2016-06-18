@@ -21,7 +21,8 @@ full_task = {
     'description': fields.String,
     'id': fields.String,
     'stderr': fields.String,
-    'stdout': fields.String
+    'stdout': fields.String,
+    'code': fields.String
 }
 
 

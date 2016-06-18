@@ -20,6 +20,12 @@ angular.module('BioboxGui', ['ngRoute']).config(function ($routeProvider, $locat
             //     }
             // }
         })
+        .when('/bioboxgui/tasks', {
+            templateUrl: '/static/partials/tasks.html',
+            name: "Tasks",
+            controller: BioboxController,
+            controllerAs: "main"
+        })
         .when('/bioboxgui/about', {
             templateUrl: '/static/partials/about.html'
         })
