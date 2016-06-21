@@ -1,6 +1,6 @@
 <div>
     <h2>Interfaces</h2>
-    <select ng-init="selectedInterface = main.getInterface(null)" ng-model="selectedInterface"
+    <select ng-init="selectedInterface = null" ng-model="selectedInterface"
             class="form-control"
             ng-change="main.getInterface(selectedInterface)"
             ng-options="interface.name for interface in main.interfaces">
@@ -13,7 +13,7 @@
         <div>
             <table class="table table-striped table-hover clickable">
                 <tbody>
-                <tr ng-repeat="biobox in main.bioboxes" ng-click="main.selectBiobox(biobox.pmid)">
+                <tr ng-repeat="biobox in main.bioboxes" ng-click="main.selectBiobox(biobox)">
                     <td ng-show="biobox.title"><b>{{ biobox.title }}</b></td>
                 </tr>
                 </tbody>

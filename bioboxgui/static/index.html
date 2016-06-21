@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="BioboxGui">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,20 +10,10 @@
     <script data-require="angular-resource@*" data-semver="1.2.13"
             src="http://code.angularjs.org/1.2.13/angular-resource.js"></script>
     <script src="https://code.angularjs.org/1.2.25/angular-route.js"></script>
-    <script src="/static/angular/app.module.js"></script>
-    <script src="/static/angular/app.routes.js"></script>
-    <script src="/static/angular/shared/navigation/navigationInterceptors.js"></script>
-    <script src="/static/angular/shared/navigation/navigationDirectives.js"></script>
-    <script src="/static/angular/shared/navigation/navigationServices.js"></script>
-    <script src="/static/angular/components/bioboxes/bioboxesServices.js"></script>
-    <script src="/static/angular/components/bioboxes/bioboxesControllers.js"></script>
-    <script src="/static/angular/components/bioboxes/bioboxesDirectives.js"></script>
-    <script src="/static/angular/components/login/loginServices.js"></script>
-    <script src="/static/angular/components/login/loginControllers.js"></script>
 
     <title>Biobox GUI</title>
 </head>
-<body>
+<body ng-app="BioboxGui">
 <div class="container page">
     <navigation></navigation>
     <div id="content" class="container main" ng-view="">
@@ -32,7 +22,6 @@
     <hr>
     <footer id="footer" class="footer">
         <div class="footer-left">
-            <a ng-href="#/bioboxgui/about">About</a> |
             <a ng-href="#/bioboxgui">Home</a>
         </div>
         <div class="footer-right">
@@ -40,5 +29,20 @@
         </div>
     </footer>
 </div>
+
+<script src="/static/angular/app.module.js"></script>
+<script src="/static/angular/app.routes.js"></script>
+<script src="/static/angular/shared/navigation/navigation.interceptor.js"></script>
+<script src="/static/angular/shared/navigation/navigation.directive.js"></script>
+<script src="/static/angular/shared/navigation/navigation.service.js"></script>
+<script src="/static/angular/components/bioboxes/bioboxes.service.js"></script>
+<script src="/static/angular/components/bioboxes/bioboxes.controller.js"></script>
+<script src="/static/angular/components/bioboxes/directives/biobox.directive.js"></script>
+<script src="/static/angular/components/bioboxes/directives/biobox-list.directive.js"></script>
+<script src="/static/angular/components/bioboxes/directives/biobox-meta.directive.js"></script>
+<script src="/static/angular/components/bioboxes/directives/biobox-greeting.directive.js"></script>
+<script src="/static/angular/components/login/login.service.js"></script>
+<script src="/static/angular/components/login/login.controller.js"></script>
+<script src="/static/angular/components/register/register.controller.js"></script>
 </body>
 </html>

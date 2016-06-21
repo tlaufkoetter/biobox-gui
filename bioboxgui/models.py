@@ -9,8 +9,7 @@ from bioboxgui import db
 from config import basedir
 
 IMAGES_URL = \
-    'https://raw.githubusercontent.com' + \
-    '/pbelmann/data/feature/new-image-list/images.yml'
+    'https://raw.githubusercontent.com/pbelmann/data/feature/new-image-list/images.yml'
 
 # linking bioboxes with tasks since 2016.
 association_table = db.Table(

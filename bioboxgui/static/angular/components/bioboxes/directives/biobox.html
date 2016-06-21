@@ -1,6 +1,6 @@
 <div>
     <div ng-hide="main.biobox == '404'">
-        <div id="bioboxes-{{ main.biobox.title }}">
+        <div id="main.bioboxes-{{ main.biobox.title }}">
             <h3> {{ main.biobox.image.dockerhub }} </h3>
             <p> {{ main.biobox.description }}</p>
             <h4>Tasks</h4>
@@ -36,6 +36,6 @@
     </div>
     <div ng-hide="main.biobox != 404">
         <h2>Error</h2>
-        <p>You requested Biobox could not be found.</p>
+        <p>You requested main.biobox could not be found.</p>
     </div>
 </div>

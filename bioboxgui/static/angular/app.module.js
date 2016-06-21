@@ -1,3 +1,6 @@
-'use strict';
+(function () {
+    'use strict';
 
-var app = angular.module('BioboxGui', ['ngRoute']);
+    angular
+        .module('BioboxGui', ['ngRoute']);
+})();
