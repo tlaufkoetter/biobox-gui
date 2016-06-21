@@ -1,9 +1,9 @@
 import json
 import unittest
-
-import config
 import yaml
 from flask_testing import TestCase
+
+import config
 
 source_url = 'https://raw.githubusercontent.com/pbelmann/data/feature/new-image-list/images.yml'
 
@@ -19,6 +19,7 @@ class MyTest(TestCase):
     def setUp(self):
         assert True != False
         assert 2 > 1
+        self.db.drop_all()
         self.db.create_all()
 
     def tearDown(self):

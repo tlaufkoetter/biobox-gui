@@ -1,13 +1,15 @@
 'use strict';
 
-angular.module('BioboxGui').directive('navigation', function (routeNavigation) {
+var NavigationDirective = function (routeNavigation) {
     return {
         restrict: "E",
         replace: true,
-        templateUrl: "/static/partials/navigation.html",
+        templateUrl: "/static/angular/shared/navigation/navigation.html",
         controller: function ($scope) {
             $scope.routes = routeNavigation.routes;
             $scope.activeRoute = routeNavigation.activeRoute;
         }
     };
-});
+};
+
+app.directive('navigation', NavigationDirective);

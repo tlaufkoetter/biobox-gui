@@ -1,0 +1,30 @@
+<div>
+    <h2>Interfaces</h2>
+    <select ng-init="selectedInterface = main.getInterface(null)" ng-model="selectedInterface"
+            class="form-control"
+            ng-change="main.getInterface(selectedInterface)"
+            ng-options="interface.name for interface in main.interfaces">
+        <option value="">
+            Select an interface
+        </option>
+    </select>
+    <h2>Bioboxes</h2>
+    <div ng-hide="!main.bioboxes.length" id="results" class="scroller">
+        <div>
+            <table class="table table-striped table-hover clickable">
+                <tbody>
+                <tr ng-repeat="biobox in main.bioboxes" ng-click="main.selectBiobox(biobox.pmid)">
+                    <td ng-show="biobox.title"><b>{{ biobox.title }}</b></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <form role="form" ng-submit="main.addSource(source)" ng-init="source = {'url':'', 'name':''}" ng-model="source">
+        <input type="text" ng-model="source.url" id="url">
+        <button type="submit" class="btn btn-default">add source</button>
+    </form>
+    <form role="form" ng-submit="main.updateBioboxes()">
+        <button type="submit" class="btn btn-default">update</button>
+    </form>
+</div>

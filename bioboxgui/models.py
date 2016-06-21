@@ -1,12 +1,12 @@
 import json
 import os.path
-
 import requests
 import yaml
-from bioboxgui import db
-from config import basedir
 from flask_security import UserMixin, RoleMixin
 from jsonschema import validate
+
+from bioboxgui import db
+from config import basedir
 
 IMAGES_URL = \
     'https://raw.githubusercontent.com' + \
@@ -186,10 +186,12 @@ def validate_images(yaml_dict):
     if not isinstance(yaml_dict, dict):
         raise AttributeError("no yaml")
     with open(os.path.join(
-            basedir, 'bioboxgui/static/image_schema.json'),
+            basedir, 'bioboxgui/resources/image_schema.json'),
             'r') as schema_file:
         schema_string = schema_file.read()
         schema = json.loads(schema_string)
+        if not 'images' in yaml_dict.keys():
+            raise AttributeError("no images")
         for image in yaml_dict['images']:
             validate(image, schema)
 

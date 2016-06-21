@@ -1,30 +1,15 @@
 'use strict';
 
-var app = angular.module('BioboxGui'),
-
-    BioboxController = function (BioboxService, TaskService) {
-        this.bioboxService = BioboxService;
-        this.taskService = TaskService;
-        this.biobox = null;
-        this.task = null;
-        this.interface = null;
-        this.states = null;
-        this.getInterfaces();
-    },
-
-    LoginController = function (UserService, $http, $window) {
-        this.userService = UserService;
-        this.$http = $http;
-        this.$window = $window;
-        this.user = {};
-
-    },
-
-    RegisterController = function (UserService, $location) {
-        this.userService = UserService;
-        this.$location = $location;
-        this.user = {};
-    };
+var BioboxController = function (BioboxService, TaskService, $routeParams, $location) {
+    this.bioboxService = BioboxService;
+    this.taskService = TaskService;
+    this.pmid = $routeParams.pmid;
+    this.$location = $location;
+    if (this.pmid) {
+        this.getBiobox(this.pmid);
+    }
+    this.getInterfaces();
+};
 
 BioboxController.prototype.addSource = function (source) {
     var _this = this;
@@ -50,6 +35,22 @@ BioboxController.prototype.getBioboxes = function () {
         });
 };
 
+BioboxController.prototype.getBiobox = function (pmid) {
+    var _this = this;
+    _this.task = null;
+    _this.bioboxService.getBiobox(pmid)
+        .then(
+            function success(response) {
+                console.log(response);
+                _this.biobox = response.data;
+            },
+            function failure(response) {
+                console.log(response);
+                _this.biobox = response.status;
+            }
+        );
+}
+
 BioboxController.prototype.updateBioboxes = function () {
     var _this = this;
     _this.bioboxService.updateBioboxes()
@@ -74,7 +75,7 @@ BioboxController.prototype.getInterfaces = function () {
                 _this.interfaces = response.data;
             },
             function failure(response) {
-                _this.interfaces = null;
+                _this.interfaces = response.status;
             });
 };
 
@@ -95,22 +96,8 @@ BioboxController.prototype.getInterface = function (selectedInterface) {
     }
 };
 
-BioboxController.prototype.selectBiobox = function (selectedBiobox) {
-    var _this = this;
-    if (selectedBiobox !== null) {
-        _this.task = null;
-        _this.bioboxService.getBiobox(selectedBiobox.pmid)
-            .then(
-                function success(response) {
-                    console.log(response);
-                    _this.biobox = response.data;
-                },
-                function failure(response) {
-                    console.log(response);
-                    _this.biobox = 'fail';
-                }
-            );
-    }
+BioboxController.prototype.selectBiobox = function (pmid) {
+    this.$location.url('bioboxgui/bioboxes/' + pmid);
 };
 
 BioboxController.prototype.selectTask = function (selectedTask) {
@@ -162,41 +149,4 @@ BioboxController.prototype.queryStates = function () {
         );
 };
 
-RegisterController.prototype.createUser = function () {
-    var _this = this;
-    if (_this.user !== {}) {
-        _this.userService.createUser(_this.user)
-            .then(
-                function success(response) {
-                    _this.$location.path('/bioboxgui/login');
-                },
-
-                function failure(response) {
-                }
-            );
-    }
-};
-
-LoginController.prototype.login = function () {
-    var _this = this;
-    if (_this.user !== {}) {
-        _this.userService.login(_this.user)
-            .then(
-                function success(response) {
-                    if (response.data.response) {
-                        _this.$http.defaults.headers.common['Authentication-Token'] = response.data.response.user.authentication_token;
-                    }
-                    _this.$window.location.href = '#/bioboxgui';
-                },
-                function failure(response) {
-                    console.log('what now');
-                }
-            )
-    }
-};
-
 app.controller('BioboxController', BioboxController);
-app.controller('LoginController', LoginController);
-app.controller('RegisterController', RegisterController);
-
-

@@ -1,8 +1,6 @@
 'use strict';
 
-var app = angular.module('BioboxGui'),
-
-    ResponseInterceptor = function ($window, $q) {
+var ResponseInterceptor = function ($window, $q) {
         var interceptor = {
             responseError: function (response) {
                 if (response.status == 401) {
