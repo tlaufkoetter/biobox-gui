@@ -51,7 +51,26 @@
                 templateUrl: '/static/angular/components/states/states.html',
                 name: "States",
                 controller: "BioboxController",
-                controllerAs: "main"
+                controllerAs: "main",
+                resolve: {
+                    states: function (stateService) {
+                        return stateService.queryStates().then(
+                            function success(response) {
+                                console.log(response);
+                                return response.data;
+                            },
+                            function failure(response) {
+                                console.log(response);
+                                return response.status;
+                            }
+                        );
+                    }
+                }
+            })
+            .when('/bioboxgui/login', {
+                templateUrl: '/static/angular/components/login/login.html',
+                controller: "LoginController",
+                controllerAs: "login"
             });
         $httpProvider.interceptors.push('responseInterceptor');
     };

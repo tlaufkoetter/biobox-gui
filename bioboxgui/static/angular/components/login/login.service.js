@@ -3,16 +3,16 @@
 
     angular
         .module('BioboxGui')
-        .service('userService', userService);
+        .service('loginService', loginService);
 
-    function userService($http) {
+    function loginService($http, store) {
         var service = {
-            createUser: createUser,
-            login: login
+            login: login,
+            register: register
         };
         return service;
 
-        function createUser(user_info) {
+        function register(user_info) {
             return $http.post('/bioboxgui/api/users', user_info);
         };
 

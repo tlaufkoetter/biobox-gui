@@ -2,5 +2,5 @@
     'use strict';
 
     angular
-        .module('BioboxGui', ['ngRoute']);
+        .module('BioboxGui', ['ngRoute', 'angular-storage']);
 })();

@@ -4,13 +4,14 @@ import hashlib
 import json
 import os
 import re
-import time
-
 import requests
+import time
 import yaml
-from bioboxgui import app
 from flask import abort
 from flask_restful import marshal, Resource, fields, reqparse
+from flask_security import auth_token_required
+
+from bioboxgui import app
 
 JOB_PROXY_URL = app.config.get('DOCKER_JP_URL')
 
@@ -28,6 +29,8 @@ full_task = {
 
 
 class TasksAll(Resource):
+    decorators = [auth_token_required]
+
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
@@ -139,6 +142,8 @@ class TasksAll(Resource):
 
 
 class TaskId(Resource):
+    decorators = [auth_token_required]
+
     def get(self, task_id):
         '''
         queries the state of given task.

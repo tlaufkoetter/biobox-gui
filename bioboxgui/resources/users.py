@@ -1,6 +1,6 @@
 from flask import abort
 from flask_restful import Resource, marshal, reqparse, fields
-from flask_security import auth_token_required
+from flask_security import auth_token_required, roles_accepted
 
 from bioboxgui import models, db, user_datastore
 
@@ -19,7 +19,7 @@ regular_user = {
 
 
 class UserName(Resource):
-    # decorators = [auth_token_required]
+    decorators = [auth_token_required]
 
     def get(self, username):
         user = models.User.query.filter_by(
@@ -41,10 +41,10 @@ class UserName(Resource):
 
 
 class UserCreate(Resource):
-    # decorators = [
-    #     auth_token_required,
-    #     roles_accepted('admin')
-    # ]
+    decorators = [
+        auth_token_required,
+        roles_accepted('admin')
+    ]
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()

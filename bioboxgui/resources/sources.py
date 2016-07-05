@@ -1,7 +1,9 @@
-from bioboxgui import models, db
 from flask import abort
 from flask_restful import marshal, Resource, fields, reqparse
+from flask_security import auth_token_required
 from jsonschema import ValidationError
+
+from bioboxgui import models, db
 
 regular_source = {
     'url': fields.String,
@@ -10,6 +12,8 @@ regular_source = {
 
 
 class SourcesAll(Resource):
+    decorators = [auth_token_required]
+
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(

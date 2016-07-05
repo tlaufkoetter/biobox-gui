@@ -20,8 +20,6 @@
         vm.selectBiobox = selectBiobox;
         vm.selectTask = selectTask;
         vm.submitTask = submitTask;
-        vm.deleteTask = deleteTask;
-        vm.queryStates = queryStates;
 
         function addSource(source) {
             bioboxService.addSource(source).then(
@@ -124,30 +122,5 @@
                 );
         };
 
-        function deleteTask(id) {
-            bioboxService.deleteTask(id)
-                .then(
-                    function success(response) {
-                        console.log(response);
-                        queryStates();
-                    },
-                    function failure(reponse) {
-                        console.log(response);
-                    }
-                );
-        };
-
-        function queryStates() {
-            bioboxService.queryStates()
-                .then(
-                    function success(response) {
-                        console.log(response);
-                        vm.states = response.data.states;
-                    },
-                    function failure(response) {
-                        console.log(response);
-                    }
-                );
-        };
     };
 })();
