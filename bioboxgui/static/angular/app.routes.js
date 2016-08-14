@@ -67,8 +67,15 @@
                     }
                 }
             })
+            .when('/bioboxgui/administration', {
+                templateUrl: '/static/angular/components/administration/administration.html',
+                name: 'Administration',
+                controller: "AdministrationController",
+                controllerAs: "main",
+            })
             .when('/bioboxgui/login', {
                 templateUrl: '/static/angular/components/login/login.html',
+                name: 'Login',
                 controller: "LoginController",
                 controllerAs: "login"
             });

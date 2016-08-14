@@ -1,9 +1,9 @@
 from flask import abort
 from flask_restful import marshal, Resource, fields, reqparse
-from flask_security import auth_token_required
 from jsonschema import ValidationError
 
 from bioboxgui import models, db
+from bioboxgui.api import auth, roles_accepted
 
 regular_source = {
     'url': fields.String,
@@ -12,8 +12,6 @@ regular_source = {
 
 
 class SourcesAll(Resource):
-    decorators = [auth_token_required]
-
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
@@ -32,6 +30,8 @@ class SourcesAll(Resource):
         )
         super(SourcesAll, self).__init__()
 
+    @auth.login_required
+    @roles_accepted('admin', 'trusted')
     def get(self):
         """
         queries a list of manages sources for bioboxes.
@@ -44,6 +44,8 @@ class SourcesAll(Resource):
         else:
             abort(404)
 
+    @auth.login_required
+    @roles_accepted('admin', 'trusted')
     def post(self):
         """
         puts a new source into the database.

@@ -1,6 +1,5 @@
 from flask import abort
 from flask_restful import marshal, Resource, fields
-from flask_security import auth_token_required
 
 from bioboxgui import models
 
@@ -10,8 +9,6 @@ regular_interface = {
 
 
 class Interfaces(Resource):
-    decorators = [auth_token_required]
-
     def get(self):
         """
         queries the available interfaces of bioboxes.

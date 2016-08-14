@@ -1,5 +1,6 @@
 import json
 import unittest
+
 import yaml
 from flask_testing import TestCase
 
@@ -26,7 +27,7 @@ class MyTest(TestCase):
                                           data=json.dumps({'email': 'admin@admin.com', 'password': 'password'}),
                                           headers={"Content-type": 'application/json'})
         json_response = json.loads(bytes.decode(token_response.data))
-        self.token = json_response['response']['user']['authentication_token']
+        self.token = json_response['token']
 
     def _create_user(self):
         from bioboxgui import user_datastore, models
@@ -34,8 +35,9 @@ class MyTest(TestCase):
         role = user_datastore.find_or_create_role('admin')
         if not models.User.query.filter_by(username='admin').first():
             user = user_datastore.create_user(
-                username='admin', email='admin@admin.com', password='password'
+                username='admin', email='admin@admin.com'
             )
+            user.hash_password('password')
             user_datastore.add_role_to_user(user, role)
         self.db.session.commit()
 
@@ -46,12 +48,12 @@ class MyTest(TestCase):
 
 class BioboxesTest(MyTest):
     def test_update_get_bioboxes(self):
-        result = self.client.get('/bioboxgui/api/bioboxes', headers={"Authentication-Token": self.token})
+        result = self.client.get('/bioboxgui/api/bioboxes', headers={"Authorization": "Bearer " + self.token})
         assert result is not None
         assert result.status_code == 404
         self.client.post('/bioboxgui/api/sources', data=json.dumps({'url': source_url}),
-                         headers={"Content-type": 'application/json', "Authentication-Token": self.token})
-        result = self.client.put('/bioboxgui/api/bioboxes', headers={"Authentication-Token": self.token})
+                         headers={"Content-type": 'application/json', "Authorization": "Bearer " + self.token})
+        result = self.client.put('/bioboxgui/api/bioboxes', headers={"Authorization": "Bearer " + self.token})
         assert result is not None
         assert result.status_code == 200
         data = yaml.load(result.data.decode())
@@ -75,17 +77,17 @@ class BioboxesTest(MyTest):
         assert box['tasks'][1]['interface']['name'] == 'assembler'
         assert box['source']['url'] == source_url
         assert box['source']['name'] is None
-        result = self.client.get('/bioboxgui/api/bioboxes', headers={"Authentication-Token": self.token})
+        result = self.client.get('/bioboxgui/api/bioboxes', headers={"Authorization": "Bearer " + self.token})
         data2 = yaml.load(result.data.decode())
         assert data == data2
-        result = self.client.get('/bioboxgui/api/bioboxes/velvet', headers={"Authentication-Token": self.token})
+        result = self.client.get('/bioboxgui/api/bioboxes/velvet', headers={"Authorization": "Bearer " + self.token})
         data3 = yaml.load(result.data.decode())
         assert data3 == box
-        result = self.client.get('/bioboxgui/api/bioboxes/18349386', headers={"Authentication-Token": self.token})
+        result = self.client.get('/bioboxgui/api/bioboxes/18349386', headers={"Authorization": "Bearer " + self.token})
         data4 = yaml.load(result.data.decode())
         assert data3 == data4
         result = self.client.get('/bioboxgui/api/bioboxes?interface=assembler',
-                                 headers={"Authentication-Token": self.token})
+                                 headers={"Authorization": "Bearer " + self.token})
         data5 = yaml.load(result.data.decode())
         for box2 in data5:
             if box2['title'] == 'velvet':
@@ -95,28 +97,28 @@ class BioboxesTest(MyTest):
         assert box == box2
 
         result = self.client.get('/bioboxgui/api/bioboxes/hopefullythisisntabiobox',
-                                 headers={"Authentication-Token": self.token})
+                                 headers={"Authorization": "Bearer " + self.token})
         assert result.status_code == 404
-        result = self.client.get('/bioboxgui/api/bioboxes/1337', headers={"Authentication-Token": self.token})
+        result = self.client.get('/bioboxgui/api/bioboxes/1337', headers={"Authorization": "Bearer " + self.token})
         assert result.status_code == 404
         result = self.client.get('/bioboxgui/api/bioboxes?interface=notaninterface',
-                                 headers={"Authentication-Token": self.token})
+                                 headers={"Authorization": "Bearer " + self.token})
         assert result.status_code == 404
         result = self.client.get("/bioboxgui/api/bioboxes?interface=' OR 1; DROP TABLE BIOBOXES; --",
-                                 headers={"Authentication-Token": self.token})
+                                 headers={"Authorization": "Bearer " + self.token})
         assert result.status_code == 404
-        result = self.client.get("/bioboxgui/api/bioboxes", headers={"Authentication-Token": self.token})
+        result = self.client.get("/bioboxgui/api/bioboxes", headers={"Authorization": "Bearer " + self.token})
         assert result.status_code == 200
 
 
 class InterfacesTest(MyTest):
     def test_interfacestuff(self):
-        result = self.client.get("/bioboxgui/api/interfaces", headers={"Authentication-Token": self.token})
+        result = self.client.get("/bioboxgui/api/interfaces", headers={"Authorization": "Bearer " + self.token})
         assert result.status_code == 404
         self.client.post('/bioboxgui/api/sources', data=json.dumps({'url': source_url}),
-                         headers={"Content-type": 'application/json', "Authentication-Token": self.token})
-        self.client.put('/bioboxgui/api/bioboxes', headers={"Authentication-Token": self.token})
-        result = self.client.get("/bioboxgui/api/interfaces", headers={"Authentication-Token": self.token})
+                         headers={"Content-type": 'application/json', "Authorization": "Bearer " + self.token})
+        self.client.put('/bioboxgui/api/bioboxes', headers={"Authorization": "Bearer " + self.token})
+        result = self.client.get("/bioboxgui/api/interfaces", headers={"Authorization": "Bearer " + self.token})
         assert result.status_code == 200
         data = yaml.load(result.data.decode())
         for interface in data:
@@ -130,26 +132,26 @@ class InterfacesTest(MyTest):
 
 class SourcesTest(MyTest):
     def test_post_get(self):
-        result = self.client.get('/bioboxgui/api/sources', headers={"Authentication-Token": self.token})
+        result = self.client.get('/bioboxgui/api/sources', headers={"Authorization": "Bearer " + self.token})
         assert result.status_code == 404
         source = {
             'url': source_url,
             'name': 'peter'
         }
         result = self.client.post('/bioboxgui/api/sources', data=json.dumps(source),
-                                  headers={'Content-type': 'application/json', "Authentication-Token": self.token})
+                                  headers={'Content-type': 'application/json', "Authorization": "Bearer " + self.token})
         assert result.status_code == 201
         data = yaml.load(result.data.decode())
         assert data['url'] == source['url']
         assert data['name'] == source['name']
         result = self.client.post('/bioboxgui/api/sources', data=json.dumps(source),
-                                  headers={'Content-type': 'application/json', "Authentication-Token": self.token})
+                                  headers={'Content-type': 'application/json', "Authorization": "Bearer " + self.token})
         assert result.status_code == 400
         source_bad = {
             'url': source_url + 'notathing'
         }
         result = self.client.post('/bioboxgui/api/sources', data=json.dumps(source_bad),
-                                  headers={'Content-type': 'application/json', "Authentication-Token": self.token})
+                                  headers={'Content-type': 'application/json', "Authorization": "Bearer " + self.token})
         assert result.status_code == 400
 
 

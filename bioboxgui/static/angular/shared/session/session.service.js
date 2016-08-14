@@ -3,9 +3,9 @@
 
     angular
         .module('BioboxGui')
-        .service('userService', userService);
+        .service('sessionService', sessionService);
 
-    function userService(store) {
+    function sessionService(store) {
         var service = {
                 getCurrentUser: getCurrentUser,
                 setCurrentUser: setCurrentUser

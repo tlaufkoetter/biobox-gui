@@ -33,8 +33,6 @@ for name, folder in FOLDERS.items():
 
 SECRET_KEY = 'super-duper-secret'
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db', 'bioboxgui.db')
-SECURITY_LOGIN_URL = '/bioboxgui/api/token'
-SECURITY_LOGOUT_URL = '/bioboxgui/api/logout'
 SECURITY_PASSWORD_HASH = 'pbkdf2_sha512'
 SECURITY_PASSWORD_SALT = 'even-secreter'
 

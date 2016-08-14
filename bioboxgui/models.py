@@ -1,18 +1,21 @@
 import json
 import os.path
+
 import requests
 import yaml
-from flask_security import UserMixin, RoleMixin
+from itsdangerous import (TimedJSONWebSignatureSerializer
+                          as Serializer)
 from jsonschema import validate
+from passlib.apps import custom_app_context as pwd_context
 
 from bioboxgui import db
-from config import basedir
+from config import basedir, SECRET_KEY
 
 IMAGES_URL = \
     'https://raw.githubusercontent.com/pbelmann/data/feature/new-image-list/images.yml'
 
 # linking bioboxes with tasks since 2016.
-association_table = db.Table(
+biobox_tasks = db.Table(
     'association', db.Model.metadata,
     db.Column('biobox_id', db.Integer, db.ForeignKey('biobox.pmid')),
     db.Column('task_id', db.Integer, db.ForeignKey('task.id'))
@@ -25,23 +28,40 @@ roles_users = db.Table(
 )
 
 
-class Role(db.Model, RoleMixin):
+class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True, nullable=False)
     description = db.Column(db.String)
 
 
-class User(db.Model, UserMixin):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
-    password = db.Column(db.String, nullable=False)
+    password_hash = db.Column(db.String, nullable=False)
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
     roles = db.relationship(
         'Role', secondary=roles_users,
         backref=db.backref('users', lazy='dynamic')
     )
+
+    def hash_password(self, password):
+        self.password_hash = pwd_context.encrypt(password)
+
+    def verify_password(self, password):
+        return pwd_context.verify(password, self.password_hash)
+
+    def generate_auth_token(self, expiration=600):
+        s = Serializer(SECRET_KEY, expires_in=expiration)
+        return s.dumps({'id': self.id})
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(SECRET_KEY)
+        data = s.loads(token)
+        user = User.query.get(data['id'])
+        return user
 
 
 class Interface(db.Model):
@@ -72,7 +92,7 @@ class Biobox(db.Model):
     homepage = db.Column(db.String)
     mailing_list = db.Column(db.String)
     description = db.Column(db.String, nullable=False)
-    tasks = db.relationship('Task', secondary=association_table)
+    tasks = db.relationship('Task', secondary=biobox_tasks)
     image = db.relationship('Image', uselist=False, back_populates='biobox')
     source_id = db.Column(db.Integer, db.ForeignKey('source.id'), nullable=False)
 
@@ -203,7 +223,7 @@ def get_bioboxes(interface):
     :return: a list of bioboxes that meet the aforementioned criteria.
     """
     return db.session.query(Biobox) \
-        .join(association_table) \
+        .join(biobox_tasks) \
         .join(Task) \
         .join(Interface) \
         .filter(Interface.name == interface) \

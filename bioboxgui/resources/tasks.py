@@ -4,14 +4,15 @@ import hashlib
 import json
 import os
 import re
-import requests
 import time
+
+import requests
 import yaml
 from flask import abort
 from flask_restful import marshal, Resource, fields, reqparse
-from flask_security import auth_token_required
 
 from bioboxgui import app
+from bioboxgui.api import auth
 
 JOB_PROXY_URL = app.config.get('DOCKER_JP_URL')
 
@@ -29,8 +30,6 @@ full_task = {
 
 
 class TasksAll(Resource):
-    decorators = [auth_token_required]
-
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
@@ -46,6 +45,7 @@ class TasksAll(Resource):
             'file', type=str, required=True, location='json'
         )
 
+    @auth.login_required
     def post(self):
         '''
         creates a new task.
@@ -100,6 +100,7 @@ class TasksAll(Resource):
         else:
             abort(502)
 
+    @auth.login_required
     def get(self):
         '''
         queries all the tasks.
@@ -142,8 +143,7 @@ class TasksAll(Resource):
 
 
 class TaskId(Resource):
-    decorators = [auth_token_required]
-
+    @auth.login_required
     def get(self, task_id):
         '''
         queries the state of given task.
@@ -154,6 +154,7 @@ class TaskId(Resource):
         if response.status_code == 200 and response.content:
             state = json.loads(response.content.decode('utf-8'))['state']
 
+    @auth.login_required
     def delete(self, task_id):
         '''
         deletes a specific task.

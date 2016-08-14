@@ -5,20 +5,17 @@
         .module('BioboxGui')
         .controller('LoginController', LoginController);
 
-    function LoginController(loginService, userService, $window) {
+    function LoginController(loginService, sessionService, $window) {
         var vm = this;
-        vm.user = {};
         vm.login = login;
 
-        function login() {
-            if (vm.user !== {}) {
-                loginService.login(vm.user)
+        function login(user) {
+            if (user !== {}) {
+                loginService.login(user)
                     .then(
                         function success(response) {
-                            if (response.data.response) {
-                                vm.user.authentication_token = response.data.response.user.authentication_token;
-                                userService.setCurrentUser(vm.user);
-                            }
+                            user.authentication_token = response.data.token;
+                            sessionService.setCurrentUser(user);
                             $window.location.href = '#/bioboxgui';
                         },
                         function failure(response) {
