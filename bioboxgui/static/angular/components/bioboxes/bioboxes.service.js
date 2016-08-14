@@ -12,13 +12,9 @@
             updateBioboxes: updateBioboxes,
             getInterface: getInterface,
             getInterfaces: getInterfaces,
-            addSource: addSource,
         }
         return service;
 
-        function addSource(source) {
-            return $http.post('/bioboxgui/api/sources', source)
-        };
 
         function getBioboxes() {
             return $http.get('/bioboxgui/api/bioboxes');

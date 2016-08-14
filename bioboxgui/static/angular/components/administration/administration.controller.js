@@ -24,7 +24,15 @@
         function grantPermission(username, role) {
         }
 
-        function addSource(name, url) {
+        function addSource(source) {
+            sourceService.addSource(source).then(
+                function success() {
+                    alert('Yay');
+                },
+                function failure() {
+                    alert(':(');
+                }
+            );
         }
 
         function deleteSource(url) {

@@ -50,7 +50,7 @@
             .when('/bioboxgui/states', {
                 templateUrl: '/static/angular/components/states/states.html',
                 name: "States",
-                controller: "BioboxController",
+                controller: "StateController",
                 controllerAs: "main",
                 resolve: {
                     states: function (stateService) {

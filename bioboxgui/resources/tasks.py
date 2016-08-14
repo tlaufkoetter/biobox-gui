@@ -106,7 +106,11 @@ class TasksAll(Resource):
         queries all the tasks.
         :return: json formatted list of tasks.
         '''
-        response = requests.get(JOB_PROXY_URL + '/state')
+        try:
+            response = requests.get(JOB_PROXY_URL + '/state')
+        except:
+            abort(502)
+
         if response.status_code == 200 and response.content:
             states = json.loads(response.content.decode('utf-8'))['state']
             docker_patter = re.compile(

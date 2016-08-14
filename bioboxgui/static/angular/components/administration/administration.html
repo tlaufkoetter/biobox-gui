@@ -56,14 +56,14 @@
 </form>
 <h1>Content Management</h1>
 <h2>Add Source</h2>
-<form name="sourceAddForm" ng-submit="main.addSource(addUrl, addName)" role="form" ng-init="addUrl = ''; addName = ''">
+<form name="sourceAddForm" ng-submit="main.addSource(source)" role="form" ng-model="source" ng-init="source = {}">
     <div class="form-group" ng-class="{ 'has-error': form.sourceName.$dirty && form.sourceName.$error.required }">
         <label for="sourceName">Name</label>
-        <input type="text" name="sourceName" id="sourceName" class="form-control" ng-model="addName"/>
+        <input type="text" name="sourceName" id="sourceName" class="form-control" ng-model="source.name"/>
     </div>
     <div class="form-group" ng-class="{ 'has-error': form.sourceUrl.$dirty && form.sourceUrl.$error.required }">
         <label for="sourceUrl">Url</label>
-        <input type="url" name="sourceUrl" id="sourceUrl" class="form-control" ng-model="addUrl"/>
+        <input type="url" name="sourceUrl" id="sourceUrl" class="form-control" ng-model="source.url"/>
     </div>
     <div class="form-group">
         <input type="submit" class="btn btn-primary" value="Add"/>

@@ -4,13 +4,12 @@ import unittest
 import yaml
 from flask_testing import TestCase
 
-import config
-
 source_url = 'https://raw.githubusercontent.com/pbelmann/data/feature/new-image-list/images.yml'
 
 
 class MyTest(TestCase):
     def create_app(self):
+        import config
         config.SQLALCHEMY_DATABASE_URI = "sqlite://"
         config.TESTING = True
         from bioboxgui import app, db

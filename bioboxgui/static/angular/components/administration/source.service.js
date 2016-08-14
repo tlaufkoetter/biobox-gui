@@ -15,7 +15,8 @@
         function deleteSource(url) {
         }
 
-        function addSource(name, url) {
+        function addSource(source) {
+            return $http.post('/bioboxgui/api/sources', source)
         }
     }
 })();
