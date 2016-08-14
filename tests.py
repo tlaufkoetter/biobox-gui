@@ -30,15 +30,22 @@ class MyTest(TestCase):
         self.token = json_response['token']
 
     def _create_user(self):
-        from bioboxgui import user_datastore, models
+        from bioboxgui import models
         self.db.create_all()
-        role = user_datastore.find_or_create_role('admin')
+        role_names = ['admin', 'trusted', 'common']
+        roles = []
+        for role_name in role_names:
+            role = models.Role.query.filter_by(name=role_name).first()
+            if not role:
+                role = models.Role(name=role_name)
+            roles.append(role)
+
         if not models.User.query.filter_by(username='admin').first():
-            user = user_datastore.create_user(
-                username='admin', email='admin@admin.com'
+            user = models.User(
+                username='admin', email='admin@admin.com', roles=roles
             )
             user.hash_password('password')
-            user_datastore.add_role_to_user(user, role)
+            self.db.session.add(user)
         self.db.session.commit()
 
     def tearDown(self):
