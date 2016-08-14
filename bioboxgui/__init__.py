@@ -5,9 +5,11 @@ app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
 
-
 # imports here to avoid circular dependencies.
 from bioboxgui import models
+from bioboxgui.api import api
+
+the_api = api
 
 
 @app.before_first_request
