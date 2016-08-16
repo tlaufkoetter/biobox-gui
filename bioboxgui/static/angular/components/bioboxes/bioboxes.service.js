@@ -12,29 +12,30 @@
             updateBioboxes: updateBioboxes,
             getInterface: getInterface,
             getInterfaces: getInterfaces,
-        }
+            submitTask: submitTask
+        };
         return service;
 
 
         function getBioboxes() {
             return $http.get('/bioboxgui/api/bioboxes');
-        };
+        }
 
         function getBiobox(id) {
             return $http.get('bioboxgui/api/bioboxes/' + id);
-        };
+        }
 
         function updateBioboxes() {
             return $http.put('/bioboxgui/api/bioboxes');
-        };
+        }
 
         function getInterfaces() {
             return $http.get('/bioboxgui/api/interfaces');
-        };
+        }
 
         function getInterface(selectedInterface) {
             return $http.get('/bioboxgui/api/bioboxes?interface=' + selectedInterface);
-        };
+        }
 
         function submitTask(user, container, cmd, file) {
             var task = {};
@@ -42,7 +43,7 @@
             task.container = container;
             task.cmd = cmd;
             task.file = file;
-            return $http.post('/bioboxgui/api/states', task);
-        };
-    };
+            return $http.post('/bioboxgui/api/tasks', task);
+        }
+    }
 })();

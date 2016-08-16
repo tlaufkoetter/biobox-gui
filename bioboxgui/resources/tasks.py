@@ -92,6 +92,7 @@ class TasksAll(Resource):
                 s['container'], s['cmd']),
             'cputime': 10
         }
+
         print(args)
 
         response = requests.post(JOB_PROXY_URL + '/submit', json=args)
@@ -100,50 +101,51 @@ class TasksAll(Resource):
         else:
             abort(502)
 
-    @auth.login_required
-    def get(self):
-        '''
-        queries all the tasks.
-        :return: json formatted list of tasks.
-        '''
-        try:
-            response = requests.get(JOB_PROXY_URL + '/state')
-        except:
-            abort(502)
 
-        if response.status_code == 200 and response.content:
-            states = json.loads(response.content.decode('utf-8'))['state']
-            docker_patter = re.compile(
-                '^docker run -v (?P<inbbxhost>[^ :]+):(?P<inbbxcontainer>[^ :]+) -v (?P<inrhost>[^ :]+):(?P<inrcontainer>[^ :]+) -v (?P<outhost>[^ :]+):(?P<outcontainer>[^ :]+) (?P<box>\w+/\w+) (?P<cmd>\w+)')
-            result = []
-            for state in states:
-                state['code'] = 'FAILED' if state['code'] == '1' else 'RUNNING/DONE'
-                description = str.strip(state['description'])
-                res = re.fullmatch(docker_patter, description)
-                if (res):
-                    result.append({
-                        'mounts': {
-                            'bbx_file': {
-                                'host': res.group('inbbxhost'),
-                                'container': res.group('inbbxcontainer')
-                            },
-                            'input_file': {
-                                'host': res.group('inrhost'),
-                                'container': res.group('inrcontainer')
-                            },
-                            'outputdir': {
-                                'host': res.group('outhost'),
-                                'container': res.group('outcontainer')
-                            }
+@auth.login_required
+def get(self):
+    '''
+    queries all the tasks.
+    :return: json formatted list of tasks.
+    '''
+    try:
+        response = requests.get(JOB_PROXY_URL + '/state')
+    except:
+        abort(502)
+
+    if response.status_code == 200 and response.content:
+        states = json.loads(response.content.decode('utf-8'))['state']
+        docker_patter = re.compile(
+            '^docker run -v (?P<inbbxhost>[^ :]+):(?P<inbbxcontainer>[^ :]+) -v (?P<inrhost>[^ :]+):(?P<inrcontainer>[^ :]+) -v (?P<outhost>[^ :]+):(?P<outcontainer>[^ :]+) (?P<box>\w+/\w+) (?P<cmd>\w+)')
+        result = []
+        for state in states:
+            state['code'] = 'FAILED' if state['code'] == '1' else 'RUNNING/DONE'
+            description = str.strip(state['description'])
+            res = re.fullmatch(docker_patter, description)
+            if res:
+                result.append({
+                    'mounts': {
+                        'bbx_file': {
+                            'host': res.group('inbbxhost'),
+                            'container': res.group('inbbxcontainer')
                         },
-                        'container': res.mount('container'),
-                        'box': res.mount('box'),
-                        'cmd': res.mount('cmd')
-                    })
+                        'input_file': {
+                            'host': res.group('inrhost'),
+                            'container': res.group('inrcontainer')
+                        },
+                        'outputdir': {
+                            'host': res.group('outhost'),
+                            'container': res.group('outcontainer')
+                        }
+                    },
+                    'container': res.mount('container'),
+                    'box': res.mount('box'),
+                    'cmd': res.mount('cmd')
+                })
 
-            return marshal(states, full_task, envelope='states')
-        else:
-            abort(502)
+        return marshal(states, full_task, envelope='states')
+    else:
+        abort(502)
 
 
 class TaskId(Resource):

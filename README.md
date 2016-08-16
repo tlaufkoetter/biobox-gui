@@ -14,7 +14,7 @@ Shows you the available bioboxes and interfaces at /bioboxgui. Provides a REST A
 
 ## Quickstart
 
-Make sure you have Mesos, Docker, and jkrue/jobproxy (as well as the currently used Mesos scheduler, at this point chronos) installed and running.
+Make sure you have Mesos 0.26.1, Docker, and jkrue/jobproxy (0.1.0.beta.1.6) (as well as the currently used Mesos scheduler, at this point chronos) installed and running.
 ```bash
 # must be on a filesystem shared by the mesos slaves
 > export BIOBOX_HOST_BASE=$HOME/.biobox  #maybe add this to your .bashrc, change to your liking
