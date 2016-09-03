@@ -5,22 +5,32 @@
         .module('BioboxGui')
         .factory('loginService', loginService);
 
-    function loginService($http, $log, store) {
+    function loginService($http, $log, $q, sessionService) {
         var service = {
             login: login,
         };
         return service;
 
         function login(user) {
-            var promise = $http.post('/bioboxgui/api/token', user)
-                .success(function(data, status, headers, config) {
-                    $log.info("logged in: ", user);
-                    return data;
-                }).error(function(data, status, headers, config) {
-                    $log.warn("login failed: ", status);
-                    return {status: false};
-                });
-            return promise;
+            return $http.post('/bioboxgui/api/token', user)
+                .then(
+                        function(response) {
+                            $log.info("logged in: ", user);
+                            var token = response.data.token;
+                            var roles = response.data.roles;
+                            if (token && roles) {
+                                user.authentication_token = token;
+                                user.roles = roles;
+                                sessionService.setCurrentUser(user);
+                            } else {
+                                return $q.reject(reponse.status);
+                            }
+                        },
+                        function(response) {
+                            $log.warn("login failed: ", response);
+                            return $q.reject(response.status);
+                        }
+                     );
         }
     };
 })();

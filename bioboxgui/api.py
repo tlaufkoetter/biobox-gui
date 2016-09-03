@@ -52,10 +52,8 @@ def verify_token(token):
     user = None
     try:
         user = models.User.verify_auth_token(token)
-    except SignatureExpired:
-        abort(401)  # valid token, but expired
-    except BadSignature:
-        abort(401)  # invalid token
+    except (SignatureExpired, BadSignature) as e:
+        abort(401)  # valid token, but expired or invalid token
     if not user:
         return False
     g.user = user
@@ -70,7 +68,7 @@ def verify_password(email, password):
         password = user_request['password']
     user = models.User.query.filter_by(email=email).first()
     if not user or not user.verify_password(password):
-        return False
+        abort(404)
     g.user = user
     return True
 

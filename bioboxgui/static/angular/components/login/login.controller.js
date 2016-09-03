@@ -5,7 +5,7 @@
         .module('BioboxGui')
         .controller('LoginController', LoginController);
 
-    function LoginController(loginService, sessionService, Notification, $window) {
+    function LoginController(loginService, Notification, $window) {
         var vm = this;
         vm.login = login;
 
@@ -13,15 +13,27 @@
             if (user !== {}) {
                 loginService.login(user)
                     .then(
-                            function(promise) {
+                            function() {
                                 Notification.success("Login successful!");
-                                user.authentication_token = promise.token;
-                                user.roles = promise.roles;
-                                sessionService.setCurrentUser(user);
                                 $window.location.href = '#/bioboxgui';
                             },
-                            function(promise) {
-                                Notification.error("Login was unsuccessful!");
+                            function(status_code) {
+                                var message;
+                                switch (status_code) {
+                                    case 404:
+                                        message = "Either the user doesn't"
+                                            + "exist or your credentials are invalid.";
+                                        break;
+                                    case 400:
+                                        message = "Your request is invalid.";
+                                        break;
+                                    default:
+                                        message = "There was an error.";
+                                }
+                                Notification.error({
+                                    title: "Login was unsuccessful!",
+                                    message: message
+                                });
                             }
                          );
             } else {
