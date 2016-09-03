@@ -12,7 +12,8 @@ from bioboxgui import db
 from config import basedir, SECRET_KEY
 
 IMAGES_URL = \
-    'https://raw.githubusercontent.com/pbelmann/data/feature/new-image-list/images.yml'
+    'https://raw.githubusercontent.com/' \
+    + 'pbelmann/data/feature/new-image-list/images.yml'
 
 # linking bioboxes with tasks since 2016.
 biobox_tasks = db.Table(
@@ -94,7 +95,10 @@ class Biobox(db.Model):
     description = db.Column(db.String, nullable=False)
     tasks = db.relationship('Task', secondary=biobox_tasks)
     image = db.relationship('Image', uselist=False, back_populates='biobox')
-    source_id = db.Column(db.Integer, db.ForeignKey('source.id'), nullable=False)
+    source_id = db.Column(
+            db.Integer,
+            db.ForeignKey('source.id'), nullable=False
+    )
 
 
 class Image(db.Model):
@@ -209,7 +213,7 @@ def validate_images(yaml_dict):
             'r') as schema_file:
         schema_string = schema_file.read()
         schema = json.loads(schema_string)
-        if not 'images' in yaml_dict.keys():
+        if 'images' not in yaml_dict.keys():
             raise AttributeError("no images")
         for image in yaml_dict['images']:
             validate(image, schema)
