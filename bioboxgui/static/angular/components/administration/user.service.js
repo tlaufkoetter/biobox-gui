@@ -5,7 +5,7 @@
         .module('BioboxGui')
         .factory('userService', userService);
 
-    function userService($http) {
+    function userService($http, $q, $log) {
         var service = {
                 createUser: createUser,
                 grantPermission: grantPermission,
@@ -15,17 +15,17 @@
         return service;
 
         function createUser(user) {
-            $http.post('/bioboxgui/api/users', user)
+            var promise = $http.post('/bioboxgui/api/users', user)
                 .then(
-                    function success(response) {
-                        console.log(response);
-                        return response.status_code;
-                    },
-                    function error(response) {
-                        console.log(response);
-                        return response.status_code;
-                    }
-                )
+                        function(response) {
+                            $log.info('Successfully create user:', user);
+                        },
+                        function(response) {
+                            $log.warn('Failed to create user:', response);
+                            return $q.reject(response.status);
+                        }
+                     );
+            return promise;
         }
 
         function grantPermission(username, role) {
