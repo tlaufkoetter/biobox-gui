@@ -5,7 +5,7 @@
         .module('BioboxGui')
         .factory('sourceService', sourceService);
 
-    function sourceService($http) {
+    function sourceService($http, $log, $q) {
         var service = {
             addSource: addSource,
             deleteSource: deleteSource
@@ -17,6 +17,15 @@
 
         function addSource(source) {
             return $http.post('/bioboxgui/api/sources', source)
+                .then(
+                        function(response) {
+                            $log.info('Added new source: ', source);
+                        },
+                        function(response) {
+                            $log.warn('Failed to add new source: ', response);
+                            return $q.reject(response.status);
+                        }
+                     );
         }
     }
 })();

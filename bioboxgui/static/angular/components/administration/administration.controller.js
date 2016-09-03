@@ -50,11 +50,27 @@
 
         function addSource(source) {
             sourceService.addSource(source).then(
-                function success() {
-                    alert('Yay');
+                function() {
+                    Notification.success("Created new source");
                 },
-                function failure() {
-                    alert(':(');
+                function(status_code) {
+                    var message;
+                    switch (status_code) {
+                        case 400:
+                            message = "The input is invalid. "
+                                + "Maybe the source already exists "
+                                + "or no valid source could be found at the given URL.";
+                            break;
+                        case 401:
+                            message = "You're not logged in.";
+                            break;
+                        case 403:
+                            message = "You're not allowed to do that.";
+                            break;
+                        default:
+                            message = "Something went wrong.";
+                    }
+                    Notification.error({title: "Adding source failed", message: message});
                 }
             );
         }
