@@ -5,7 +5,7 @@
         .module('BioboxGui')
         .controller('LoginController', LoginController);
 
-    function LoginController(loginService, sessionService, userService, $window) {
+    function LoginController(loginService, sessionService, Notification, $window) {
         var vm = this;
         vm.login = login;
 
@@ -13,16 +13,19 @@
             if (user !== {}) {
                 loginService.login(user)
                     .then(
-                            function success(response) {
-                                user.authentication_token = response.data.token;
-                                user.roles = response.data.roles;
+                            function(promise) {
+                                Notification.success("Login successful!");
+                                user.authentication_token = promise.token;
+                                user.roles = promise.roles;
                                 sessionService.setCurrentUser(user);
                                 $window.location.href = '#/bioboxgui';
                             },
-                            function failure(response) {
-                                console.log('what now');
+                            function(promise) {
+                                Notification.error("Login was unsuccessful!");
                             }
                          );
+            } else {
+                Notification.error("Please enter your credentials!");
             }
         };
     };
