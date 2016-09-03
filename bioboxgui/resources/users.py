@@ -103,11 +103,9 @@ class UserLogin(Resource):
     def post(self):
         try:
             token = g.user.generate_auth_token()
-        except SignatureExpired:
-            abort(400)  # valid token, but expired
-        except BadSignature:
-            abort(401)  # invalid token
+        except SignatureExpired | BadSignature:
+            abort(401)  # token valid or expired
         return marshal({
             'token': token.decode('ascii'),
             'roles': [role.name for role in g.user.roles]
-            }, regular_token), 200
+        }, regular_token), 200
