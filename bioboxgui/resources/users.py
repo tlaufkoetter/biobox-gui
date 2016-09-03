@@ -13,20 +13,20 @@ regular_role = {
 regular_user = {
     'username': fields.String,
     'email': fields.String,
-    'active': fields.Boolean,
-    'confirmed_at': fields.DateTime,
     'roles': fields.List(fields.Nested(regular_role))
 }
 
 regular_token = {
-    'token': fields.String
+    'token': fields.String,
+    'roles': fields.List(fields.String)
 }
 
 
 class UserName(Resource):
     @auth.login_required
-    @roles_accepted('admin')
     def get(self, username):
+        if not g.user.username == username and "admin" not in g.user.roles:
+            abort(403)
         user = models.User.query.filter_by(
             username=username
         ).first()
@@ -107,4 +107,7 @@ class UserLogin(Resource):
             abort(400)  # valid token, but expired
         except BadSignature:
             abort(401)  # invalid token
-        return marshal({'token': token.decode('ascii')}, regular_token), 200
+        return marshal({
+            'token': token.decode('ascii'),
+            'roles': [role.name for role in g.user.roles]
+            }, regular_token), 200
