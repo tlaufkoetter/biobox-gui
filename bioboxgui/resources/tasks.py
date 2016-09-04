@@ -116,7 +116,7 @@ class TasksAll(Resource):
         if response.status_code == 200 and response.content:
             return marshal({
                 'id': response.content.decode('utf-8')
-            }, simple_task), 201
+            }, simple_task, envelope='state'), 201
         else:
             abort(502)
 
@@ -192,7 +192,7 @@ class TaskId(Resource):
         response = requests.post(JOB_PROXY_URL + '/state', task_id)
         if response.status_code == 200 and response.content:
             state = json.loads(response.content.decode('utf-8'))['state']
-            return marshal(state, full_task)
+            return marshal(state, full_task, envelope='state')
         else:
             abort(404)
 

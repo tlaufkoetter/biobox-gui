@@ -49,6 +49,7 @@ request_parser.add_argument(
 
 @auth.verify_token
 def verify_token(token):
+    print('token');
     user = None
     try:
         user = models.User.verify_auth_token(token)

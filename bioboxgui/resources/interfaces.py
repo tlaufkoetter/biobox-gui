@@ -1,4 +1,3 @@
-from flask import abort
 from flask_restful import marshal, Resource, fields
 
 from bioboxgui import models
@@ -17,5 +16,5 @@ class Interfaces(Resource):
         """
         result = models.Interface.query.all()
         if not result:
-            abort(404)
-        return marshal(result, regular_interface)
+            return {'interfaces': []}
+        return marshal(result, regular_interface, envelope='interfaces')

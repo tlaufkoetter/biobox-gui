@@ -40,7 +40,6 @@
                         function(response) {
                             $log.info("logged out");
                             sessionService.setCurrentUser(null);
-                            $route.reload();
                         }
                      );
         }

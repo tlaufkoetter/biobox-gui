@@ -60,7 +60,7 @@ class BioboxesAll(Resource):
             result = models.get_bioboxes(interface)
             if not result:
                 abort(404)
-            return marshal(result, regular_biobox)
+            return marshal(result, regular_biobox, envelope='bioboxes')
 
     def put(self):
         """
@@ -83,7 +83,7 @@ class BioboxId(Resource):
         result = models.Biobox.query.get(biobox_id)
         if not result:
             abort(404)
-        return marshal(result, regular_biobox)
+        return marshal(result, regular_biobox, envelope='biobox')
 
 
 class BioboxName(Resource):
@@ -99,11 +99,9 @@ class BioboxName(Resource):
         ).first()
         if not result:
             abort(404)
-        return marshal(result, regular_biobox)
+        return marshal(result, regular_biobox, envelope='biobox')
 
 
 def get_all_bioboxes():
     bioboxes = models.Biobox.query.order_by(models.Biobox.title).all()
-    if not bioboxes:
-        abort(404)
-    return marshal(bioboxes, regular_biobox)
+    return marshal(bioboxes, regular_biobox, envelope='bioboxes')

@@ -28,26 +28,10 @@
                 controllerAs: "main",
                 resolve: {
                     interfaces: function (bioboxService) {
-                        return bioboxService.getInterfaces()
-                            .then(
-                                function success(response) {
-                                    console.log(response);
-                                    return response.data;
-                                },
-                                function failure(response) {
-                                    console.log(response);
-                                    return response.status;
-                                });
+                        return bioboxService.getInterfaces();
                     },
                     bioboxes: function (bioboxService) {
-                        return bioboxService.getBioboxes().then(
-                            function success(response) {
-                                console.log(response);
-                                return response.data;
-                            },
-                            function failure(response) {
-                                return 'fail';
-                            });
+                        return bioboxService.getBioboxes();
                     }
                 },
                 require_login: false,

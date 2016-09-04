@@ -9,7 +9,7 @@
         </option>
     </select>
     <h2>Bioboxes</h2>
-    <div ng-hide="!main.bioboxes.length" id="results" class="scroller">
+    <div ng-hide="main.bioboxes.length < 1" id="results" class="scroller">
         <div>
             <table class="table table-striped table-hover clickable">
                 <tbody>
@@ -19,6 +19,9 @@
                 </tbody>
             </table>
         </div>
+    </div>
+    <div ng-show="main.bioboxes.length < 1">
+        <p>No bioboxes to show.</p>
     </div>
     <form role="form" ng-submit="main.updateBioboxes()">
         <button type="submit" class="btn btn-default">update</button>

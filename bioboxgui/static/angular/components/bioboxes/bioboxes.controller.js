@@ -5,13 +5,12 @@
         .module('BioboxGui')
         .controller('BioboxController', BioboxController);
 
-    function BioboxController(bioboxService, $location, interfaces, bioboxes) {
+    function BioboxController(bioboxService, $location, interfaces, bioboxes, Notification) {
         var vm = this;
 
         vm.interfaces = interfaces;
         vm.bioboxes = bioboxes;
 
-        vm.addSource = addSource;
         vm.getBioboxes = getBioboxes;
         vm.getBiobox = getBiobox;
         vm.updateBioboxes = updateBioboxes;
@@ -21,67 +20,71 @@
         vm.selectTask = selectTask;
         vm.submitTask = submitTask;
 
-        function addSource(source) {
-            bioboxService.addSource(source).then(
-                function success(response) {
-                    updateBioboxes();
-                },
-                function failure(response) {
-                    vm.bioboxes = 'fail';
-                }
-            );
-        };
-
         function getBioboxes() {
-            bioboxService.getBioboxes().then(
-                function success(response) {
-                    console.log(response);
-                    vm.bioboxes = response.data;
-                },
-                function failure(response) {
-                    vm.bioboxes = 'fail';
-                });
+            bioboxService.getBioboxes()
+                .then(
+                        function(bioboxes) {
+                            vm.bioboxes = bioboxes;
+                        },
+                        function(status_code) {
+                            vm.bioboxes = [];
+                            Notification.error({title: "Fetching Bioboxes failed", message: "Something went wrong"});
+                        }
+                     );
         };
 
         function getBiobox(pmid) {
             vm.task = null;
             bioboxService.getBiobox(pmid)
                 .then(
-                    function success(response) {
-                        console.log(response);
-                        vm.biobox = response.data;
-                    },
-                    function failure(response) {
-                        console.log(response);
-                        vm.biobox = response.status;
-                    }
-                );
+                        function(biobox) {
+                            vm.biobox = biobox;
+                        },
+                        function(status_code) {
+                            vm.biobox = null;
+                            var message;
+                            switch(status_code) {
+                                case 404:
+                                    message = "This biobox does not exist.";
+                                    break;
+                                default:
+                                    message = "Something went wrong.";
+                            }
+                            Notification.error({
+                                title: "Fetching Biobox failed",
+                                message: message
+                            });
+                        }
+                     );
         }
 
         function updateBioboxes() {
             bioboxService.updateBioboxes()
                 .then(
-                    function success(response) {
-                        vm.bioboxes = response.data;
-                    },
-                    function failure(response) {
-                        vm.bioboxes = 'fail';
-                    }
-                )
-            ;
+                        function(bioboxes) {
+                            vm.bioboxes = bioboxes;
+                            Notification.info("Updatet biobox list");
+                        },
+                        function(status_code) {
+                            vm.bioboxes = null;
+                            Notification.error("Updating bioboxes failed.");
+                        }
+                     )
+                ;
             vm.getInterfaces();
         };
 
         function getInterfaces() {
             bioboxService.getInterfaces()
                 .then(
-                    function success(response) {
-                        console.log(response);
-                        vm.interfaces = response.data;
-                    },
-                    function failure(response) {
-                        vm.interfaces = response.status;
-                    });
+                        function(interfaces) {
+                            vm.interfaces = interfaces;
+                            Notification.info("Updated interface list.");
+                        },
+                        function(status_code) {
+                            vm.interfaces = [];
+                            Notification.error("Updating interfaces failed.");
+                        });
         };
 
         function getInterface(selectedInterface) {
@@ -89,12 +92,24 @@
                 vm.interface = selectedInterface;
                 bioboxService.getInterface(selectedInterface.name)
                     .then(
-                        function success(response) {
-                            vm.bioboxes = response.data;
-                        },
-                        function failure(response) {
-                            vm.bioboxes = null;
-                        });
+                            function(bioboxes) {
+                                vm.bioboxes = bioboxes;
+                            },
+                            function(status_code) {
+                                vm.bioboxes = [];
+                                var message;
+                                switch(status_code) {
+                                    case 404:
+                                        message = "The interface doesn't exist";
+                                        break;
+                                    default:
+                                        message = "Something went wrong";
+                                }
+                                Notification.error({
+                                    title: "Selecting interface failed",
+                                    message: message
+                                });
+                            });
             } else {
                 getBioboxes();
             }
@@ -113,13 +128,30 @@
         function submitTask() {
             bioboxService.submitTask('test', vm.biobox.image.dockerhub, vm.task.name, vm.task.file)
                 .then(
-                    function success(response) {
-                        console.log(response);
-                    },
-                    function failure(response) {
-                        console.log(response);
-                    }
-                );
+                        function() {
+                            Notification.info("Task submitted.");
+                        },
+                        function(status_code) {
+                            var message;
+                            switch(status_code) {
+                                case 400:
+                                    message = "Please check your input file.";
+                                    break;
+                                case 401:
+                                    message = "You're not logged in";
+                                    break;
+                                case 403:
+                                    message = "You're not allowed to do that";
+                                    break;
+                                default:
+                                    message = "Something went wrong";
+                            }
+                            Notification.error({
+                                title: "Submitting task failed",
+                                message: message
+                            });
+                        }
+            );
         };
 
     };
