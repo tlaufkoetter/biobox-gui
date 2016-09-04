@@ -22,6 +22,7 @@
         function responseError(response) {
             if (response.status == 401) {
                 $window.location.href = '#/bioboxgui/login';
+                sessionService.setCurrentUser(null);
             }
             return $q.reject(response);
         };
