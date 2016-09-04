@@ -109,3 +109,7 @@ class UserLogin(Resource):
             'token': token.decode('ascii'),
             'roles': [role.name for role in g.user.roles]
         }, regular_token), 200
+
+    @basic_auth.login_required
+    def delete(self):
+        g.user = None

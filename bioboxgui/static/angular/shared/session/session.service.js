@@ -8,7 +8,8 @@
     function sessionService(store) {
         var service = {
                 getCurrentUser: getCurrentUser,
-                setCurrentUser: setCurrentUser
+                setCurrentUser: setCurrentUser,
+                isAuthenticated: isAuthenticated
             },
             currentUser = null;
         return service;
@@ -24,6 +25,10 @@
             currentUser = user;
             store.set('user', user);
             return currentUser;
+        }
+
+        function isAuthenticated() {
+            return currentUser !== null && currentUser;
         }
     };
 })();

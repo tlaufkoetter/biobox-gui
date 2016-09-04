@@ -5,9 +5,10 @@
         .module('BioboxGui')
         .factory('loginService', loginService);
 
-    function loginService($http, $log, $q, sessionService) {
+    function loginService($http, $log, $q, $route, sessionService) {
         var service = {
             login: login,
+            logout: logout
         };
         return service;
 
@@ -29,6 +30,17 @@
                         function(response) {
                             $log.warn("login failed: ", response);
                             return $q.reject(response.status);
+                        }
+                     );
+        }
+
+        function logout() {
+            return $http.delete('/bioboxgui/api/token')
+                .then(
+                        function(response) {
+                            $log.info("logged out");
+                            sessionService.setCurrentUser(null);
+                            $route.reload();
                         }
                      );
         }

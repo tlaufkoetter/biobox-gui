@@ -10,10 +10,21 @@
             restrict: "E",
             replace: true,
             templateUrl: "/static/angular/shared/navigation/navigation.html",
-            controller: function ($scope) {
-                $scope.routes = routeNavigation.routes;
-                $scope.activeRoute = routeNavigation.activeRoute;
-            }
+            controller: function ($scope, sessionService) {
+                var vm = this;
+                vm.routes = routes;
+                vm.activeRoute = routeNavigation.activeRoute;
+                vm.authenticated = authenticated;
+
+                function routes() {
+                    return routeNavigation.routes;
+                }
+
+                function authenticated() {
+                    return sessionService.isAuthenticated();
+                }
+            },
+            controllerAs: 'main'
         };
     };
 })();

@@ -9,7 +9,9 @@
     </div>
     <div class="collapse navbar-collapse" ng-class="{in: showMobileNav}">
         <ul class="nav navbar-nav">
-            <li ng-repeat="route in routes" ng-class="{active: activeRoute(route)}">
+            <li ng-repeat="route in main.routes()"
+                ng-class="{active: main.activeRoute(route)}"
+                ng-hide="(main.authenticated() && (route.require_login === null)) || (!main.authenticated() && (route.require_login))">
                 <a ng-href="#{{ route.path }}">{{ route.name }}</a>
             </li>
         </ul>

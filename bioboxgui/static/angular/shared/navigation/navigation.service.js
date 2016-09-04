@@ -11,7 +11,8 @@
             if (route.name) {
                 routes.push({
                     path: path,
-                    name: route.name
+                    name: route.name,
+                    require_login: route.require_login
                 });
             }
         });
