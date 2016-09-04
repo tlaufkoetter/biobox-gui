@@ -11,7 +11,7 @@
         <ul class="nav navbar-nav">
             <li ng-repeat="route in main.routes()"
                 ng-class="{active: main.activeRoute(route)}"
-                ng-hide="(main.authenticated() && (route.require_login === null)) || (!main.authenticated() && (route.require_login))">
+                ng-show="main.showRoute(route)">
                 <a ng-href="#{{ route.path }}">{{ route.name }}</a>
             </li>
         </ul>

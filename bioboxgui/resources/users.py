@@ -90,7 +90,11 @@ class UserAll(Resource):
             abort(400)  # missing arguments
         if models.User.query.filter_by(username=username).first() is not None:
             abort(400)  # existing user
-        user = models.User(username=username, email=email)
+        user = models.User(
+            username=username,
+            email=email,
+            roles=[models.Role.query.filter_by(name='base').first()]
+        )
         user.hash_password(password)
         db.session.add(user)
         db.session.commit()

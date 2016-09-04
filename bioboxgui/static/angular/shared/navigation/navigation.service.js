@@ -12,7 +12,8 @@
                 routes.push({
                     path: path,
                     name: route.name,
-                    require_login: route.require_login
+                    require_login: route.require_login,
+                    roles_accepted: route.roles_accepted
                 });
             }
         });

@@ -5,13 +5,14 @@
         .module('BioboxGui')
         .service('sessionService', sessionService);
 
-    function sessionService(store) {
+    function sessionService(store, $rootScope) {
         var service = {
                 getCurrentUser: getCurrentUser,
                 setCurrentUser: setCurrentUser,
-                isAuthenticated: isAuthenticated
             },
             currentUser = null;
+        $rootScope.isAuthenticated = isAuthenticated;
+        $rootScope.hasRole = hasRole;
         return service;
 
         function getCurrentUser() {
@@ -29,6 +30,17 @@
 
         function isAuthenticated() {
             return currentUser !== null && currentUser;
+        }
+
+        function hasRole(roles) {
+            var hasRole = false;
+            if (isAuthenticated()) {
+                var user = getCurrentUser();
+                roles.forEach(function(role) {
+                    hasRole |= user.roles.indexOf(role) > -1;
+                });
+            }
+            return hasRole;
         }
     };
 })();

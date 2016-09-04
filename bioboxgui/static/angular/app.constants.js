@@ -3,15 +3,12 @@
 
     angular
         .module('BioboxGui')
-        .constant('Constants', Constants);
-
-    function Constants() {
-        var vm = this;
-        vm.Roles = {
-            admin: 'admin',
-            trusted: 'trusted',
-            user: 'user'
-        };
-    }
+        .constant('Constants', {
+            Roles: {
+                admin: 'admin',
+                trusted: 'trusted',
+                base: 'base',
+                user: 'user'
+            }
+        });
 })();
-

@@ -17,7 +17,7 @@ the_view = bioboxgui.views
 @app.before_first_request
 def create_user():
     db.create_all()
-    role_names = ['admin', 'trusted', 'common']
+    role_names = ['admin', 'trusted', 'user', 'base']
     roles = []
     for role_name in role_names:
         role = models.Role.query.filter_by(name=role_name).first()
