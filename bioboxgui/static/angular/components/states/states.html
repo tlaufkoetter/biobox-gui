@@ -5,17 +5,28 @@
         <tr>
             <td>ID</td>
             <td>Status</td>
-            <td>Command</td>
-            <td>stdout</td>
-            <td>stderr</td>
+            <td>Biobox</td>
+            <td>Mounts</td>
+            <td></td>
         </tr>
         </thead>
         <tr ng-repeat="state in main.states">
             <td><b>{{ state.id }}</b></td>
             <td>{{ state.code }}</td>
-            <td>{{ state.description }}</td>
-            <td>{{ state.stdout }}</td>
-            <td>{{ state.stderr }}</td>
+            <td>{{ state.box }}:{{ state.cmd }}</td>
+            <td>
+                <table>
+                    <tr>
+                        <td><b>BBX&nbsp;file</b></td><td>{{ state.mounts.bbx_file.host }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Input&nbsp;file</b></td><td>{{ state.mounts.input_file.host }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Output&nbsp;dir</b></td><td>{{ state.mounts.outputdir.host }}</td>
+                    </tr>
+                </table>
+            </td>
             <td>
                 <form ng-submit="main.deleteTask(state.id)">
                     <button type="submit" class="btn btn-danger" ng-action="main.deleteTask(state.id)"><span

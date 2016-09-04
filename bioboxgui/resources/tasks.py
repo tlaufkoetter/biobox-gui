@@ -20,12 +20,24 @@ simple_task = {
     'id': fields.String
 }
 
+full_mount = {
+    'host': fields.String,
+    'container': fields.String
+}
+
+full_mounts = {
+    'bbx_file': fields.Nested(full_mount),
+    'input_file': fields.Nested(full_mount),
+    'outputdir': fields.Nested(full_mount)
+}
+
 full_task = {
-    'description': fields.String,
     'id': fields.String,
-    'stderr': fields.String,
-    'stdout': fields.String,
-    'code': fields.String
+    'code': fields.String,
+    'mounts': fields.Nested(full_mounts),
+    'container': fields.String,
+    'box': fields.String,
+    'cmd': fields.String
 }
 
 
@@ -53,10 +65,13 @@ class TasksAll(Resource):
         '''
         timestamp = time.time()
         s = self.reqparse.parse_args(strict=True)
-        ts = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d_%H-%M-%S')
+        ts = datetime\
+            .datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d_%H-%M-%S')
         job = '{}_{}_{}_{}'.format(ts, s['cmd'], s['user'],
                                    str.split(s['container'], '/')[1])
-        hash_object = hashlib.pbkdf2_hmac('sha256', job.encode(), str(timestamp).encode(), 100000, dklen=5)
+        hash_object = hashlib.pbkdf2_hmac('sha256', job.encode(),
+                                          str(timestamp).encode(),
+                                          100000, dklen=5)
         job += '_{}'.format(binascii.hexlify(hash_object).decode('utf-8'))
         print(job)
         biobox_yml = {
@@ -74,7 +89,8 @@ class TasksAll(Resource):
             ]
         }
         bbx_file = job + '_biobox.yaml'
-        with open(os.path.join(app.config.get('FOLDERS')['bioboxes'], bbx_file), 'w') as file:
+        with open(os.path.join(app.config.get('FOLDERS')['bioboxes'],
+                               bbx_file), 'w') as file:
             file.write(yaml.dump(biobox_yml))
 
         args = {
@@ -86,7 +102,8 @@ class TasksAll(Resource):
                    ' -v {}:/bbx/input/reads.fq.gz'
                    ' -v {}:/bbx/output'
                    ' {} {}'.format(
-                os.path.join(app.config.get('HOST_BASE'), 'input', 'bbx_yaml', bbx_file),
+                os.path.join(app.config.get('HOST_BASE'),
+                             'input', 'bbx_yaml', bbx_file),
                 os.path.join(app.config.get('HOST_BASE'), 'input', s['file']),
                 os.path.join(app.config.get('HOST_BASE'), 'output', job),
                 s['container'], s['cmd']),
@@ -97,55 +114,71 @@ class TasksAll(Resource):
 
         response = requests.post(JOB_PROXY_URL + '/submit', json=args)
         if response.status_code == 200 and response.content:
-            return marshal({'id': response.content.decode('utf-8')}, simple_task), 201
+            return marshal({
+                'id': response.content.decode('utf-8')
+            }, simple_task), 201
         else:
             abort(502)
 
+    @auth.login_required
+    def get(self):
+        '''
+        queries all the tasks.
+        :return: json formatted list of tasks.
+        '''
+        try:
+            response = requests.get(JOB_PROXY_URL + '/state')
+        except:
+            abort(502)
 
-@auth.login_required
-def get(self):
-    '''
-    queries all the tasks.
-    :return: json formatted list of tasks.
-    '''
-    try:
-        response = requests.get(JOB_PROXY_URL + '/state')
-    except:
-        abort(502)
+        if response.status_code == 200 and response.content:
+            states = json.loads(response.content.decode('utf-8'))['state']
+            docker_patter = re.compile(
+                '^docker run ' +
+                '-v (?P<inbbxhost>[^ :]+):(?P<inbbxcontainer>[^ :]+) ' +
+                '-v (?P<inrhost>[^ :]+):(?P<inrcontainer>[^ :]+) ' +
+                '-v (?P<outhost>[^ :]+):(?P<outcontainer>[^ :]+) ' +
+                '(?P<box>\w+/\w+) (?P<cmd>\w+)'
+            )
+            result = []
+            for state in states:
+                description = str.strip(state['description'])
+                res = re.fullmatch(docker_patter, description)
+                if res:
+                    status_code = state['code']
+                    if status_code == '0':
+                        status_code = 'SUCCESS'
+                    elif status_code == '1':
+                        status_code = 'FAILED'
+                    elif status_code == '2':
+                        status_code = 'RUNNING'
+                    else:
+                        status_code = 'UNKNOWN'
 
-    if response.status_code == 200 and response.content:
-        states = json.loads(response.content.decode('utf-8'))['state']
-        docker_patter = re.compile(
-            '^docker run -v (?P<inbbxhost>[^ :]+):(?P<inbbxcontainer>[^ :]+) -v (?P<inrhost>[^ :]+):(?P<inrcontainer>[^ :]+) -v (?P<outhost>[^ :]+):(?P<outcontainer>[^ :]+) (?P<box>\w+/\w+) (?P<cmd>\w+)')
-        result = []
-        for state in states:
-            state['code'] = 'FAILED' if state['code'] == '1' else 'RUNNING/DONE'
-            description = str.strip(state['description'])
-            res = re.fullmatch(docker_patter, description)
-            if res:
-                result.append({
-                    'mounts': {
-                        'bbx_file': {
-                            'host': res.group('inbbxhost'),
-                            'container': res.group('inbbxcontainer')
+                    result.append({
+                        'id': state['id'],
+                        'code': status_code,
+                        'mounts': {
+                            'bbx_file': {
+                                'host': res.group('inbbxhost'),
+                                'container': res.group('inbbxcontainer')
+                            },
+                            'input_file': {
+                                'host': res.group('inrhost'),
+                                'container': res.group('inrcontainer')
+                            },
+                            'outputdir': {
+                                'host': res.group('outhost'),
+                                'container': res.group('outcontainer')
+                            }
                         },
-                        'input_file': {
-                            'host': res.group('inrhost'),
-                            'container': res.group('inrcontainer')
-                        },
-                        'outputdir': {
-                            'host': res.group('outhost'),
-                            'container': res.group('outcontainer')
-                        }
-                    },
-                    'container': res.mount('container'),
-                    'box': res.mount('box'),
-                    'cmd': res.mount('cmd')
-                })
+                        'box': res.group('box'),
+                        'cmd': res.group('cmd')
+                    })
 
-        return marshal(states, full_task, envelope='states')
-    else:
-        abort(502)
+            return marshal(result, full_task, envelope='states')
+        else:
+            abort(502)
 
 
 class TaskId(Resource):
@@ -159,6 +192,9 @@ class TaskId(Resource):
         response = requests.post(JOB_PROXY_URL + '/state', task_id)
         if response.status_code == 200 and response.content:
             state = json.loads(response.content.decode('utf-8'))['state']
+            return marshal(state, full_task)
+        else:
+            abort(404)
 
     @auth.login_required
     def delete(self, task_id):
@@ -167,7 +203,9 @@ class TaskId(Resource):
         :param task_id: the task's id
         :return: none
         '''
-        reponse = requests.delete(JOB_PROXY_URL + '/delete/' + task_id);
+        reponse = requests.delete(JOB_PROXY_URL +
+                                  '/delete/' +
+                                  task_id)
         if reponse.status_code == 204:
             return 204
         else:
