@@ -23,8 +23,19 @@ regular_token = {
 
 
 class UserName(Resource):
+    """
+    Access a single user by their name.
+    """
     @auth.login_required
     def get(self, username):
+        """
+        Get a user by their name.
+
+        The accessor has either to be the same user as the one they are
+        trying to access or be an admin
+        :param username: name of the user that shall be received.
+        :return: a json formatted user with roles.
+        """
         if not g.user.username == username and "admin" not in g.user.roles:
             abort(403)
         user = models.User.query.filter_by(
@@ -37,6 +48,11 @@ class UserName(Resource):
     @auth.login_required
     @roles_accepted('admin')
     def delete(self, username):
+        """
+        Delete a user by their name.
+        :param username: name of the user to be deleted.
+        :return: None
+        """
         user = models.User.query.filter_by(
             username=username
         ).first()
@@ -48,6 +64,9 @@ class UserName(Resource):
 
 
 class UserAll(Resource):
+    """
+    Access the whole user pool
+    """
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
@@ -76,12 +95,24 @@ class UserAll(Resource):
     @auth.login_required
     @roles_accepted('admin')
     def get(self):
+        """
+        Queries the whole user list.
+        :return: list of json formatted users.
+        """
         users = models.User.query.all()
         return marshal(users, regular_user)
 
     @auth.login_required
     @roles_accepted('admin')
     def post(self):
+        """
+        Creates a new user.
+
+        Params in the post data.
+        :param username: username must be unique.
+        :param email: email must be unique.
+        :param password: better be strong.
+        """
         user_request = self.reqparse.parse_args()
         username = user_request['username']
         password = user_request['password']
@@ -103,8 +134,18 @@ class UserAll(Resource):
 
 
 class UserLogin(Resource):
+    """
+    Accesses the user session.
+    """
     @basic_auth.login_required
     def post(self):
+        """
+        Generates a authentication token.
+
+        Login data has to be provided in the post data.
+        :param email: login via email adress.
+        :param password: better be the right one.
+        """
         try:
             token = g.user.generate_auth_token()
         except SignatureExpired | BadSignature:
@@ -116,4 +157,9 @@ class UserLogin(Resource):
 
     @auth.login_required
     def delete(self):
+        """
+        Ends the user's session.
+
+        More of a dummy method for now.
+        """
         g.user = None
