@@ -33,6 +33,7 @@ class UserName(Resource):
 
         The accessor has either to be the same user as the one they are
         trying to access or be an admin
+
         :param username: name of the user that shall be received.
         :return: a json formatted user with roles.
         """
@@ -50,6 +51,7 @@ class UserName(Resource):
     def delete(self, username):
         """
         Delete a user by their name.
+
         :param username: name of the user to be deleted.
         :return: None
         """
@@ -109,6 +111,7 @@ class UserAll(Resource):
         Creates a new user.
 
         Params in the post data.
+
         :param username: username must be unique.
         :param email: email must be unique.
         :param password: better be strong.
@@ -143,6 +146,7 @@ class UserLogin(Resource):
         Generates a authentication token.
 
         Login data has to be provided in the post data.
+
         :param email: login via email adress.
         :param password: better be the right one.
         """
