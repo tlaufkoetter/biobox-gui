@@ -43,6 +43,36 @@
         }
 
         function deleteUser(username) {
+               userService.deleteUser(username)
+                   .then(
+                           function() {
+                               Notification.success("Deleted user: " + username);
+                           },
+                           function(status_code) {
+                               var message;
+                               switch(status_code) {
+                                   case 400:
+                                       message = "Please check your input.";
+                                       break;
+                                   case 401:
+                                       message = "You are not logged in";
+                                       break;
+                                   case 403:
+                                       message = "You are not allowed to do that.";
+                                       break;
+                                   case 404:
+                                       message = "The user "
+                                           + username + " doesn't exist.";
+                                       break;
+                                   default:
+                                       message = "Something went wrong.";
+                               }
+                               Notifcation.error({
+                                   "title": "User deletion failed",
+                                   "message": message
+                               });
+                           }
+                       );
         }
 
         function grantPermission(username, role) {

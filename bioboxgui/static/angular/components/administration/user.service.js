@@ -31,7 +31,16 @@
         function grantPermission(username, role) {
         }
 
-        function deleteUser(user) {
+        function deleteUser(username) {
+            $http.delete('/bioboxgui/api/users/' + username)
+                .then(
+                        function(response) {
+                            return;
+                        },
+                        function(response) {
+                            return $q.reject(response.status);
+                        }
+                    );
         }
     }
 })();
