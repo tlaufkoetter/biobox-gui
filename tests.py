@@ -70,7 +70,9 @@ class BioboxesTest(MyTest):
         assert result.status_code == 200
         self.client.post(
             '/bioboxgui/api/sources',
-            data=json.dumps({'url': source_url}),
+            data=json.dumps({
+                'url': source_url
+            }),
             headers={
                 "Content-type": 'application/json',
                 "Authorization": "Bearer " + self.token
@@ -143,7 +145,9 @@ class BioboxesTest(MyTest):
         result = self.client.get(
 
             '/bioboxgui/api/bioboxes/hopefullythisisntabiobox',
-            headers={"Authorization": "Bearer " + self.token})
+            headers={
+                "Authorization": "Bearer " + self.token
+            })
         assert result.status_code == 404
         result = self.client.get(
 
@@ -156,17 +160,23 @@ class BioboxesTest(MyTest):
         result = self.client.get(
 
             '/bioboxgui/api/bioboxes?interface=notaninterface',
-            headers={"Authorization": "Bearer " + self.token}
+            headers={
+                "Authorization": "Bearer " + self.token
+            }
         )
         assert result.status_code == 404
         result = self.client.get(
             "/bioboxgui/api/bioboxes?interface=' OR 1; " +
             "DROP TABLE BIOBOXES; --",
-            headers={"Authorization": "Bearer " + self.token})
+            headers={
+                "Authorization": "Bearer " + self.token
+            })
         assert result.status_code == 404
         result = self.client.get(
             "/bioboxgui/api/bioboxes",
-            headers={"Authorization": "Bearer " + self.token})
+            headers={
+                "Authorization": "Bearer " + self.token
+            })
         assert result.status_code == 200
 
 
@@ -174,20 +184,28 @@ class InterfacesTest(MyTest):
     def test_interfacestuff(self):
         result = self.client.get(
             "/bioboxgui/api/interfaces",
-            headers={"Authorization": "Bearer " + self.token})
+            headers={
+                "Authorization": "Bearer " + self.token
+            })
         assert result.status_code == 200
         self.client.post(
-            '/bioboxgui/api/sources', data=json.dumps({'url': source_url}),
+            '/bioboxgui/api/sources', data=json.dumps({
+                'url': source_url
+            }),
             headers={
                 "Content-type": 'application/json',
                 "Authorization": "Bearer " + self.token
             })
         self.client.put(
             '/bioboxgui/api/bioboxes',
-            headers={"Authorization": "Bearer " + self.token})
+            headers={
+                "Authorization": "Bearer " + self.token
+            })
         result = self.client.get(
             "/bioboxgui/api/interfaces",
-            headers={"Authorization": "Bearer " + self.token})
+            headers={
+                "Authorization": "Bearer " + self.token
+            })
         assert result.status_code == 200
         data = yaml.load(result.data.decode())
         for interface in data['interfaces']:
@@ -202,7 +220,9 @@ class SourcesTest(MyTest):
     def test_post_get(self):
         result = self.client.get(
             '/bioboxgui/api/sources',
-            headers={"Authorization": "Bearer " + self.token})
+            headers={
+                "Authorization": "Bearer " + self.token
+            })
         assert result.status_code == 404
         source = {
             'url': source_url,
