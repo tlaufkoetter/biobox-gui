@@ -43,36 +43,31 @@
         };
 
         function queryStates() {
-            resolveStatePromise(stateService.queryStates());
-        };
-
-        function resolveStatePromise(promise) {
-            promise
+            stateService.queryStates()
                 .then(
-                    function(states) {
-                        vm.states = states;
-                    },
-                    function(status_code) {
-                        var message;
-                        switch(status_code) {
-                            case 401:
-                                message = "You're not logged in.";
-                                break;
-                            case 403:
-                                message = "You're not allowed to do that";
-                                break;
-                            case 404:
-                                message = "No states found";
-                                break;
-                            default:
-                                message = "Something went wrong: " + status_code;
+                        function(states) {
+                            vm.states = states;
+                        },
+                        function(status_code) {
+                            var message;
+                            switch(status_code) {
+                                case 401:
+                                    message = "You're not logged in.";
+                                    break;
+                                case 403:
+                                    message = "You're not allowed to do that";
+                                    break;
+                                case 404:
+                                    message = "No states found";
+                                    break;
+                                default:
+                                    message = "Something went wrong: " + status_code;
+                            }
+                            Notification.error({
+                                message: message,
+                                title: "Failed to fetch states"
+                            });
                         }
-                        Notification.error({
-                            message: message,
-                            title: "Failed to fetch states"
-                        });
-                    }
-                );
-        }
+            );
     }
 })();
