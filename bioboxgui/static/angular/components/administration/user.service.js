@@ -28,11 +28,20 @@
             return promise;
         }
 
-        function grantPermission(username, role) {
+        function grantPermission(username, roles) {
+            return $http.put('/bioboxgui/api/users/' + username, {roles: roles})
+                .then(
+                        function(response) {
+                            return;
+                        },
+                        function(response) {
+                            return $q.reject(response.status);
+                        }
+                    );
         }
 
         function deleteUser(username) {
-            $http.delete('/bioboxgui/api/users/' + username)
+            return $http.delete('/bioboxgui/api/users/' + username)
                 .then(
                         function(response) {
                             return;

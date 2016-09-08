@@ -5,7 +5,7 @@
         .module('BioboxGui')
         .controller('AdministrationController', AdministrationController);
 
-    function AdministrationController(userService, sourceService, Notification) {
+    function AdministrationController(userService, sourceService, Notification, $route) {
         var vm = this;
 
         vm.createUser = createUser;
@@ -18,6 +18,7 @@
             userService.createUser(user).then(
                     function() {
                         Notification.success("Created new user.");
+                        $route.reload();
                     },
                     function(status_code) {
                         var message;
@@ -47,6 +48,7 @@
                    .then(
                            function() {
                                Notification.success("Deleted user: " + username);
+                                $route.reload();
                            },
                            function(status_code) {
                                var message;
@@ -75,13 +77,48 @@
                        );
         }
 
-        function grantPermission(username, role) {
+        function grantPermission(username, outputroles) {
+            var roles = [];
+            outputroles.forEach(function(role) {
+                roles.add(role.name);
+            });
+            userService.grantPermission(username, outputroles)
+                .then(
+                        function() {
+                            Notification.success("Granted permissions.");
+                            $route.reload();
+                        },
+                        function(status_code) {
+                            var message;
+                            switch(status_code) {
+                                case 400:
+                                    message = "Please check your input.";
+                                    break;
+                                case 401:
+                                    message = "You are not logged in.";
+                                    break;
+                                case 403:
+                                    message = "You are not allowed to do that.";
+                                    break;
+                                case 404:
+                                    message = "User or roles could not be found.";
+                                    break;
+                                default:
+                                    message = "Something went wrong.";
+                            }
+                            Notification.error({
+                                "title": "Granting permissions failed",
+                                "message": message
+                            });
+                        }
+                    );
         }
 
         function addSource(source) {
             sourceService.addSource(source).then(
                 function() {
                     Notification.success("Created new source");
+                    $route.reload();
                 },
                 function(status_code) {
                     var message;

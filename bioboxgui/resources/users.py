@@ -26,6 +26,32 @@ class UserName(Resource):
     """
     Access a single user by their name.
     """
+    def __init__(self):
+        """creates the reqparser.
+        """
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument(
+            'roles',
+            type=list,
+            required=False,
+            help='the users roles',
+            location='json'
+        )
+        self.reqparse.add_argument(
+            'username',
+            type=str,
+            required=False,
+            help='the new name of the user. should be unique',
+            location='json'
+        )
+        self.reqparse.add_argument(
+            'email',
+            type=str,
+            required=False,
+            help='the new email adress of the user. should be unique',
+            location='json'
+        )
+
     @auth.login_required
     def get(self, username):
         """
@@ -45,6 +71,45 @@ class UserName(Resource):
         if not user:
             abort(404)
         return marshal(user, regular_user)
+
+    @auth.login_required
+    @roles_accepted('admin')
+    def put(self, username):
+        """Updates the given user.
+
+        :param username: name of the user that is to be changed
+        :returns: the updated json formatted user
+        """
+        user = models.User.query.filter_by(
+            username=username
+        ).first()
+        if not user:
+            abort(404)
+        arguments = self.reqparse.parse_args()
+        new_username = arguments.get('username')
+        new_email = arguments.get('email')
+        new_roles = arguments.get('role')
+
+        if new_username and new_username is not '':
+            user.username = new_username
+        if new_email and new_email is not '':
+            user.email = new_email
+        if new_roles and new_roles is not []:
+            actual_roles = []
+            for new_role in new_roles:
+                role = models.Role.query.filter_by(name=new_role).first()
+                if role:
+                    actual_roles.append(role)
+                else:
+                    break
+            else:
+                abort(404)
+            user.roles = actual_roles
+
+        db.session.add(user)
+        db.session.commit()
+
+        return marshal(user, regular_user, envelope='user')
 
     @auth.login_required
     @roles_accepted('admin')
