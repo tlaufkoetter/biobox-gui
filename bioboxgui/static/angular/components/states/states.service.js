@@ -27,7 +27,17 @@
         };
 
         function deleteTask(id) {
-            return $http.delete('/bioboxgui/api/tasks/' + id);
+            return $http.delete('/bioboxgui/api/tasks/' + id)
+                .then(
+                        function(response) {
+                            $log.info("deleted task " + id);
+                            return;
+                        },
+                        function(response) {
+                            $log.warn("failed to delete task: ", response);
+                            return $q.reject(response.status);
+                        }
+                     );
         };
     }
 

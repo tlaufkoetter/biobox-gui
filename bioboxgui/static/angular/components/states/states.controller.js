@@ -5,7 +5,7 @@
         .module('BioboxGui')
         .controller('StateController', StateController);
 
-    function StateController(stateService, states, Notification) {
+    function StateController(stateService, states, Notification, $route) {
         var vm = this;
 
         vm.states = states;
@@ -15,11 +15,29 @@
         function deleteTask(id) {
             stateService.deleteTask(id)
                 .then(
-                    function(response) {
+                    function() {
+                        $route.reload();
                         queryStates();
                     },
-                    function(reponse) {
-                        console.log(response);
+                    function(status_code) {
+                        var message;
+                        switch(status_code) {
+                            case 401:
+                                message = "You are not logged in.";
+                                break;
+                            case 403:
+                                message = "You are not allowed to do that.";
+                                break;
+                            case 404:
+                                message = "The task does not exist.";
+                                break;
+                            default:
+                                message = "Something went wrong.";
+                        }
+                        Notifcation.error({
+                            "title": "Failed to delete task " + id,
+                            "message": message
+                        });
                     }
                 );
         };
