@@ -5,7 +5,7 @@
         .module('BioboxGui')
         .controller('BioboxController', BioboxController);
 
-    function BioboxController(bioboxService, $location, interfaces, bioboxes, Notification) {
+    function BioboxController(bioboxService, $location, interfaces, bioboxes, Notification. $route) {
         var vm = this;
 
         vm.interfaces = interfaces;
@@ -130,6 +130,7 @@
                 .then(
                         function() {
                             Notification.info("Task submitted.");
+                            $route.reload();
                         },
                         function(status_code) {
                             var message;
