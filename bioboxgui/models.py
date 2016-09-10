@@ -96,8 +96,8 @@ class Biobox(db.Model):
     tasks = db.relationship('Task', secondary=biobox_tasks)
     image = db.relationship('Image', uselist=False, back_populates='biobox')
     source_id = db.Column(
-            db.Integer,
-            db.ForeignKey('source.id'), nullable=False
+        db.Integer,
+        db.ForeignKey('source.id'), nullable=False
     )
 
 
@@ -141,7 +141,7 @@ class Source(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String, unique=True, nullable=False)
-    name = db.Column(db.String, unique=True, nullable=True)
+    name = db.Column(db.String, unique=True, nullable=False)
     bioboxes = db.relationship('Biobox', backref='source', lazy='dynamic')
 
 
@@ -185,7 +185,8 @@ def refresh():
                     .first()
                 interface = Interface.query.filter(
                     Interface.name == tsk_yaml[Task.KEY_INTERFACE]).first()
-                interface = interface if interface \
+                interface = interface \
+                    if interface \
                     else Interface(name=tsk_yaml[Task.KEY_INTERFACE])
                 db.session.add(interface)
                 task = task if task else Task(
@@ -208,9 +209,12 @@ def validate_images(yaml_dict):
     """
     if not isinstance(yaml_dict, dict):
         raise AttributeError("no yaml")
-    with open(os.path.join(
-            basedir, 'bioboxgui/resources/image_schema.json'),
-            'r') as schema_file:
+    with open(
+            os.path.join(
+                basedir,
+                'bioboxgui/resources/image_schema.json'
+            ), 'r'
+    ) as schema_file:
         schema_string = schema_file.read()
         schema = json.loads(schema_string)
         if 'images' not in yaml_dict.keys():

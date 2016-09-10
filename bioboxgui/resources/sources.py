@@ -76,3 +76,25 @@ class SourcesAll(Resource):
         db.session.commit()
 
         return marshal(source, regular_source), 201
+
+    class SourceName(Resource):
+        """
+        Accessing a single resource by name.
+        """
+
+        @auth.login_required
+        @roles_accepted('admin', 'trusted')
+        def delete(self, name):
+            """
+            deletes the resource with the given name
+
+            :param name: the name of the source to delete
+            :return: None
+            """
+            source = models.Source.query.filter_by(name=name).first()
+            if not source:
+                abort(404)
+            db.session.delete(source)
+            db.session.commit()
+
+            return None, 204
