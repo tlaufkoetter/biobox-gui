@@ -5,7 +5,7 @@
         .module('BioboxGui')
         .controller('AdministrationController', AdministrationController);
 
-    function AdministrationController(userService, sourceService, Notification, $route) {
+    function AdministrationController(userService, sourceService, Notification, $route, Constants) {
         var vm = this;
 
         vm.createUser = createUser;
@@ -13,6 +13,7 @@
         vm.grantPermission = grantPermission;
         vm.addSource = addSource;
         vm.deleteSource = deleteSource;
+        vm.Roles = Constants.Roles;
 
         function createUser(user) {
             userService.createUser(user).then(
@@ -168,7 +169,7 @@
                                 message = "Something went wrong.";
                         }
                         Notification.error({
-                            title: "Deleting source failed,
+                            title: "Deleting source failed",
                             message: message
                         });
                     }

@@ -1,81 +1,98 @@
-<h1>User Management</h1>
-<h2>Create new user</h2>
-<form name="form" ng-submit="main.createUser(user)" role="form" ng-init="user = {}">
-    <div class="form-group"
-         ng-class="{ 'has-error': form.createUsername.$dirty && form.createUsername.$error.required }">
-        <label for="createUsername">Username</label>
-        <input type="text" name="createUsername" id="createUsername" class="form-control" ng-model="user.username"
-               required/>
+<div ng-if="hasRole([main.Roles.admin])">
+    <h1>User Management</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Create new user</h2>
+            <form name="form" ng-submit="main.createUser(user)" role="form" ng-init="user = {}">
+                <div class="form-group"
+                     ng-class="{ 'has-error': form.createUsername.$dirty && form.createUsername.$error.required }">
+                    <label for="createUsername">Username</label>
+                    <input type="text" name="createUsername" id="createUsername" class="form-control" ng-model="user.username"
+                                                                                                      required/>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error': form.createEmail.$dirty && form.createEmail.$error.required }">
+                    <label for="createEmail">E-Mail</label>
+                    <input type="email" name="createEmail" id="createEmail" class="form-control" ng-model="user.email"
+                                                                                                 required/>
+                </div>
+                <div class="form-group"
+                     ng-class="{ 'has-error': form.createPassword.$dirty && form.createPassword.$error.required }">
+                    <label for="createPassword">Password</label>
+                    <input type="password" name="createPassword" id="createPassword" class="form-control"
+                                                                                     ng-model="user.password"
+                                                                                     required/>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <h2>Manage user permissions</h2>
+            <form name="userGrantPermission" ng-submit="main.grantPermission(grantUsername, grantRole)"
+                                             ng-init="grantUsername = ''; grantRole = ''">
+                <div class="form-group" ng-class="{ 'has-error': form.grantUsername.$dirty && form.grantUsername.$error.required }">
+                    <label for="grantUsername">Username</label>
+                    <input type="text" name="grantUsername" id="grantUsername" class="form-control" ng-model="grantUsername"
+                                                                                                    required/>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error': form.grantRole.$dirty && form.grantRole.$error.required }">
+                    <label for="grantRole">Role</label>
+                    <input type="text" name="grantRole" id="grantRole" class="form-control" ng-model="grantRole" required/>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Grant"/>
+                </div>
+            </form>
+        </div>
     </div>
-    <div class="form-group" ng-class="{ 'has-error': form.createEmail.$dirty && form.createEmail.$error.required }">
-        <label for="createEmail">E-Mail</label>
-        <input type="email" name="createEmail" id="createEmail" class="form-control" ng-model="user.email"
-               required/>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Delete User</h2>
+            <form name="userdeleteform" ng-submit="main.deleteUser(deleteUsername)" role="form" ng-init="deleteUsername = ''">
+                <div class="form-group"
+                     ng-class="{ 'has-error': form.deleteUsername.$dirty && form.deleteUsername.$error.required }">
+                    <label for="deleteUsername">Username</label>
+                    <input type="text" name="deleteUsername" id="deleteUsername" class="form-control" ng-model="deleteUsername"
+                                                                                                      required/>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Delete"/>
+                </div>
+            </form>
+        </div>
     </div>
-    <div class="form-group"
-         ng-class="{ 'has-error': form.createPassword.$dirty && form.createPassword.$error.required }">
-        <label for="createPassword">Password</label>
-        <input type="password" name="createPassword" id="createPassword" class="form-control"
-               ng-model="user.password"
-               required/>
+</div>
+<div ng-if="hasRole([main.Roles.admin, main.Roles.trusted])">
+    <h1>Content Management</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Add Source</h2>
+            <form name="sourceAddForm" ng-submit="main.addSource(source)" role="form" ng-model="source" ng-init="source = {}">
+                <div class="form-group" ng-class="{ 'has-error': form.sourceName.$dirty && form.sourceName.$error.required }">
+                    <label for="sourceName">Name</label>
+                    <input type="text" name="sourceName" id="sourceName" class="form-control" ng-model="source.name"/>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error': form.sourceUrl.$dirty && form.sourceUrl.$error.required }">
+                    <label for="sourceUrl">Url</label>
+                    <input type="url" name="sourceUrl" id="sourceUrl" class="form-control" ng-model="source.url"/>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Add"/>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <h2>Delete Source</h2>
+            <form name="sourceDeleteForm" ng-submit="main.deleteSource(deleteUrl)" role="form" ng-init="deleteUrl = ''">
+                <div class="form-group" ng-class="{ 'has-error': form.sourceUrl.$dirty && form.sourceUrl.$error.required }">
+                    <label for="sourceUrl">Url</label>
+                    <input type="url" name="sourceUrl" id="sourceUrl" class="form-control" ng-model="deleteUrl"/>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Delete"/>
+                </div>
+            </form>
+        </div>
     </div>
-    <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Register
-        </button>
-        <img ng-if="main.dataLoading"
-             src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
-    </div>
-</form>
-<h2>Manage user permissions</h2>
-<form name="userGrantPermission" ng-submit="main.grantPermission(grantUsername, grantRole)"
-      ng-init="grantUsername = ''; grantRole = ''">
-    <div class="form-group" ng-class="{ 'has-error': form.grantUsername.$dirty && form.grantUsername.$error.required }">
-        <label for="grantUsername">Username</label>
-        <input type="text" name="grantUsername" id="grantUsername" class="form-control" ng-model="grantUsername"
-               required/>
-    </div>
-    <div class="form-group" ng-class="{ 'has-error': form.grantRole.$dirty && form.grantRole.$error.required }">
-        <label for="grantRole">Role</label>
-        <input type="text" name="grantRole" id="grantRole" class="form-control" ng-model="grantRole" required/>
-    </div>
-    <div class="form-group">
-        <input type="submit" class="btn btn-primary" value="Grant"/>
-    </div>
-</form>
-<h2>Delete User</h2>
-<form name="userdeleteform" ng-submit="main.deleteUser(deleteUsername)" role="form" ng-init="deleteUsername = ''">
-    <div class="form-group"
-         ng-class="{ 'has-error': form.deleteUsername.$dirty && form.deleteUsername.$error.required }">
-        <label for="deleteUsername">Username</label>
-        <input type="text" name="deleteUsername" id="deleteUsername" class="form-control" ng-model="deleteUsername"
-               required/>
-    </div>
-    <div class="form-group">
-        <input type="submit" class="btn btn-primary" value="Delete"/>
-    </div>
-</form>
-<h1>Content Management</h1>
-<h2>Add Source</h2>
-<form name="sourceAddForm" ng-submit="main.addSource(source)" role="form" ng-model="source" ng-init="source = {}">
-    <div class="form-group" ng-class="{ 'has-error': form.sourceName.$dirty && form.sourceName.$error.required }">
-        <label for="sourceName">Name</label>
-        <input type="text" name="sourceName" id="sourceName" class="form-control" ng-model="source.name"/>
-    </div>
-    <div class="form-group" ng-class="{ 'has-error': form.sourceUrl.$dirty && form.sourceUrl.$error.required }">
-        <label for="sourceUrl">Url</label>
-        <input type="url" name="sourceUrl" id="sourceUrl" class="form-control" ng-model="source.url"/>
-    </div>
-    <div class="form-group">
-        <input type="submit" class="btn btn-primary" value="Add"/>
-    </div>
-</form>
-<h2>Delete Source</h2>
-<form name="sourceDeleteForm" ng-submit="main.deleteSource(deleteUrl)" role="form" ng-init="deleteUrl = ''">
-    <div class="form-group" ng-class="{ 'has-error': form.sourceUrl.$dirty && form.sourceUrl.$error.required }">
-        <label for="sourceUrl">Url</label>
-        <input type="url" name="sourceUrl" id="sourceUrl" class="form-control" ng-model="deleteUrl"/>
-    </div>
-    <div class="form-group">
-        <input type="submit" class="btn btn-primary" value="Delete"/>
-    </div>
-</form>
+</div>
