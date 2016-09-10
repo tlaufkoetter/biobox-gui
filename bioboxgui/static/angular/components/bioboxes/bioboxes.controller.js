@@ -5,7 +5,7 @@
         .module('BioboxGui')
         .controller('BioboxController', BioboxController);
 
-    function BioboxController(bioboxService, $location, interfaces, bioboxes, Notification. $route) {
+    function BioboxController(bioboxService, $location, interfaces, bioboxes, Notification, $route) {
         var vm = this;
 
         vm.interfaces = interfaces;
