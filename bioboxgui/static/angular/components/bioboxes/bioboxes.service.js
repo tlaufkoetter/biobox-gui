@@ -18,7 +18,7 @@
 
 
         function getBioboxes() {
-            return gatewayService.get('/bioboxgui/api/bioboxes')
+            return gatewayService.get('/bioboxes')
                 .then(
                     function(response) {
                         var bioboxes = response.data.bioboxes;
@@ -48,7 +48,7 @@
         }
 
         function updateBioboxes() {
-            return gatewayService.put('/bioboxgui/api/bioboxes')
+            return gatewayService.put('/bioboxes')
                 .then(
                     function(response){
                         var bioboxes = response.data.bioboxes;
@@ -64,7 +64,7 @@
         }
 
         function getInterfaces() {
-            return gatewayService.get('/bioboxgui/api/interfaces')
+            return gatewayService.get('/interfaces')
                 .then(
                     function(response){
                         var interfaces = response.data.interfaces;
@@ -80,7 +80,7 @@
         }
 
         function getInterface(selectedInterface) {
-            return gatewayService.get('/bioboxgui/api/bioboxes?interface=' + selectedInterface)
+            return gatewayService.get('/bioboxes?interface=' + selectedInterface)
                 .then(
                     function(response){
                         var bb_interface = response.data.bb_interface;
@@ -101,7 +101,7 @@
             task.container = container;
             task.cmd = cmd;
             task.file = file;
-            return gatewayService.post('/bioboxgui/api/tasks', task)
+            return gatewayService.post('/tasks', task)
                 .then(
                     function(response){
                         $log.info("submitted task");

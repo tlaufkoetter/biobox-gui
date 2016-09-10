@@ -13,7 +13,7 @@
         return service;
 
         function queryStates() {
-            return gatewayService.get('/bioboxgui/api/tasks')
+            return gatewayService.get('/tasks')
                 .then(
                         function(response) {
                             $log.info("queried states: ", response.data.states);
@@ -27,7 +27,7 @@
         };
 
         function deleteTask(id) {
-            return gatewayService.delete('/bioboxgui/api/tasks/' + id)
+            return gatewayService.delete('/tasks/' + id)
                 .then(
                         function(response) {
                             $log.info("deleted task " + id);

@@ -9,6 +9,10 @@
                 trusted: 'trusted',
                 base: 'base',
                 user: 'user'
+            },
+            Api: {
+                version: 'v1',
+                baseURL: '/bioboxgui/api/'
             }
         });
 })();

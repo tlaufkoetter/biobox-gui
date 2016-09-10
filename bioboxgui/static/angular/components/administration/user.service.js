@@ -15,7 +15,7 @@
         return service;
 
         function createUser(user) {
-            return gatewayService.post('/bioboxgui/api/users', user)
+            return gatewayService.post('/users', user)
                 .then(
                         function(response) {
                             $log.info('Successfully create user:', user);
@@ -28,7 +28,7 @@
         }
 
         function grantPermission(username, roles) {
-            return gatewayService.put('/bioboxgui/api/users/' + username, {roles: roles})
+            return gatewayService.put('/users/' + username, {roles: roles})
                 .then(
                         function(response) {
                             return;
@@ -41,7 +41,7 @@
         }
 
         function deleteUser(username) {
-            return gatewayService.delete('/bioboxgui/api/users/' + username)
+            return gatewayService.delete('/users/' + username)
                 .then(
                         function(response) {
                             return;

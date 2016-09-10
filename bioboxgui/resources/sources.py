@@ -57,13 +57,13 @@ class SourcesAll(Resource):
         name = source_request.get('name')
         source = models.Source.query.filter_by(url=url).first()
         if url == "" or name == "" or not url or not name:
-            abort(400, "params empty")
+            abort(400, "params empty with url")
         if not source:
             source = models.Source.query.filter_by(name=name).first()
             if not source:
                 source = models.Source(url=url, name=name)
             else:
-                abort(400, "source exists")
+                abort(400, "source exists with name")
         else:
             abort(400, "source exists")
 
@@ -83,24 +83,27 @@ class SourcesAll(Resource):
 
         return marshal(source, regular_source), 201
 
-    class SourceName(Resource):
+
+class SourceName(Resource):
+    """
+    Accessing a single resource by name.
+    """
+
+    @auth.login_required
+    @roles_accepted('admin', 'trusted')
+    def delete(self, name):
         """
-        Accessing a single resource by name.
+        deletes the resource with the given name
+
+        :param name: the name of the source to delete
+        :return: None
         """
+        source = models.Source.query.filter_by(name=name).first()
+        if not source:
+            abort(404)
+        for box in source.bioboxes:
+            db.session.delete(box)
+        db.session.delete(source)
+        db.session.commit()
 
-        @auth.login_required
-        @roles_accepted('admin', 'trusted')
-        def delete(self, name):
-            """
-            deletes the resource with the given name
-
-            :param name: the name of the source to delete
-            :return: None
-            """
-            source = models.Source.query.filter_by(name=name).first()
-            if not source:
-                abort(404)
-            db.session.delete(source)
-            db.session.commit()
-
-            return None, 204
+        return None, 204

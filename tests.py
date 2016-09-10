@@ -3,6 +3,7 @@ import unittest
 
 import yaml
 from flask_testing import TestCase
+from bioboxgui import confit.API_VERSION as version
 
 source_url = 'https://raw.githubusercontent.com' + \
     '/pbelmann/data/feature/new-image-list/images.yml'
@@ -24,7 +25,7 @@ class MyTest(TestCase):
         self._create_user()
 
         token_response = self.client\
-            .post('/bioboxgui/api/token',
+            .post('/bioboxgui/api/' + version + '/token',
                   data=json.dumps({
                       'email': 'admin@admin.com',
                       'password': 'password'
@@ -62,14 +63,14 @@ class MyTest(TestCase):
 class BioboxesTest(MyTest):
     def test_update_get_bioboxes(self):
         result = self.client.get(
-            '/bioboxgui/api/bioboxes',
+            '/bioboxgui/api/' + version + '/bioboxes',
             headers={
                 "Authorization": "Bearer " + self.token
             })
         assert result is not None
         assert result.status_code == 200
         self.client.post(
-            '/bioboxgui/api/sources',
+            '/bioboxgui/api/' + version + '/sources',
             data=json.dumps({
                 'url': source_url,
                 'name': 'testname'
@@ -79,7 +80,7 @@ class BioboxesTest(MyTest):
                 "Authorization": "Bearer " + self.token
             })
         result = self.client.put(
-            '/bioboxgui/api/bioboxes',
+            '/bioboxgui/api/' + version + '/bioboxes',
             headers={
                 "Authorization": "Bearer " + self.token
             })
@@ -110,28 +111,28 @@ class BioboxesTest(MyTest):
         assert box['source']['url'] == source_url
         assert box['source']['name'] == 'testname'
         result = self.client.get(
-            '/bioboxgui/api/bioboxes',
+            '/bioboxgui/api/' + version + '/bioboxes',
             headers={
                 "Authorization": "Bearer " + self.token
             })
         data2 = yaml.load(result.data.decode())
         assert data == data2
         result = self.client.get(
-            '/bioboxgui/api/bioboxes/velvet',
+            '/bioboxgui/api/' + version + '/bioboxes/velvet',
             headers={
                 "Authorization": "Bearer " + self.token
             })
         data3 = yaml.load(result.data.decode())
         assert data3['biobox'] == box
         result = self.client.get(
-            '/bioboxgui/api/bioboxes/18349386',
+            '/bioboxgui/api/' + version + '/bioboxes/18349386',
             headers={
                 "Authorization": "Bearer " + self.token
             })
         data4 = yaml.load(result.data.decode())
         assert data3 == data4
         result = self.client.get(
-            '/bioboxgui/api/bioboxes?interface=assembler',
+            '/bioboxgui/api/' + version + '/bioboxes?interface=assembler',
             headers={
                 "Authorization": "Bearer " + self.token
             })
@@ -145,14 +146,14 @@ class BioboxesTest(MyTest):
 
         result = self.client.get(
 
-            '/bioboxgui/api/bioboxes/hopefullythisisntabiobox',
+            '/bioboxgui/api/' + version + '/bioboxes/hopefullythisisntabiobox',
             headers={
                 "Authorization": "Bearer " + self.token
             })
         assert result.status_code == 404
         result = self.client.get(
 
-            '/bioboxgui/api/bioboxes/1337',
+            '/bioboxgui/api/' + version + '/bioboxes/1337',
             headers={
                 "Authorization": "Bearer " + self.token
             }
@@ -160,21 +161,21 @@ class BioboxesTest(MyTest):
         assert result.status_code == 404
         result = self.client.get(
 
-            '/bioboxgui/api/bioboxes?interface=notaninterface',
+            '/bioboxgui/api/' + version + '/bioboxes?interface=notaninterface',
             headers={
                 "Authorization": "Bearer " + self.token
             }
         )
         assert result.status_code == 404
         result = self.client.get(
-            "/bioboxgui/api/bioboxes?interface=' OR 1; " +
+            "/bioboxgui/api/' + version + '/bioboxes?interface=' OR 1; " +
             "DROP TABLE BIOBOXES; --",
             headers={
                 "Authorization": "Bearer " + self.token
             })
         assert result.status_code == 404
         result = self.client.get(
-            "/bioboxgui/api/bioboxes",
+            "/bioboxgui/api/' + version + '/bioboxes",
             headers={
                 "Authorization": "Bearer " + self.token
             })
@@ -184,13 +185,13 @@ class BioboxesTest(MyTest):
 class InterfacesTest(MyTest):
     def test_interfacestuff(self):
         result = self.client.get(
-            "/bioboxgui/api/interfaces",
+            "/bioboxgui/api/' + version + '/interfaces",
             headers={
                 "Authorization": "Bearer " + self.token
             })
         assert result.status_code == 200
         self.client.post(
-            '/bioboxgui/api/sources', data=json.dumps({
+            '/bioboxgui/api/' + version + '/sources', data=json.dumps({
                 'url': source_url,
                 'name': 'testname'
             }),
@@ -199,12 +200,12 @@ class InterfacesTest(MyTest):
                 "Authorization": "Bearer " + self.token
             })
         self.client.put(
-            '/bioboxgui/api/bioboxes',
+            '/bioboxgui/api/' + version + '/bioboxes',
             headers={
                 "Authorization": "Bearer " + self.token
             })
         result = self.client.get(
-            "/bioboxgui/api/interfaces",
+            "/bioboxgui/api/' + version + '/interfaces",
             headers={
                 "Authorization": "Bearer " + self.token
             })
@@ -221,7 +222,7 @@ class InterfacesTest(MyTest):
 class SourcesTest(MyTest):
     def test_post_get(self):
         result = self.client.get(
-            '/bioboxgui/api/sources',
+            '/bioboxgui/api/' + version + '/sources',
             headers={
                 "Authorization": "Bearer " + self.token
             })
@@ -231,7 +232,7 @@ class SourcesTest(MyTest):
             'name': 'peter'
         }
         result = self.client.post(
-            '/bioboxgui/api/sources', data=json.dumps(source),
+            '/bioboxgui/api/' + version + '/sources', data=json.dumps(source),
             headers={
                 'Content-type': 'application/json',
                 "Authorization": "Bearer " + self.token
@@ -241,7 +242,7 @@ class SourcesTest(MyTest):
         assert data['url'] == source['url']
         assert data['name'] == source['name']
         result = self.client.post(
-            '/bioboxgui/api/sources', data=json.dumps(source),
+            '/bioboxgui/api/' + version + '/sources', data=json.dumps(source),
             headers={
                 'Content-type': 'application/json',
                 "Authorization": "Bearer " + self.token
@@ -251,7 +252,7 @@ class SourcesTest(MyTest):
             'url': source_url + 'notathing'
         }
         result = self.client.post(
-            '/bioboxgui/api/sources', data=json.dumps(source_bad),
+            '/bioboxgui/api/' + version + '/sources', data=json.dumps(source_bad),
             headers={
                 'Content-type': 'application/json',
                 "Authorization": "Bearer " + self.token

@@ -13,7 +13,7 @@
         return service;
 
         function deleteSource(name) {
-            return gatewayService.delete('/bioboxgui/api/sources/name')
+            return gatewayService.delete('/sources/' + name)
                 .then(
                     function(response) {
                         $log.info('Deleted source: ', name);
@@ -26,7 +26,7 @@
         }
 
         function addSource(source) {
-            return gatewayService.post('/bioboxgui/api/sources', source)
+            return gatewayService.post('/sources', source)
                 .then(
                     function(response) {
                         $log.info('Added new source: ', source);

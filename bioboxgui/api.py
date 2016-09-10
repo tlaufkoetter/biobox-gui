@@ -6,6 +6,7 @@ from flask_restful import Api, abort, reqparse
 from itsdangerous import SignatureExpired, BadSignature
 
 from bioboxgui import app, models
+from config import API_VERSION as version
 
 api = Api(app)
 basic_auth = HTTPBasicAuth()
@@ -49,7 +50,7 @@ request_parser.add_argument(
 
 @auth.verify_token
 def verify_token(token):
-    print('token');
+    print('token')
     user = None
     try:
         user = models.User.verify_auth_token(token)
@@ -74,23 +75,49 @@ def verify_password(email, password):
     return True
 
 
-api.add_resource(bioboxes.BioboxesAll,
-                 '/bioboxgui/api/bioboxes')
-api.add_resource(bioboxes.BioboxId,
-                 '/bioboxgui/api/bioboxes/<int:biobox_id>')
-api.add_resource(bioboxes.BioboxName,
-                 '/bioboxgui/api/bioboxes/<string:biobox_name>')
-api.add_resource(interfaces.Interfaces,
-                 '/bioboxgui/api/interfaces')
-api.add_resource(tasks.TasksAll,
-                 '/bioboxgui/api/tasks')
-api.add_resource(tasks.TaskId,
-                 '/bioboxgui/api/tasks/<string:task_id>')
-api.add_resource(sources.SourcesAll,
-                 '/bioboxgui/api/sources')
-api.add_resource(users.UserName,
-                 '/bioboxgui/api/users/<string:username>')
-api.add_resource(users.UserAll,
-                 '/bioboxgui/api/users')
-api.add_resource(users.UserLogin,
-                 '/bioboxgui/api/token')
+testurl = '/bioboxgui/api/{}/bioboxes'.format(version)
+print(testurl)
+api.add_resource(
+    bioboxes.BioboxesAll,
+    '/bioboxgui/api/{}/bioboxes'.format(version)
+)
+api.add_resource(
+    bioboxes.BioboxId,
+    '/bioboxgui/api/{}/bioboxes/<int:biobox_id>'.format(version)
+)
+api.add_resource(
+    bioboxes.BioboxName,
+    '/bioboxgui/api/{}/bioboxes/<string:biobox_name>'.format(version)
+)
+api.add_resource(
+    interfaces.Interfaces,
+    '/bioboxgui/api/{}/interfaces'.format(version)
+)
+api.add_resource(
+    tasks.TasksAll,
+    '/bioboxgui/api/{}/tasks'.format(version)
+)
+api.add_resource(
+    tasks.TaskId,
+    '/bioboxgui/api/' + version + '/tasks/<string:task_id>'
+)
+api.add_resource(
+    sources.SourcesAll,
+    '/bioboxgui/api/' + version + '/sources'
+)
+api.add_resource(
+    sources.SourceName,
+    '/bioboxgui/api/' + version + '/sources/<string:name>'
+)
+api.add_resource(
+    users.UserName,
+    '/bioboxgui/api/' + version + '/users/<string:username>'
+)
+api.add_resource(
+    users.UserAll,
+    '/bioboxgui/api/' + version + '/users'
+)
+api.add_resource(
+    users.UserLogin,
+    '/bioboxgui/api/' + version + '/token'
+)

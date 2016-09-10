@@ -5,41 +5,43 @@
         .module("BioboxGui")
         .factory("gatewayService", gatewayService);
 
-    function gatewayService($http, $q, $log) {
+    function gatewayService($http, $q, $log, Constants) {
         var service = {
             get: get,
             put: put,
             post: post,
             delete: deletem
         };
+        var baseURL = Constants.Api.baseURL + Constants.Api.version;
         return service;
 
-        function get(url) {
-            return $http.get(url)
+
+        function get(resource) {
+            return $http.get(baseURL + resource)
                 .then(
                     success,
                     error
                 );
         }
 
-        function put(url, data) {
-            return $http.put(url, data)
+        function put(resource, data) {
+            return $http.put(baseURL + resource, data)
                 .then(
                     success,
                     error
                 );
         }
 
-        function post(url, data) {
-            return $http.post(url, data)
+        function post(resource, data) {
+            return $http.post(baseURL + resource, data)
                 .then(
                     success,
                     error
                 );
         }
 
-        function deletem(url) {
-            return $http.delete(url)
+        function deletem(resource) {
+            return $http.delete(baseURL + resource)
                 .then(
                     success,
                     error

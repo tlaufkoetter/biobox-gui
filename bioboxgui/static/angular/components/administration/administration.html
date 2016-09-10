@@ -84,10 +84,10 @@
         </div>
         <div class="col-md-6">
             <h2>Delete Source</h2>
-            <form name="sourceDeleteForm" ng-submit="main.deleteSource(deleteUrl)" role="form" ng-init="deleteUrl = ''">
-                <div class="form-group" ng-class="{ 'has-error': form.sourceUrl.$dirty && form.sourceUrl.$error.required }">
-                    <label for="sourceUrl">Url</label>
-                    <input type="url" name="sourceUrl" id="sourceUrl" class="form-control" ng-model="deleteUrl"/>
+            <form name="sourceDeleteForm" ng-submit="main.deleteSource(deleteName)" role="form" ng-init="deleteName = ''">
+                <div class="form-group" ng-class="{ 'has-error': form.sourceName.$dirty && form.sourceName.$error.required }">
+                    <label for="sourceName">Name</label>
+                    <input type="name" name="sourceName" id="sourceName" class="form-control" ng-model="deleteName"/>
                 </div>
                 <div class="form-group">
                     <input type="submit" class="btn btn-primary" value="Delete"/>

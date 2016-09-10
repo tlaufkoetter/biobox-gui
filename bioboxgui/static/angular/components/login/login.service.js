@@ -13,7 +13,7 @@
         return service;
 
         function login(user) {
-            return gatewayService.post('/bioboxgui/api/token', user)
+            return gatewayService.post('/token', user)
                 .then(
                         function(response) {
                             $log.info("logged in: ", user);
@@ -38,7 +38,7 @@
         }
 
         function logout() {
-            return gatewayService.delete('/bioboxgui/api/token')
+            return gatewayService.delete('/token')
                 .then(
                         function(response) {
                             $log.info("logged out");
