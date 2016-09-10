@@ -71,7 +71,8 @@ class BioboxesTest(MyTest):
         self.client.post(
             '/bioboxgui/api/sources',
             data=json.dumps({
-                'url': source_url
+                'url': source_url,
+                'name': 'testname'
             }),
             headers={
                 "Content-type": 'application/json',
@@ -107,7 +108,7 @@ class BioboxesTest(MyTest):
         assert box['tasks'][1]['name'] == 'careful'
         assert box['tasks'][1]['interface']['name'] == 'assembler'
         assert box['source']['url'] == source_url
-        assert box['source']['name'] is None
+        assert box['source']['name'] == 'testname'
         result = self.client.get(
             '/bioboxgui/api/bioboxes',
             headers={
@@ -190,7 +191,8 @@ class InterfacesTest(MyTest):
         assert result.status_code == 200
         self.client.post(
             '/bioboxgui/api/sources', data=json.dumps({
-                'url': source_url
+                'url': source_url,
+                'name': 'testname'
             }),
             headers={
                 "Content-type": 'application/json',

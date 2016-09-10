@@ -56,15 +56,21 @@ class SourcesAll(Resource):
         url = source_request['url']
         name = source_request.get('name')
         source = models.Source.query.filter_by(url=url).first()
+        if url == "" or name == "" or not url or not name:
+            abort(400, "params empty")
         if not source:
-            source = models.Source(url=url, name=name)
+            source = models.Source.query.filter_by(name=name).first()
+            if not source:
+                source = models.Source(url=url, name=name)
+            else:
+                abort(400, "source exists")
         else:
             abort(400, "source exists")
 
         try:
             yaml_dict = models.fetch_images(url)
         except:
-            abort(400)
+            abort(400, "yaml invalid")
         try:
             models.validate_images(yaml_dict)
         except ValidationError as e:
