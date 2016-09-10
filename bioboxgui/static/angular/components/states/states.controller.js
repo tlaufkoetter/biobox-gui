@@ -19,22 +19,16 @@
                         $route.reload();
                         queryStates();
                     },
-                    function(status_code) {
+                    function(error) {
                         var message;
-                        switch(status_code) {
-                            case 401:
-                                message = "You are not logged in.";
-                                break;
-                            case 403:
-                                message = "You are not allowed to do that.";
-                                break;
+                        switch(error.status_code) {
                             case 404:
                                 message = "The task does not exist.";
                                 break;
                             default:
-                                message = "Something went wrong.";
+                                message = error.message;
                         }
-                        Notifcation.error({
+                        Notification.error({
                             "title": "Failed to delete task " + id,
                             "message": message
                         });
@@ -48,20 +42,14 @@
                     function(states) {
                         vm.states = states;
                     },
-                    function(status_code) {
+                    function(error) {
                         var message;
-                        switch(status_code) {
-                            case 401:
-                                message = "You're not logged in.";
-                                break;
-                            case 403:
-                                message = "You're not allowed to do that";
-                                break;
+                        switch(error.status_code) {
                             case 404:
                                 message = "No states found";
                                 break;
                             default:
-                                message = "Something went wrong: " + status_code;
+                                message = error.message;
                         }
                         Notification.error({
                             message: message,

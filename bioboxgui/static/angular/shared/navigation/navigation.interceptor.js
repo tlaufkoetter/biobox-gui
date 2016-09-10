@@ -20,9 +20,14 @@
         };
 
         function responseError(response) {
-            if (response.status == 401) {
-                $window.location.href = '#/bioboxgui/login';
-                sessionService.setCurrentUser(null);
+            switch (response.status) {
+                case 401:
+                    $window.location.href = '#/bioboxgui/login';
+                    sessionService.setCurrentUser(null);
+                    break;
+                case 502:
+                    $window.location.href = '#/bioboxgui';
+                    break;
             }
             return $q.reject(response);
         };

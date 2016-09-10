@@ -17,18 +17,15 @@
                                 Notification.success("Login successful!");
                                 $window.location.href = '#/bioboxgui';
                             },
-                            function(status_code) {
+                            function(error) {
                                 var message;
-                                switch (status_code) {
+                                switch (error.status_code) {
                                     case 404:
-                                        message = "Either the user doesn't"
+                                        message = "Either the user doesn't "
                                             + "exist or your credentials are invalid.";
                                         break;
-                                    case 400:
-                                        message = "Your request is invalid.";
-                                        break;
                                     default:
-                                        message = "There was an error.";
+                                        message = error.message;
                                 }
                                 Notification.error({
                                     title: "Login was unsuccessful!",
