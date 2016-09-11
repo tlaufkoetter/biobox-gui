@@ -29,7 +29,7 @@
                 </table>
             </td>
             <td>
-                <form ng-submit="main.deleteTask(state.id)">
+                <form ng-submit="main.deleteTask(state.id)" ng-if="hasRole([main.Roles.trusted, main.Roles.admin])">
                     <button type="submit" class="btn btn-danger" ng-action="main.deleteTask(state.id)"><span
                             class="glyphicon glyphicon-trash"/></button>
                 </form>

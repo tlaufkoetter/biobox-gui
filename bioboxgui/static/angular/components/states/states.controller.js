@@ -5,12 +5,13 @@
         .module('BioboxGui')
         .controller('StateController', StateController);
 
-    function StateController(stateService, states, Notification, $route) {
+    function StateController(stateService, states, Notification, $route, Constants) {
         var vm = this;
 
         vm.states = states;
         vm.deleteTask = deleteTask;
         vm.queryStates = queryStates;
+        vm.Roles = Constants.Roles;
 
         function deleteTask(id) {
             stateService.deleteTask(id)

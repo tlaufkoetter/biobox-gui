@@ -18,7 +18,7 @@ def roles_accepted(*roles):
         @wraps(f)
         def decorated(*args, **kwargs):
             for role in g.user.roles:
-                if role.name in roles[0]:
+                if role.name in roles:
                     break
             else:
                 print(role.name)

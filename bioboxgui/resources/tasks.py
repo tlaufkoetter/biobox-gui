@@ -58,7 +58,7 @@ class TasksAll(Resource):
         )
 
     @auth.login_required
-    @roles_accepted(['common', 'admin', 'trusted'])
+    @roles_accepted('common', 'admin', 'trusted')
     def post(self):
         '''
         creates a new task.
@@ -122,7 +122,7 @@ class TasksAll(Resource):
             abort(502)
 
     @auth.login_required
-    @roles_accepted(['common', 'trusted', 'admin'])
+    @roles_accepted('common', 'trusted', 'admin')
     def get(self):
         '''
         queries all the tasks.
@@ -185,7 +185,7 @@ class TasksAll(Resource):
 
 class TaskId(Resource):
     @auth.login_required
-    @roles_accepted(['common', 'trusted', 'admin'])
+    @roles_accepted('common', 'trusted', 'admin')
     def get(self, task_id):
         '''
         queries the state of given task.
@@ -200,7 +200,7 @@ class TaskId(Resource):
             abort(404)
 
     @auth.login_required
-    @roles_accepted(['trusted', 'admin'])
+    @roles_accepted('trusted', 'admin')
     def delete(self, task_id):
         '''
         deletes a specific task.

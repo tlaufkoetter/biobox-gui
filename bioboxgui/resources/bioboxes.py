@@ -45,7 +45,7 @@ regular_file = {
 class InputFiles(Resource):
     """Accessing all the input files."""
     @auth.login_required
-    @roles_accepted(['common', 'trusted', 'admin'])
+    @roles_accepted('common', 'trusted', 'admin')
     def get(self):
         """
         Fetches all the input files' names.
@@ -85,7 +85,7 @@ class BioboxesAll(Resource):
             return marshal(result, regular_biobox, envelope='bioboxes')
 
     @auth.login_required
-    @roles_accepted(['trusted', 'admin'])
+    @roles_accepted('trusted', 'admin')
     def put(self):
         """
         updates the stored bioboxes.
