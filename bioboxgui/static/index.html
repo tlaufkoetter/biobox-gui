@@ -1,23 +1,22 @@
 <!doctype html>
-<html lang="en" ng-app="BioboxGui">
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <link data-require="bootstrap-css@3.1.1" data-semver="3.1.1" rel="stylesheet"
-          href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/static/css/style.css"/>
-    <script data-require="angular.js@*" data-semver="1.2.29" src="http://code.angularjs.org/1.2.29/angular.js"></script>
-    <script data-require="angular-resource@*" data-semver="1.2.13"
-            src="http://code.angularjs.org/1.2.13/angular-resource.js"></script>
-    <script src="https://code.angularjs.org/1.2.25/angular-route.js"></script>
-    <script src="/static/js/app.js"></script>
-    <script src="/static/js/controllers.js"></script>
-    <script src="/static/js/directives.js"></script>
-    <script src="/static/js/services.js"></script>
-    <script src="/static/js/interceptors.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/include/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/static/assets/css/style.css"/>
+    <link rel="stylesheet" href="/static/include/css/angular-ui-notification.min.css"/>
+    <link rel="stylesheet" href="/static/include/css/isteven-multi-select.css"/>
+    <script src="/static/include/js/angular.min.js"></script>
+    <script src="/static/include/js/angular-resource.min.js"></script>
+    <script src="/static/include/js/angular-route.min.js"></script>
+    <script src="/static/include/js/angular-storage.min.js"></script>
+    <script src="/static/include/js/angular-ui-notification.min.js"></script>
+    <script src="/static/include/js/isteven-multi-select.js"></script>
 
     <title>Biobox GUI</title>
 </head>
-<body>
+<body ng-app="BioboxGui">
 <div class="container page">
     <navigation></navigation>
     <div id="content" class="container main" ng-view="">
@@ -26,13 +25,46 @@
     <hr>
     <footer id="footer" class="footer">
         <div class="footer-left">
-            <a href="#/bioboxgui/about">About</a> |
-            <a href="#/bioboxgui">Home</a>
+            <a ng-href="#/bioboxgui">Home</a>
         </div>
         <div class="footer-right">
             <span>&copy; 2016 Biobox GUI</span>
         </div>
     </footer>
 </div>
+
+<script src="/static/angular/app.module.js"></script>
+<script src="/static/angular/app.constants.js"></script>
+<script src="/static/angular/app.routes.js"></script>
+
+<script src="/static/angular/shared/util/gateway.service.js"></script>
+
+<script src="/static/angular/shared/navigation/navigation.interceptor.js"></script>
+<script src="/static/angular/shared/navigation/navigation.directive.js"></script>
+<script src="/static/angular/shared/navigation/navigation.service.js"></script>
+<script src="/static/angular/shared/navigation/navigation.controller.js"></script>
+
+<script src="/static/angular/shared/session/session.service.js"></script>
+
+<script src="/static/angular/components/bioboxes/bioboxes.service.js"></script>
+<script src="/static/angular/components/bioboxes/bioboxes.controller.js"></script>
+
+<script src="/static/angular/components/bioboxes/directives/biobox.directive.js"></script>
+<script src="/static/angular/components/bioboxes/directives/biobox-list.directive.js"></script>
+<script src="/static/angular/components/bioboxes/directives/biobox-meta.directive.js"></script>
+<script src="/static/angular/components/bioboxes/directives/biobox-greeting.directive.js"></script>
+
+<script src="/static/angular/components/states/states.service.js"></script>
+<script src="/static/angular/components/states/states.controller.js"></script>
+
+<script src="/static/angular/components/login/login.service.js"></script>
+<script src="/static/angular/components/login/login.controller.js"></script>
+
+<script src="/static/angular/components/users/users.controller.js"></script>
+<script src="/static/angular/components/users/users.service.js"></script>
+
+<script src="/static/angular/components/sources/sources.service.js"></script>
+<script src="/static/angular/components/sources/sources.controller.js"></script>
+<script src="/static/angular/components/sources/sources.html"></script>
 </body>
 </html>

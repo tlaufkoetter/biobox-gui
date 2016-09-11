@@ -5,12 +5,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">Biobox GUI</a>
+        <a class="navbar-brand" ng-href="#/bioboxgui">Biobox GUI</a>
     </div>
     <div class="collapse navbar-collapse" ng-class="{in: showMobileNav}">
         <ul class="nav navbar-nav">
-            <li ng-repeat="route in routes" ng-class="{active: activeRoute(route)}">
-                <a href="#{{ route.path }}">{{ route.name }}</a>
+            <li ng-repeat="route in main.routes()"
+                ng-class="{active: main.activeRoute(route)}"
+                ng-show="main.showRoute(route)">
+                <a ng-href="#{{ route.path }}">{{ route.name }}</a>
             </li>
         </ul>
     </div>

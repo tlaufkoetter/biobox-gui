@@ -1,0 +1,74 @@
+<div>
+    <table ng-hide="main.biobox == 404" class="table">
+        <tbody>
+        <tr>
+            <td>
+                <span aria-hidden="true" class="glyphicon glyphicon-envelope"></span>
+            </td>
+            <td>
+                <a ng-href="https://registry.hub.docker.com/u/{{ main.biobox.image.dockerhub }}">
+                    Docker Image
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="glyphicon glyphicon-file"></span>
+            </td>
+            <td>
+                <a ng-href="https://www.ncbi.nlm.nih.gov/pubmed/{{ main.biobox.pmid }}">
+                    Pubmed Entry
+                </a>
+            </td>
+        </tr>
+        <tr ng-hide="!main.biobox.homepage">
+            <td>
+                <span class="glyphicon glyphicon-ok biobox-item-good"></span>
+            </td>
+            <td>
+                <a ng-href="{{ main.biobox.homepage }}">
+                    Homepage
+                </a>
+            </td>
+        </tr>
+        <tr ng-hide="main.biobox.homepage">
+            <td>
+                <span class="glyphicon glyphicon-remove biobox-item-bad"></span>
+            </td>
+            <td> No homepage available</td>
+        </tr>
+        <tr ng-hide="!main.biobox.image.source">
+            <td>
+                <span class="glyphicon glyphicon-ok biobox-item-good"></span>
+            </td>
+            <td>
+                <a ng-href="{{ main.biobox.image.source }}">
+                    Source Code Repository
+                </a>
+            </td>
+        </tr>
+        <tr ng-hide="main.biobox.image.source">
+            <td>
+                <span class="glyphicon glyphicon-remove biobox-item-bad"></span>
+            </td>
+            <td> No source code repository available</td>
+        </tr>
+        <tr ng-hide="!main.biobox.mailing_list">
+            <td>
+                <span class="glyphicon glyphicon-ok biobox-item-good"></span>
+            </td>
+            <td>
+                <a ng-href="{{ main.biobox.mailing_list }}">
+                    Mailing List
+                </a>
+            </td>
+        </tr>
+        <tr ng-hide="main.biobox.mailing_list">
+            <td>
+                <span class="glyphicon glyphicon-remove biobox-item-bad"></span>
+            </td>
+            <td> No mailing list available</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,16 +1,20 @@
-from flask import abort
+"""
+resource for the interfaces a task of a biobox can implement.
+"""
 from flask_restful import marshal, Resource, fields
-# from flask_security import auth_token_required
 
 from bioboxgui import models
 
+# standard form of an interface.
 regular_interface = {
     'name': fields.String
 }
 
 
 class Interfaces(Resource):
-    # decorators = [auth_token_required]
+    """
+    Accessing all the interfaces.
+    """
 
     def get(self):
         """
@@ -20,5 +24,5 @@ class Interfaces(Resource):
         """
         result = models.Interface.query.all()
         if not result:
-            abort(404)
-        return marshal(result, regular_interface)
+            return {'interfaces': []}
+        return marshal(result, regular_interface, envelope='interfaces')

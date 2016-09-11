@@ -1,0 +1,40 @@
+<h1>Source Administration</h1>
+<div class="col-md-3">
+    <h2>Sources</h2>
+    <table class="table table-striped table-hover clickable" ng-if="main.sources">
+        <thead>
+            <tr>
+                <td>Name</td>
+            </tr>
+        </thead>
+        <tr ng-repeat="source in main.sources" ng-click="main.getSource(source.name)">
+            <td>{{ source.name }}</td>
+        </tr>
+    </table>
+    <button class="btn btn-default" type="button" ng-click="main.selected_source = null">New</button>
+</div>
+<div class="col-md-9" ng-if="main.selected_source">
+    <h3>{{ main.selected_source.name }}</h3>
+    <label for="name">Name</label>
+    <p>{{ main.selected_source.name }}</p>
+    <label for="url">URL</label>
+    <p>{{ main.selected_source.url }}</p>
+    <button class="btn btn-danger" ng-click="main.deleteSource(main.selected_source.name)"><span
+                class="glyphicon glyphicon-trash"/></button>
+</div>
+<div class="col-md-9" ng-if="!main.selected_source">
+    <h3>Create Source</h3>
+    <form  ng-submit="main.addSource(source)" ng-model="source">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input class="form-control" type="text" name="name" id="name" ng-model="source.name" validate required/>
+        </div>
+        <div class="form-group">
+            <label for="url">URL</label>
+            <input class="form-control" type="url" name="url" id="url" ng-model="source.url" validate required/>
+        </div>
+        <div class="form-group">
+            <input class="btn btn-primary" type="submit" value="Submit"/>
+        </div>
+    </form>
+</div>

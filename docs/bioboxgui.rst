@@ -4,6 +4,29 @@ bioboxgui package
 Submodules
 ----------
 
+bioboxgui.resources module
+----------------------
+
+.. automodule:: bioboxgui.resources.bioboxes
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. automodule:: bioboxgui.resources.users
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. automodule:: bioboxgui.resources.tasks
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. automodule:: bioboxgui.resources.sources
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bioboxgui.api module
 --------------------
 

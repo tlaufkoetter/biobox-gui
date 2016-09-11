@@ -1,20 +1,20 @@
 # Biobox Gui
 
-| branch  | build status |
-| ------------- | ------------- |
-| master  | [![Build Status](https://travis-ci.org/tlaufkoetter/biobox-gui.svg?branch=master)](https://travis-ci.org/tlaufkoetter/biobox-gui)  |
-| develop  | [![Build Status](https://travis-ci.org/tlaufkoetter/biobox-gui.svg?branch=develop)](https://travis-ci.org/tlaufkoetter/biobox-gui)  |
+| branch        | build status                                                                                                                       |
+| ------------- | -------------                                                                                                                      |
+| master        | [![Build Status](https://travis-ci.org/tlaufkoetter/biobox-gui.svg?branch=master)](https://travis-ci.org/tlaufkoetter/biobox-gui)  |
+| develop       | [![Build Status](https://travis-ci.org/tlaufkoetter/biobox-gui.svg?branch=develop)](https://travis-ci.org/tlaufkoetter/biobox-gui) |
 
 
 A web application for running biobox containers.
 
 ## What it does
 
-Shows you the available bioboxes and interfaces at /bioboxgui. Provides a REST API.
+Provides a web interface to run and add biobox containers, and track the states of their tasks, and with basic user handling.
 
 ## Quickstart
 
-Make sure you have Mesos, Docker, and jkrue/jobproxy (as well as the currently used Mesos scheduler, at this point chronos) installed and running.
+Make sure you have Mesos 0.26.1, Docker, jkrue/jobproxy (commit: dddb503), and Mesos Chronos installed and running.
 ```bash
 # must be on a filesystem shared by the mesos slaves
 > export BIOBOX_HOST_BASE=$HOME/.biobox  #maybe add this to your .bashrc, change to your liking
@@ -43,6 +43,7 @@ Make sure you have Mesos, Docker, and jkrue/jobproxy (as well as the currently u
 ```
 
 * visit ``http://localhost:5000/bioboxgui`` in your favourite webbrowser.
-    * if you're running the app through docker, change localhost to the IP adress of the container.
-* put your *.fq.gz files into $BIOBOX_HOST_BASE/data/input/
+    * if you're running the app through docker, change localhost to the IP address of the container.
+* put your *.fq.gz files into $BIOBOX_HOST_BASE/data/input/files
 * the output will be found in $BIOBOX_HOST_BASE/data/output/\<date\>\_\<container\>\_\<task\>\_\<user\>\_\<hash\>/
+* add a source (e.g. https://raw.githubusercontent.com/pbelmann/data/feature/new-image-list/images.yml)

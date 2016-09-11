@@ -1,0 +1,43 @@
+<div>
+    <h1>Tasks</h1>
+    <button class="btn btn-primary pull-right" ng-click="main.queryStates()">update</button>
+    <table class="table table-striped table-hover" ng-hide="!main.states.length">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <td>Status</td>
+            <td>Biobox</td>
+            <td>Mounts</td>
+            <td></td>
+        </tr>
+        </thead>
+        <tr ng-repeat="state in main.states.reverse()">
+            <td><b>{{ state.id }}</b></td>
+            <td>{{ state.code }}</td>
+            <td>{{ state.box }}:{{ state.cmd }}</td>
+            <td>
+                <table>
+                    <tr>
+                        <td><b>BBX&nbsp;file</b></td><td>{{ state.mounts.bbx_file.host }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Input&nbsp;file</b></td><td>{{ state.mounts.input_file.host }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Output&nbsp;dir</b></td><td>{{ state.mounts.outputdir.host }}</td>
+                    </tr>
+                </table>
+            </td>
+            <td>
+                <form ng-submit="main.deleteTask(state.id)" ng-if="hasRole([main.Roles.trusted, main.Roles.admin])">
+                    <button type="submit" class="btn btn-danger" ng-action="main.deleteTask(state.id)"><span
+                            class="glyphicon glyphicon-trash"/></button>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <div ng-if="!main.states.length">
+        <h3>No states to show</h3>
+        <p>Try hitting the update button or submit a task</p>
+    </div>
+</div>

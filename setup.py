@@ -12,7 +12,7 @@ with open('requirements.txt', 'r') as requirements:
 
 setup(
         name="bioboxgui",
-        version="0.0.1dev",
+        version="v0.1.0",
         packages=[
             'bioboxgui'
         ],

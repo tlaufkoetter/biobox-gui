@@ -1,3 +1,6 @@
+"""
+manages the browser call and sends back the index file
+"""
 from flask import make_response
 
 from bioboxgui import app

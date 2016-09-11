@@ -7,6 +7,7 @@ hostbase = os.environ.get('DOCKER_HOST_BASE')
 hostbase = basedir if not hostbase else hostbase
 
 DOCKER = len(sys.argv) > 1 and '--docker' in sys.argv[1:]
+API_VERSION = 'v1'
 
 DOCKER_JP_URL = os.environ.get('DOCKER_JP_URL')
 if not DOCKER_JP_URL:
@@ -22,6 +23,8 @@ FOLDERS = {
     'db': os.path.join(basedir, 'db'),
     'data': os.path.join(basedir, 'data'),
     'input': os.path.join(basedir, 'data', 'input'),
+    'files': os.path.join(basedir, 'data', 'input', 'files'),
+    'files': os.path.join(basedir, 'data', 'input', 'files'),
     'bioboxes': os.path.join(basedir, 'data', 'input', 'bbx_yaml'),
     'output': os.path.join(basedir, 'data', 'output')
 }
@@ -32,9 +35,8 @@ for name, folder in FOLDERS.items():
     os.makedirs(folder, exist_ok=True)
 
 SECRET_KEY = 'super-duper-secret'
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db', 'bioboxgui.db')
-# SECURITY_LOGIN_URL = '/bioboxgui/api/token'
-# SECURITY_LOGOUT_URL = '/bioboxgui/api/logout'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' \
+    + os.path.join(basedir, 'db', 'bioboxgui.db')
 SECURITY_PASSWORD_HASH = 'pbkdf2_sha512'
 SECURITY_PASSWORD_SALT = 'even-secreter'
 

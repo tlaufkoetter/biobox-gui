@@ -1,0 +1,8 @@
+<div class="row">
+    <biobox-list class="col-md-3"></biobox-list>
+    <div class="col-md-6">
+        <biobox ng-hide="!main.biobox"></biobox>
+        <biobox-greeting ng-hide="main.biobox || main.biobox == 'fail'"></biobox-greeting>
+    </div>
+    <biobox-meta ng-hide="!main.biobox || main.biobox == 'fail'" class="col-md-3"></biobox-meta>
+</div>
