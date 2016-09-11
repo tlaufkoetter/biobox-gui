@@ -8,6 +8,8 @@
     function AdministrationController(userService, sourceService, Notification, $route, Constants) {
         var vm = this;
 
+        vm.getUser = getUser;
+        vm.getUsers = getUsers;
         vm.createUser = createUser;
         vm.deleteUser = deleteUser;
         vm.grantPermission = grantPermission;
@@ -15,6 +17,8 @@
         vm.deleteSource = deleteSource;
         vm.Roles = Constants.Roles;
         vm.roles = [];
+        vm.users = [];
+        vm.selected_user = {};
 
         for (var role in vm.Roles) {
             vm.roles.push({
@@ -22,6 +26,52 @@
                     disable: role == 'base',
                     ticked: role == 'base'
             });
+        }
+
+        function getUser(username) {
+            userService.getUser(username)
+                .then(
+                        function(user) {
+                            vm.selected_user = user;
+                            vm.roles = [];
+                            for (var role in vm.selected_user.roles) {
+                                vm.roles.push({
+                                        name: role,
+                                        disable: role == 'base',
+                                        ticked: role == 'base'
+                                });
+                            }
+                        },
+                        function(error) {
+                            var message;
+                            switch (error.status_code) {
+                                case 404:
+                                    message = "User doesn't exist.";
+                                    break;
+                                default:
+                                    message = error.message;
+                            }
+                            Notification.error({
+                                title: "Failed to get user",
+                                message: message
+                            });
+                        }
+                    );
+        }
+
+        function getUsers() {
+            userService.getUsers()
+                .then(
+                        function(users) {
+                            vm.users = users;
+                        },
+                        function(error) {
+                            Notification.error({
+                                title: "Failed to get users",
+                                message: error.message
+                            });
+                        }
+                    );
         }
 
         function createUser(user) {

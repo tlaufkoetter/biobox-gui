@@ -101,7 +101,7 @@
             task.user = user;
             task.container = container;
             task.cmd = cmd;
-            task.file = file;
+            task.file = file[0].name;
             return gatewayService.post('/tasks', task)
                 .then(
                     function(response){

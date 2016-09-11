@@ -7,12 +7,41 @@
 
     function userService(gatewayService, $q, $log) {
         var service = {
+                getUser: getUser,
+                getUsers: getUsers,
                 createUser: createUser,
                 grantPermission: grantPermission,
                 deleteUser: deleteUser,
             },
             currentUser = null;
         return service;
+
+        function getUser(username) {
+            return gatewayService.get('/users/' + username)
+                .then(
+                        function(response) {
+                            $log.info('Get user: ', response.data.user);
+                            return response.data.user;
+                        },
+                        function(response) {
+                            $log.warn('Failed to get user ', username);
+                            return $q.reject(response);
+                        }
+                    );
+        }
+
+        function getUsers() {
+            return gatewayService.get('/users')
+                .then(
+                        function(response) {
+                            $log.info('Get users: ', response.data.users);
+                            return response.data.users;
+                        },
+                        function(response) {
+                            return $q.reject(response);
+                        }
+                    );
+        }
 
         function createUser(user) {
             return gatewayService.post('/users', user)

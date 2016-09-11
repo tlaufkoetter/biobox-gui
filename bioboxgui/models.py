@@ -43,7 +43,7 @@ class User(db.Model):
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
     roles = db.relationship(
-        'Role', secondary=roles_users,
+        'Role', cascade='all', secondary=roles_users,
         backref=db.backref('users', lazy='dynamic')
     )
 
@@ -93,8 +93,8 @@ class Biobox(db.Model):
     homepage = db.Column(db.String)
     mailing_list = db.Column(db.String)
     description = db.Column(db.String, nullable=False)
-    tasks = db.relationship('Task', secondary=biobox_tasks)
-    image = db.relationship('Image', uselist=False, back_populates='biobox')
+    tasks = db.relationship('Task', cascade='all', secondary=biobox_tasks)
+    image = db.relationship('Image', cascade='all', uselist=False, back_populates='biobox')
     source_id = db.Column(
         db.Integer,
         db.ForeignKey('source.id'), nullable=False
@@ -142,7 +142,7 @@ class Source(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String, unique=True, nullable=False)
     name = db.Column(db.String, unique=True, nullable=False)
-    bioboxes = db.relationship('Biobox', backref='source', lazy='dynamic')
+    bioboxes = db.relationship('Biobox', cascade='all, delete-orphan', backref='source', lazy='dynamic')
 
 
 def refresh():

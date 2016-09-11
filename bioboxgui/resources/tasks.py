@@ -66,6 +66,7 @@ class TasksAll(Resource):
         '''
         timestamp = time.time()
         s = self.reqparse.parse_args(strict=True)
+        print(s)
         ts = datetime\
             .datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d_%H-%M-%S')
         job = '{}_{}_{}_{}'.format(ts, s['cmd'], s['user'],

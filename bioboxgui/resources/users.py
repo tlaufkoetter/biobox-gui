@@ -70,7 +70,7 @@ class UserName(Resource):
         ).first()
         if not user:
             abort(404)
-        return marshal(user, regular_user)
+        return marshal(user, regular_user, envelope="user")
 
     @auth.login_required
     @roles_accepted('admin')
@@ -166,7 +166,7 @@ class UserAll(Resource):
         :return: list of json formatted users.
         """
         users = models.User.query.all()
-        return marshal(users, regular_user)
+        return marshal(users, regular_user, envelope="users")
 
     @auth.login_required
     @roles_accepted('admin')
