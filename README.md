@@ -46,3 +46,4 @@ Make sure you have Mesos 0.26.1, Docker, jkrue/jobproxy (commit: dddb503), and M
     * if you're running the app through docker, change localhost to the IP address of the container.
 * put your *.fq.gz files into $BIOBOX_HOST_BASE/data/input/files
 * the output will be found in $BIOBOX_HOST_BASE/data/output/\<date\>\_\<container\>\_\<task\>\_\<user\>\_\<hash\>/
+* add a source (e.g. https://raw.githubusercontent.com/pbelmann/data/feature/new-image-list/images.yml)
