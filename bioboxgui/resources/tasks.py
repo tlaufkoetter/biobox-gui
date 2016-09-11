@@ -1,3 +1,6 @@
+"""
+resource for biobox tasks.
+"""
 import binascii
 import datetime
 import hashlib
@@ -14,23 +17,28 @@ from flask_restful import marshal, Resource, fields, reqparse
 from bioboxgui import app
 from bioboxgui.api import auth, roles_accepted
 
+# URL at which the jobproxy is reachable
 JOB_PROXY_URL = app.config.get('DOCKER_JP_URL')
 
+# minimal form of a task.
 simple_task = {
     'id': fields.String
 }
 
+# standard form of a mount poin.
 full_mount = {
     'host': fields.String,
     'container': fields.String
 }
 
+# standard form of the mount points of container.
 full_mounts = {
     'bbx_file': fields.Nested(full_mount),
     'input_file': fields.Nested(full_mount),
     'outputdir': fields.Nested(full_mount)
 }
 
+# standard form of the task a conainer is supposed to run.
 full_task = {
     'id': fields.String,
     'code': fields.String,
@@ -42,7 +50,16 @@ full_task = {
 
 
 class TasksAll(Resource):
+    """
+    Accessing all the tasks.
+    """
+
     def __init__(self):
+        """
+        creating a reqparser.
+
+        user, container, cmd, file
+        """
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
             'user', type=str, required=True, location='json'
@@ -62,6 +79,7 @@ class TasksAll(Resource):
     def post(self):
         '''
         creates a new task.
+
         :return: string of the task id
         '''
         timestamp = time.time()
@@ -127,6 +145,7 @@ class TasksAll(Resource):
     def get(self):
         '''
         queries all the tasks.
+
         :return: json formatted list of tasks.
         '''
         try:
@@ -185,11 +204,16 @@ class TasksAll(Resource):
 
 
 class TaskId(Resource):
+    """
+    Access one task by its id.
+    """
+
     @auth.login_required
     @roles_accepted('common', 'trusted', 'admin')
     def get(self, task_id):
         '''
         queries the state of given task.
+
         :param task_id: the id of the task to query.
         :return: json formatted task state
         '''
@@ -205,6 +229,7 @@ class TaskId(Resource):
     def delete(self, task_id):
         '''
         deletes a specific task.
+
         :param task_id: the task's id
         :return: none
         '''

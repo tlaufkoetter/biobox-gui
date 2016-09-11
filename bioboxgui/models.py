@@ -1,3 +1,6 @@
+"""
+contains the database definition.
+"""
 import json
 import os.path
 
@@ -11,10 +14,6 @@ from passlib.apps import custom_app_context as pwd_context
 from bioboxgui import db
 from config import basedir, SECRET_KEY
 
-IMAGES_URL = \
-    'https://raw.githubusercontent.com/' \
-    + 'pbelmann/data/feature/new-image-list/images.yml'
-
 # linking bioboxes with tasks since 2016.
 biobox_tasks = db.Table(
     'association', db.Model.metadata,
@@ -22,6 +21,7 @@ biobox_tasks = db.Table(
     db.Column('task_id', db.Integer, db.ForeignKey('task.id'))
 )
 
+# many to many relationship between users and roles.
 roles_users = db.Table(
     'roles_users',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
@@ -30,12 +30,22 @@ roles_users = db.Table(
 
 
 class Role(db.Model):
+    """
+    roles a user can assume.
+
+    admin, trusted, common and base
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True, nullable=False)
     description = db.Column(db.String)
 
 
 class User(db.Model):
+    """
+    user representation
+    """
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
@@ -48,17 +58,29 @@ class User(db.Model):
     )
 
     def hash_password(self, password):
+        """
+        creates a password hash.
+        """
         self.password_hash = pwd_context.encrypt(password)
 
     def verify_password(self, password):
+        """
+        verifies the password of the user.
+        """
         return pwd_context.verify(password, self.password_hash)
 
     def generate_auth_token(self, expiration=600):
+        """
+        generates a new authentication token for the user.
+        """
         s = Serializer(SECRET_KEY, expires_in=expiration)
         return s.dumps({'id': self.id})
 
     @staticmethod
     def verify_auth_token(token):
+        """
+        verifies the authentication token of the user.
+        """
         s = Serializer(SECRET_KEY)
         data = s.loads(token)
         user = User.query.get(data['id'])
@@ -77,9 +99,8 @@ class Interface(db.Model):
 class Biobox(db.Model):
     """
     represents a standard biobox.
-
-    is used for ORM.
     """
+
     KEY_IMAGE = 'image'
     KEY_ID = 'pmid'
     KEY_HOME_PAGE = 'homepage'
@@ -107,6 +128,7 @@ class Image(db.Model):
 
     existence is based solely on the quest for conformity with the schema.
     """
+
     KEY_CONTAINER_URI = 'dockerhub'
     KEY_REPO_URL = 'repo'
     KEY_SRC_URL = 'source'
@@ -125,6 +147,7 @@ class Task(db.Model):
     """
     represents the tasks a biobox can perform.
     """
+
     KEY_NAME = 'name'
     KEY_INTERFACE = 'interface'
 
@@ -139,6 +162,7 @@ class Source(db.Model):
     """
     represents a source from where bioboxes are loaded.
     """
+
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String, unique=True, nullable=False)
     name = db.Column(db.String, unique=True, nullable=False)
@@ -148,7 +172,7 @@ class Source(db.Model):
 def refresh():
     """
     fetches the currently available bioboxes
-    and updates the dataase if necessary.
+    and updates the database if necessary.
 
     :return:  all the bioboxes.
     """

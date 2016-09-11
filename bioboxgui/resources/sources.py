@@ -5,6 +5,7 @@ from jsonschema import ValidationError
 from bioboxgui import models, db
 from bioboxgui.api import auth, roles_accepted
 
+# standard format for source of bioboxes.
 regular_source = {
     'url': fields.String,
     'name': fields.String,
@@ -12,7 +13,16 @@ regular_source = {
 
 
 class SourcesAll(Resource):
+    """
+    Accessing all the sources.
+    """
+
     def __init__(self):
+        """
+        parsing the request for parameters.
+
+        url and name
+        """
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
             'url',
