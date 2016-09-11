@@ -5,16 +5,26 @@
         .module('BioboxGui')
         .controller('SourceController', SourceController);
 
-    function SourceController(sources, userService, sourceService, Notification, $route, Constants) {
+    /**
+     * controller handles the sources for bioboxes.
+     *
+     * @param sources prefetched while routin
+     */
+    function SourceController(sources, sourceService, Constants, Notification, $route) {
         var vm = this;
 
+        // exposed methods
         vm.getSource = getSource;
         vm.getSources = getSources;
         vm.addSource = addSource;
         vm.deleteSource = deleteSource;
 
+        // prefetched model data
         vm.sources = sources;
 
+        /**
+         * queries the source by its name.
+         */
         function getSource(sourcename) {
             sourceService.getSource(sourcename)
                 .then(
@@ -38,6 +48,9 @@
                     );
         }
 
+        /**
+         * queries all the sources.
+         */
         function getSources() {
             sourceService.getSources()
                 .then(
@@ -53,6 +66,9 @@
                     );
         }
 
+        /**
+         * adds the given source to the sources list.
+         */
         function addSource(source) {
             sourceService.addSource(source).then(
                 function() {
@@ -78,6 +94,9 @@
             );
         }
 
+        /**
+         * deletes the given source and the bioboxes related to it.
+         */
         function deleteSource(name) {
             sourceService.deleteSource(name)
                 .then(

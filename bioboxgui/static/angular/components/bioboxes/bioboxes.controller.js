@@ -5,12 +5,20 @@
         .module('BioboxGui')
         .controller('BioboxController', BioboxController);
 
-    function BioboxController($rootScope, bioboxService, $location, interfaces, bioboxes, Notification, $route, Constants) {
+    /**
+     * handles actions in relation to bioboxes.
+     *
+     * @param bioboxes prefetched when routing
+     * @param interfaces prefetched when routing
+     */
+    function BioboxController(bioboxes, interfaces, bioboxService, Constants, Notification, $location, $route, $rootScope) {
         var vm = this;
 
+        // pre fetched model data
         vm.interfaces = interfaces;
         vm.bioboxes = bioboxes;
 
+        // exposed methods
         vm.getBioboxes = getBioboxes;
         vm.getBiobox = getBiobox;
         vm.updateBioboxes = updateBioboxes;
@@ -19,9 +27,16 @@
         vm.selectBiobox = selectBiobox;
         vm.selectTask = selectTask;
         vm.submitTask = submitTask;
+
+        // available roles
         vm.Roles = Constants.Roles;
+
+        // available input files to be used by bioboxes
         vm.files = [];
 
+        /**
+         * queries all the bioboxes.
+         */
         function getBioboxes() {
             bioboxService.getBioboxes()
                 .then(
@@ -38,6 +53,9 @@
                 );
         }
 
+        /**
+         * queries a biobox with the given PMID.
+         */
         function getBiobox(pmid) {
             vm.task = null;
             bioboxService.getBiobox(pmid)
@@ -63,6 +81,9 @@
                 );
         }
 
+        /**
+         * updates the biobox list.
+         */
         function updateBioboxes() {
             bioboxService.updateBioboxes()
                 .then(
@@ -82,6 +103,9 @@
             vm.getInterfaces();
         }
 
+        /**
+         * queries the list of implementd interfaces.
+         */
         function getInterfaces() {
             bioboxService.getInterfaces()
                 .then(
@@ -98,6 +122,9 @@
                     });
         }
 
+        /**
+         * queries the list of bioboxes with the given interface.
+         */
         function getInterface(selectedInterface) {
             if (selectedInterface !== null) {
                 vm.interface = selectedInterface;
@@ -126,11 +153,17 @@
             }
         }
 
+        /**
+         * sets the given biobox as the displayed biobox.
+         */
         function selectBiobox(biobox) {
             vm.biobox = biobox;
             vm.task = null;
         }
 
+        /**
+         * selects a task of a biobox to be executed.
+         */
         function selectTask(selectedTask) {
             if ($rootScope.isAuthenticated()) {
                 bioboxService.getFiles()
@@ -150,6 +183,9 @@
             }
         }
 
+        /**
+         * submits the currently selected task.
+         */
         function submitTask() {
             bioboxService.submitTask('test', vm.biobox.image.dockerhub, vm.task.name, vm.task.file)
                 .then(
@@ -173,6 +209,5 @@
                     }
                 );
         }
-
     }
 })();

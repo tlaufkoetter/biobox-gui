@@ -5,14 +5,26 @@
         .module('BioboxGui')
         .controller('StateController', StateController);
 
-    function StateController(stateService, states, Notification, $route, Constants) {
+    /**
+     * controller manages the states of submitted tasks.
+     *
+     * @param states prefetched while routing
+     */
+    function StateController(states, stateService, Constants, Notification, $route) {
         var vm = this;
 
+        // exposed methods
         vm.states = states;
         vm.deleteTask = deleteTask;
         vm.queryStates = queryStates;
+
+        // available roles
         vm.Roles = Constants.Roles;
 
+        /**
+         * deletes the task with the given id,
+         * kills it when it is still running
+         */
         function deleteTask(id) {
             stateService.deleteTask(id)
                 .then(
@@ -37,6 +49,9 @@
                 );
         };
 
+        /**
+         * queries a list of all the running tasks.
+         */
         function queryStates() {
             stateService.queryStates()
                 .then(
