@@ -157,7 +157,6 @@
                         Notification.success("Deleted user: " + username);
                         $route.reload();
                         getUsers();
-                        vm.selected_user = null;
                     },
                     function(error) {
                         var message;

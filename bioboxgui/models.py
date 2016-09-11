@@ -53,7 +53,7 @@ class User(db.Model):
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
     roles = db.relationship(
-        'Role', cascade='all', secondary=roles_users,
+        'Role', secondary=roles_users,
         backref=db.backref('users', lazy='dynamic')
     )
 
