@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('BioboxGui', ['ngRoute', 'angular-storage', 'ui-notification'])
+        .module('BioboxGui', ['ngRoute', 'angular-storage', 'ui-notification', 'isteven-multi-select'])
         .config(configure);
 
     function configure(NotificationProvider) {

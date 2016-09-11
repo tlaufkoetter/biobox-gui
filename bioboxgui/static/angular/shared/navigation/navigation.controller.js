@@ -14,8 +14,8 @@
 
         function showRoute(route) {
             var show;
-            if (route.roles_required) {
-                show = $rootScope.hasRole(route.roles_required);
+            if (route.roles_accepted) {
+                show = $rootScope.hasRole(route.roles_accepted);
             } else if (route.require_login) {
                 show = $rootScope.isAuthenticated()
             } else if (route.require_login === null) {

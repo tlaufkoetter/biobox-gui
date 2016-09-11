@@ -14,6 +14,15 @@
         vm.addSource = addSource;
         vm.deleteSource = deleteSource;
         vm.Roles = Constants.Roles;
+        vm.roles = [];
+
+        for (var role in vm.Roles) {
+            vm.roles.push({
+                    name: role,
+                    disable: role == 'base',
+                    ticked: role == 'base'
+            });
+        }
 
         function createUser(user) {
             userService.createUser(user).then(
@@ -55,12 +64,12 @@
                 );
         }
 
-        function grantPermission(username, outputroles) {
+        function grantPermission(username, newRoles) {
             var roles = [];
-            outputroles.forEach(function(role) {
-                roles.add(role.name);
+            newRoles.forEach(function(role) {
+                roles.push(vm.Roles[role.name]);
             });
-            userService.grantPermission(username, outputroles)
+            userService.grantPermission(username, roles)
                 .then(
                     function() {
                         Notification.success("Granted permissions.");

@@ -23,7 +23,7 @@
     <div ng-show="main.bioboxes.length < 1">
         <p>No bioboxes to show.</p>
     </div>
-    <form role="form" ng-submit="main.updateBioboxes()">
+    <form ng-if="hasRole([main.Roles.admin, main.Roles.common, main.Roles.trusted])" role="form" ng-submit="main.updateBioboxes()">
         <button type="submit" class="btn btn-default">update</button>
     </form>
 </div>

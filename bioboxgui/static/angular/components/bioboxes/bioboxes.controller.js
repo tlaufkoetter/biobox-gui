@@ -5,7 +5,7 @@
         .module('BioboxGui')
         .controller('BioboxController', BioboxController);
 
-    function BioboxController(bioboxService, $location, interfaces, bioboxes, Notification, $route) {
+    function BioboxController(bioboxService, $location, interfaces, bioboxes, Notification, $route, Constants) {
         var vm = this;
 
         vm.interfaces = interfaces;
@@ -19,6 +19,7 @@
         vm.selectBiobox = selectBiobox;
         vm.selectTask = selectTask;
         vm.submitTask = submitTask;
+        vm.Roles = Constants.Roles;
 
         function getBioboxes() {
             bioboxService.getBioboxes()

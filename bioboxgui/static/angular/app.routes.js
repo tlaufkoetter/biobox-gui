@@ -48,7 +48,7 @@
                     }
                 },
                 require_login: true,
-                roles_accepted: [Constants.Roles['user']]
+                roles_accepted: [Constants.Roles.common]
             })
             .when('/bioboxgui/administration', {
                 templateUrl: '/static/angular/components/administration/administration.html',
@@ -56,7 +56,7 @@
                 controller: "AdministrationController",
                 controllerAs: "main",
                 require_login: true,
-                roles_accepted: [Constants.Roles['trusted'], Constants.Roles[ 'admin']]
+                roles_accepted: [Constants.Roles.trusted, Constants.Roles.admin]
             })
             .when('/bioboxgui/login', {
                 templateUrl: '/static/angular/components/login/login.html',
@@ -81,7 +81,7 @@
                     }
                 },
                 require_login: true,
-                roles_accepted: [Constants.Roles['base']]
+                roles_accepted: [Constants.Roles.base]
             });
         $httpProvider.interceptors.push('responseInterceptor');
     };

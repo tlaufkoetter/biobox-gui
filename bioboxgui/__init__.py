@@ -17,12 +17,13 @@ the_view = bioboxgui.views
 @app.before_first_request
 def create_user():
     db.create_all()
-    role_names = ['admin', 'trusted', 'user', 'base']
+    role_names = ['admin', 'trusted', 'common', 'base']
     roles = []
     for role_name in role_names:
         role = models.Role.query.filter_by(name=role_name).first()
         if not role:
             role = models.Role(name=role_name)
+            db.session.add(role)
         roles.append(role)
 
     if not models.User.query.filter_by(username='admin').first():
@@ -30,7 +31,6 @@ def create_user():
             username='admin', email='admin@admin.com'
         )
         user.hash_password('password')
-        for role in roles:
-            user.roles = roles
+        user.roles = roles
         db.session.add(user)
     db.session.commit()

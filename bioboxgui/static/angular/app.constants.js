@@ -8,7 +8,7 @@
                 admin: 'admin',
                 trusted: 'trusted',
                 base: 'base',
-                user: 'user'
+                common: 'common'
             },
             Api: {
                 version: 'v1',

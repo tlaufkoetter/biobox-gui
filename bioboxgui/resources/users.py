@@ -86,9 +86,10 @@ class UserName(Resource):
         if not user:
             abort(404)
         arguments = self.reqparse.parse_args()
+
         new_username = arguments.get('username')
         new_email = arguments.get('email')
-        new_roles = arguments.get('role')
+        new_roles = arguments.get('roles')
 
         if new_username and new_username is not '':
             user.username = new_username
@@ -101,9 +102,7 @@ class UserName(Resource):
                 if role:
                     actual_roles.append(role)
                 else:
-                    break
-            else:
-                abort(404)
+                    abort(404)
             user.roles = actual_roles
 
         db.session.add(user)

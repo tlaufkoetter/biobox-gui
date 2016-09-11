@@ -29,16 +29,30 @@
         </div>
         <div class="col-md-6">
             <h2>Manage user permissions</h2>
-            <form name="userGrantPermission" ng-submit="main.grantPermission(grantUsername, grantRole)"
-                                             ng-init="grantUsername = ''; grantRole = ''">
-                <div class="form-group" ng-class="{ 'has-error': form.grantUsername.$dirty && form.grantUsername.$error.required }">
+            <form name="userGrantPermission"
+                    ng-submit="main.grantPermission(grantUsername, newRoles)" >
+                <div class="form-group"
+                        ng-class="{ 'has-error': form.grantUsername.$dirty && form.grantUsername.$error.required }">
                     <label for="grantUsername">Username</label>
-                    <input type="text" name="grantUsername" id="grantUsername" class="form-control" ng-model="grantUsername"
-                                                                                                    required/>
+                    <input ng-model="grantUsername"
+                            type="text"
+                            name="grantUsername"
+                            id="grantUsername"
+                            class="form-control"
+                            required/>
                 </div>
-                <div class="form-group" ng-class="{ 'has-error': form.grantRole.$dirty && form.grantRole.$error.required }">
-                    <label for="grantRole">Role</label>
-                    <input type="text" name="grantRole" id="grantRole" class="form-control" ng-model="grantRole" required/>
+                <div class="form-group">
+                    <label for="userRoles">Roles</label>
+                    <div isteven-multi-select
+                            input-model="main.roles"
+                            output-model="newRoles"
+                            button-label="name"
+                            item-label="name"
+                            tick-property="ticked"
+                            disable-property="disable"
+                            name="userRoles"
+                            >
+                    </div>
                 </div>
                 <div class="form-group">
                     <input type="submit" class="btn btn-primary" value="Grant"/>
