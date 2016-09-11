@@ -17,14 +17,22 @@
                 </tbody>
             </table>
 
-            <form name="taskSubmitForm" ng-submit="main.submitTask()" role="form" ng-hide="!main.task">
+            <form name="taskSubmitForm" ng-submit="main.submitTask()" role="form"
+                    ng-hide="!main.task || !hasRole([main.Roles.common])">
                 <h4>{{ main.task.name }}</h4>
                 <div class="form-group"
                      ng-class="{ 'has-error': form.file.$dirty && form.file.$error.required }">
                     <label for="file">fastq file</label>
-                    <input type="text" name="fastq file" id="file" class="form-control"
-                           ng-model="main.task.file"
-                           required/>
+                    <div
+                            isteven-multi-select
+                            input-model="main.files"
+                            output-model="main.task.file"
+                            button-label="name"
+                            item-label="name"
+                            tick-property="ticked"
+                            selection-mode="single"
+                            >
+                    </div>
                 </div>
                 <div class="form-actions">
                     <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">Submit Task
@@ -32,10 +40,5 @@
                 </div>
             </form>
         </div>
-
-    </div>
-    <div ng-hide="main.biobox != 404">
-        <h2>Error</h2>
-        <p>You requested main.biobox could not be found.</p>
     </div>
 </div>

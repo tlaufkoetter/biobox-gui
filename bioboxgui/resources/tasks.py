@@ -12,7 +12,7 @@ from flask import abort
 from flask_restful import marshal, Resource, fields, reqparse
 
 from bioboxgui import app
-from bioboxgui.api import auth
+from bioboxgui.api import auth, roles_accepted
 
 JOB_PROXY_URL = app.config.get('DOCKER_JP_URL')
 
@@ -58,6 +58,7 @@ class TasksAll(Resource):
         )
 
     @auth.login_required
+    @roles_accepted(['common', 'admin', 'trusted'])
     def post(self):
         '''
         creates a new task.
@@ -104,7 +105,7 @@ class TasksAll(Resource):
                    ' {} {}'.format(
                 os.path.join(app.config.get('HOST_BASE'),
                              'input', 'bbx_yaml', bbx_file),
-                os.path.join(app.config.get('HOST_BASE'), 'input', s['file']),
+                os.path.join(app.config.get('HOST_BASE'), 'input', 'files', s['file']),
                 os.path.join(app.config.get('HOST_BASE'), 'output', job),
                 s['container'], s['cmd']),
             'cputime': 10
@@ -121,6 +122,7 @@ class TasksAll(Resource):
             abort(502)
 
     @auth.login_required
+    @roles_accepted(['common', 'trusted', 'admin'])
     def get(self):
         '''
         queries all the tasks.
@@ -183,6 +185,7 @@ class TasksAll(Resource):
 
 class TaskId(Resource):
     @auth.login_required
+    @roles_accepted(['common', 'trusted', 'admin'])
     def get(self, task_id):
         '''
         queries the state of given task.
@@ -197,6 +200,7 @@ class TaskId(Resource):
             abort(404)
 
     @auth.login_required
+    @roles_accepted(['trusted', 'admin'])
     def delete(self, task_id):
         '''
         deletes a specific task.
@@ -207,6 +211,6 @@ class TaskId(Resource):
                                   '/delete/' +
                                   task_id)
         if reponse.status_code == 204:
-            return 204
+            return None, 204
         else:
             abort(502)

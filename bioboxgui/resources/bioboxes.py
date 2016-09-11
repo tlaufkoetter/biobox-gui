@@ -1,7 +1,11 @@
+import os
+
 from flask import abort
 from flask_restful import marshal, Resource, fields, reqparse
+from bioboxgui.api import auth, roles_accepted
 
 from bioboxgui import models
+from config import FOLDERS
 
 regular_image = {
     'dockerhub': fields.String,
@@ -34,6 +38,24 @@ regular_biobox = {
     'source': fields.Nested(regular_source)
 }
 
+regular_file = {
+    'name': fields.String
+}
+
+class InputFiles(Resource):
+    """Accessing all the input files."""
+    @auth.login_required
+    @roles_accepted(['common', 'trusted', 'admin'])
+    def get(self):
+        """
+        Fetches all the input files' names.
+
+        :return: json formatted list of file names.
+        """
+        files = [{'name': file} for file in os.listdir(FOLDERS['files'])]
+        return marshal(files, regular_file, envelope="files");
+
+
 
 class BioboxesAll(Resource):
     def __init__(self):
@@ -62,6 +84,8 @@ class BioboxesAll(Resource):
                 abort(404)
             return marshal(result, regular_biobox, envelope='bioboxes')
 
+    @auth.login_required
+    @roles_accepted(['trusted', 'admin'])
     def put(self):
         """
         updates the stored bioboxes.

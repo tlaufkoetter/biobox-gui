@@ -12,7 +12,8 @@
             updateBioboxes: updateBioboxes,
             getInterface: getInterface,
             getInterfaces: getInterfaces,
-            submitTask: submitTask
+            submitTask: submitTask,
+            getFiles: getFiles
         };
         return service;
 
@@ -112,6 +113,20 @@
                     }
                 );
 
+        }
+
+        function getFiles() {
+            return gatewayService.get('/files')
+                .then(
+                        function(response) {
+                            $log.info("fetched files: ", response.data.files);
+                            return response.data.files;
+                        },
+                        function(response) {
+                            $log.warn("failed to fetch files");
+                            return $q.reject(response);
+                        }
+                    );
         }
     }
 })();

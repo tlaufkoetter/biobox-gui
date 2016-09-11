@@ -18,9 +18,12 @@ def roles_accepted(*roles):
         @wraps(f)
         def decorated(*args, **kwargs):
             for role in g.user.roles:
-                if role.name in roles:
+                if role.name in roles[0]:
                     break
             else:
+                print(role.name)
+                print(roles)
+                print([ro.name for ro in g.user.roles])
                 abort(403)
             return f(*args, **kwargs)
 
@@ -120,4 +123,8 @@ api.add_resource(
 api.add_resource(
     users.UserLogin,
     '/bioboxgui/api/' + version + '/token'
+)
+api.add_resource(
+    bioboxes.InputFiles,
+    '/bioboxgui/api/' + version + '/files'
 )

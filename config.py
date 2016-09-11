@@ -23,6 +23,8 @@ FOLDERS = {
     'db': os.path.join(basedir, 'db'),
     'data': os.path.join(basedir, 'data'),
     'input': os.path.join(basedir, 'data', 'input'),
+    'files': os.path.join(basedir, 'data', 'input', 'files'),
+    'files': os.path.join(basedir, 'data', 'input', 'files'),
     'bioboxes': os.path.join(basedir, 'data', 'input', 'bbx_yaml'),
     'output': os.path.join(basedir, 'data', 'output')
 }

@@ -5,7 +5,7 @@
         .module('BioboxGui')
         .controller('BioboxController', BioboxController);
 
-    function BioboxController(bioboxService, $location, interfaces, bioboxes, Notification, $route, Constants) {
+    function BioboxController($rootScope, bioboxService, $location, interfaces, bioboxes, Notification, $route, Constants) {
         var vm = this;
 
         vm.interfaces = interfaces;
@@ -20,6 +20,7 @@
         vm.selectTask = selectTask;
         vm.submitTask = submitTask;
         vm.Roles = Constants.Roles;
+        vm.files = [];
 
         function getBioboxes() {
             bioboxService.getBioboxes()
@@ -35,7 +36,7 @@
                         });
                     }
                 );
-        };
+        }
 
         function getBiobox(pmid) {
             vm.task = null;
@@ -79,7 +80,7 @@
                 )
             ;
             vm.getInterfaces();
-        };
+        }
 
         function getInterfaces() {
             bioboxService.getInterfaces()
@@ -95,7 +96,7 @@
                             message: error.message
                         });
                     });
-        };
+        }
 
         function getInterface(selectedInterface) {
             if (selectedInterface !== null) {
@@ -123,17 +124,31 @@
             } else {
                 getBioboxes();
             }
-        };
+        }
 
         function selectBiobox(biobox) {
             vm.biobox = biobox;
-        };
+            vm.task = null;
+        }
 
         function selectTask(selectedTask) {
-            if (selectedTask !== null) {
-                vm.task = selectedTask;
+            if ($rootScope.isAuthenticated()) {
+                bioboxService.getFiles()
+                .then(
+                    function(files) {
+                        vm.files = files;
+                        if (selectedTask !== null) {
+                            vm.task = selectedTask;
+                        }
+                    },
+                    function(error) {
+                        Notification.error({
+                                message: error.message
+                        });
+                    }
+                );
             }
-        };
+        }
 
         function submitTask() {
             bioboxService.submitTask('test', vm.biobox.image.dockerhub, vm.task.name, vm.task.file)
@@ -157,7 +172,7 @@
                         });
                     }
                 );
-        };
+        }
 
-    };
+    }
 })();
