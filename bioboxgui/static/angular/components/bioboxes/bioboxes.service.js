@@ -121,13 +121,19 @@
          * @param container the biobox to be used
          * @param cmd the task the container shall execute
          * @param file the file the container reads from
+         * @param cores string of float of cores to user
+         * @param memory string of int of memory in MB
+         * @param cputime string of int of CPU time
          */
-        function submitTask(user, container, cmd, file) {
+        function submitTask(user, container, cmd, file, cores, memory, cputime) {
             var task = {};
             task.user = user;
             task.container = container;
             task.cmd = cmd;
             task.file = file[0].name;
+            task.cores = cores ? cores.toString() : null;
+            task.memory = memory ? memory.toString(): null;
+            task.cputime = cputime ? cputime.toString() : null;
             return gatewayService.post('/tasks', task)
                 .then(
                     function(response){

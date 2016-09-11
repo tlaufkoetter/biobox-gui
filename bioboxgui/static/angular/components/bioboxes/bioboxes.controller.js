@@ -33,6 +33,7 @@
 
         // available input files to be used by bioboxes
         vm.files = [];
+        vm.config = {};
 
         /**
          * queries all the bioboxes.
@@ -161,6 +162,7 @@
             vm.task = null;
         }
 
+
         /**
          * selects a task of a biobox to be executed.
          */
@@ -187,7 +189,16 @@
          * submits the currently selected task.
          */
         function submitTask() {
-            bioboxService.submitTask('test', vm.biobox.image.dockerhub, vm.task.name, vm.task.file)
+            if (!vm.task.file || vm.task.file.length < 1) {
+                Notification.error({
+                        title: "Submitting task failed",
+                        message: "No file selected"
+                });
+                return;
+            }
+            bioboxService.submitTask(
+                'test', vm.biobox.image.dockerhub, vm.task.name, vm.task.file,
+                vm.config.cores, vm.config.memory, vm.config.cputime)
                 .then(
                     function() {
                         Notification.info("Task submitted.");

@@ -11,7 +11,7 @@ import time
 
 import requests
 import yaml
-from flask import abort
+from flask import abort, g
 from flask_restful import marshal, Resource, fields, reqparse
 
 from bioboxgui import app
@@ -73,6 +73,15 @@ class TasksAll(Resource):
         self.reqparse.add_argument(
             'file', type=str, required=True, location='json'
         )
+        self.reqparse.add_argument(
+            'cores', type=str, required=False, location='json'
+        )
+        self.reqparse.add_argument(
+            'memory', type=str, required=False, location='json'
+        )
+        self.reqparse.add_argument(
+            'cputime', type=str, required=False, location='json'
+        )
 
     @auth.login_required
     @roles_accepted('common', 'admin', 'trusted')
@@ -84,6 +93,12 @@ class TasksAll(Resource):
         '''
         timestamp = time.time()
         s = self.reqparse.parse_args(strict=True)
+        if s['cores'] or s['memory'] or s['cputime']:
+            for role in g.user.roles:
+                if role.name == 'admin' or role.name == 'trusted':
+                    break;
+            else:
+                abort(403)
         print(s)
         ts = datetime\
             .datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d_%H-%M-%S')
@@ -115,8 +130,8 @@ class TasksAll(Resource):
 
         args = {
             'user': s['user'],
-            'cores': 1,
-            'memory': 128,
+            'cores': int(s['cores']) if s['cores'] else 1,
+            'memory': int(s['memory']) if s['memory'] else 128,
             'cmd': 'docker run'
                    ' -v {}:/bbx/input/biobox.yaml'
                    ' -v {}:/bbx/input/reads.fq.gz'
@@ -127,7 +142,7 @@ class TasksAll(Resource):
                 os.path.join(app.config.get('HOST_BASE'), 'input', 'files', s['file']),
                 os.path.join(app.config.get('HOST_BASE'), 'output', job),
                 s['container'], s['cmd']),
-            'cputime': 10
+            'cputime': int(s['cputime']) if s['cputime'] else 10
         }
 
         print(args)
