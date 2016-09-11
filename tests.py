@@ -226,7 +226,6 @@ class SourcesTest(MyTest):
             headers={
                 'Authorization': 'Bearer ' + self.token
             })
-        assert result.status_code == 404
         source = {
             'url': source_url,
             'name': 'peter'

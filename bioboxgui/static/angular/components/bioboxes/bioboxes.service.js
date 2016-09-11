@@ -84,7 +84,7 @@
             return gatewayService.get('/bioboxes?interface=' + selectedInterface)
                 .then(
                     function(response){
-                        var bb_interface = response.data.bb_interface;
+                        var bb_interface = response.data.bioboxes;
                         $log.info("fetched bb_interface: ", bb_interface);
                         return bb_interface;
                     },

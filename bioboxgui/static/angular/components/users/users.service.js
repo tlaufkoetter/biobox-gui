@@ -5,12 +5,12 @@
         .module('BioboxGui')
         .factory('userService', userService);
 
-    function userService(gatewayService, $q, $log) {
+    function userService(gatewayService, $q, $log, Constants) {
         var service = {
                 getUser: getUser,
                 getUsers: getUsers,
                 createUser: createUser,
-                grantPermission: grantPermission,
+                updateUser: updateUser,
                 deleteUser: deleteUser,
             },
             currentUser = null;
@@ -20,8 +20,19 @@
             return gatewayService.get('/users/' + username)
                 .then(
                         function(response) {
-                            $log.info('Get user: ', response.data.user);
-                            return response.data.user;
+                            var user = response.data.user;
+                            $log.info('Get user: ', user);
+                            var roles = [];
+                            user.roles.forEach(function(role) {
+                                for (var prop in Constants.Roles) {
+                                    if (Constants.Roles[prop] == role.name) {
+                                        roles.push(prop);
+                                        break;
+                                    }
+                                }
+                            });
+                            user.roles = roles;
+                            return user;
                         },
                         function(response) {
                             $log.warn('Failed to get user ', username);
@@ -56,14 +67,14 @@
                      );
         }
 
-        function grantPermission(username, roles) {
-            return gatewayService.put('/users/' + username, {roles: roles})
+        function updateUser(username, user) {
+            return gatewayService.put('/users/' + username, user)
                 .then(
                         function(response) {
                             return;
                         },
                         function(response) {
-                            $log.warn('Failed to grant permissions');
+                            $log.warn('Failed to update user');
                             return $q.reject(response);
                         }
                     );

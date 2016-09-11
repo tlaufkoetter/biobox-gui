@@ -51,6 +51,13 @@ class UserName(Resource):
             help='the new email adress of the user. should be unique',
             location='json'
         )
+        self.reqparse.add_argument(
+            'password',
+            type=str,
+            required=False,
+            help='the new password of the user. should be strong',
+            location='json'
+        )
 
     @auth.login_required
     def get(self, username):
@@ -63,8 +70,12 @@ class UserName(Resource):
         :param username: name of the user that shall be received.
         :return: a json formatted user with roles.
         """
-        if not g.user.username == username and "admin" not in g.user.roles:
-            abort(403)
+        if not g.user.username == username:
+            for role in g.user.roles:
+                if role.name == 'admin':
+                    break;
+            else:
+                abort(403)
         user = models.User.query.filter_by(
             username=username
         ).first()
@@ -73,7 +84,6 @@ class UserName(Resource):
         return marshal(user, regular_user, envelope="user")
 
     @auth.login_required
-    @roles_accepted('admin')
     def put(self, username):
         """Updates the given user.
 
@@ -85,16 +95,26 @@ class UserName(Resource):
         ).first()
         if not user:
             abort(404)
+        if g.user.username != username:
+            for role in g.user.roles:
+                if role.name == 'admin':
+                    break;
+            else:
+                abort(403)
+
         arguments = self.reqparse.parse_args()
 
         new_username = arguments.get('username')
         new_email = arguments.get('email')
         new_roles = arguments.get('roles')
+        new_password = arguments.get('password')
 
         if new_username and new_username is not '':
             user.username = new_username
         if new_email and new_email is not '':
             user.email = new_email
+        if new_password and new_password is not '':
+            user.hash_password(new_password)
         if new_roles and new_roles is not []:
             actual_roles = []
             for new_role in new_roles:
@@ -105,8 +125,11 @@ class UserName(Resource):
                     abort(404)
             user.roles = actual_roles
 
-        db.session.add(user)
-        db.session.commit()
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except:
+            abort(400)
 
         return marshal(user, regular_user, envelope='user')
 

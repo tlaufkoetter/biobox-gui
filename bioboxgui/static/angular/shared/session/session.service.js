@@ -13,6 +13,7 @@
             currentUser = null;
         $rootScope.isAuthenticated = isAuthenticated;
         $rootScope.hasRole = hasRole;
+        $rootScope.hasUserRole = hasUserRole;
         return service;
 
         function getCurrentUser() {
@@ -40,6 +41,14 @@
                     hasRole |= user.roles.indexOf(role) > -1;
                 });
             }
+            return hasRole;
+        }
+
+        function hasUserRole(user, roles) {
+            var hasRole = false;
+            roles.forEach(function(role) {
+                hasRole |= user.roles.indexOf(role) > -1;
+            });
             return hasRole;
         }
     };

@@ -50,13 +50,31 @@
                 require_login: true,
                 roles_accepted: [Constants.Roles.common]
             })
-            .when('/bioboxgui/administration', {
-                templateUrl: '/static/angular/components/administration/administration.html',
-                name: 'Administration',
-                controller: "AdministrationController",
+            .when('/bioboxgui/users', {
+                templateUrl: '/static/angular/components/users/users.html',
+                name: 'User Administration',
+                controller: "UserController",
                 controllerAs: "main",
                 require_login: true,
-                roles_accepted: [Constants.Roles.trusted, Constants.Roles.admin]
+                roles_accepted: [Constants.Roles.admin],
+                resolve: {
+                    users: function(userService) {
+                        return userService.getUsers();
+                    }
+                }
+            })
+            .when('/bioboxgui/sources', {
+                templateUrl: '/static/angular/components/sources/sources.html',
+                name: 'Source Administration',
+                controller: "SourceController",
+                controllerAs: "main",
+                require_login: true,
+                roles_accepted: [Constants.Roles.admin, Constants.Roles.trusted],
+                resolve: {
+                    sources: function(sourceService) {
+                        return sourceService.getSources();
+                    }
+                }
             })
             .when('/bioboxgui/login', {
                 templateUrl: '/static/angular/components/login/login.html',

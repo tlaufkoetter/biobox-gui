@@ -1,0 +1,85 @@
+<h1>User Administration</h1>
+
+<div class="col-md-3">
+    <h2>Users</h2>
+    <table class="table table-striped table-hover clickable">
+        <thead>
+            <tr>
+                <td>Username</td>
+                <td>E-Mail</td>
+            </tr>
+        </thead>
+        <tr ng-repeat="user in main.users" ng-click="main.getUser(user.username)">
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+        </tr>
+    </table>
+    <button class="btn btn-default" type="button" ng-click="main.selected_user = null" >New</button>
+</div>
+<div class="col-md-9" ng-if="main.selected_user" ng-model="user">
+    <h3>{{ main.selected_user.username }}</h3>
+    <form ng-submit="main.updateUser(main.selected_user.username, user)">
+        <div class="form-group">
+            <label for="Username">Username</label>
+            <input class="form-control" type="text" name="Username" id="Username" ng-model="user.username" ng-value="main.selected_user.username" required/>
+        </div>
+        <div class="form-group">
+            <label for="email">E-Mail</label>
+            <input class="form-control" type="text" name="email" id="email" ng-model="user.email" ng-value="main.selected_user.email" required validate/>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input class="form-control" type="password" name="password" id="password" ng-model="user.password" />
+        </div>
+        <div class="form-group">
+            <label for="userRoles">Roles</label>
+            <div isteven-multi-select
+                    input-model="main.user_roles"
+                    output-model="user.rawRoles"
+                    button-label="name"
+                    item-label="name"
+                    tick-property="ticked"
+                    disable-property="disable"
+                    name="userRoles"
+                    >
+            </div>
+        </div>
+        <div class="form-group">
+            <input class="btn btn-primary" type="submit" name="submitUser" id="submitUser" value="Submit" />
+        </div>
+    </form>
+</div>
+
+<div class="col-md-9" ng-if="!main.selected_user" ng-model="user">
+    <h3>Create User</h3>
+    <form ng-submit="main.createUser(user)" role="form">
+        <div class="form-group">
+            <label for="Username">Username</label>
+            <input class="form-control" type="text" name="Username" id="Username" ng-model="user.username" required/>
+        </div>
+        <div class="form-group">
+            <label for="email">E-Mail</label>
+            <input class="form-control" type="email" name="email" id="email"  ng-model="user.email" validate required/>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input class="form-control" type="password" name="password" id="password" ng-model="user.password" required/>
+        </div>
+        <div class="form-group">
+            <label for="userRoles">Roles</label>
+            <div isteven-multi-select
+                    input-model="main.roles"
+                    output-model="user.rawRoles"
+                    button-label="name"
+                    item-label="name"
+                    tick-property="ticked"
+                    disable-property="disable"
+                    name="userRoles"
+                    >
+            </div>
+        </div>
+        <div class="form-group">
+            <input class="btn btn-primary" type="submit" name="submitUser" id="submitUser" value="Submit" />
+        </div>
+    </form>
+</div>

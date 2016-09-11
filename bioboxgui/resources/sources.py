@@ -39,10 +39,9 @@ class SourcesAll(Resource):
         :return: json sources.
         """
         result = models.Source.query.all()
-        if result:
-            return marshal(result, regular_source)
-        else:
-            abort(404)
+        if not result:
+            result = []
+        return marshal(result, regular_source, envelope="sources")
 
     @auth.login_required
     @roles_accepted('admin', 'trusted')
@@ -88,6 +87,20 @@ class SourceName(Resource):
     """
     Accessing a single resource by name.
     """
+
+    @auth.login_required
+    @roles_accepted('admin', 'trusted')
+    def get(self, name):
+        """
+        get a source by it's name.
+
+        :param name: the source's name
+        :return: json formatted source
+        """
+        source = models.Source.query.filter_by(name=name).first()
+        if not source:
+            abort(404)
+        return marshal(source, regular_source, envelope="source")
 
     @auth.login_required
     @roles_accepted('admin', 'trusted')
