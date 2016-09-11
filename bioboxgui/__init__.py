@@ -1,3 +1,6 @@
+"""
+initializes the application.
+"""
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -16,6 +19,14 @@ the_view = bioboxgui.views
 
 @app.before_first_request
 def create_user():
+    """
+    initializes the database with an admin user.
+
+    email: admin@admin.com
+    password: password
+
+    please change the user's credentials.
+    """
     db.create_all()
     role_names = ['admin', 'trusted', 'common', 'base']
     roles = []
@@ -25,8 +36,8 @@ def create_user():
             role = models.Role(name=role_name)
             db.session.add(role)
         roles.append(role)
-
-    if not models.User.query.filter_by(username='admin').first():
+    users = models.User.query.all()
+    if not users or users == []:
         user = models.User(
             username='admin', email='admin@admin.com'
         )

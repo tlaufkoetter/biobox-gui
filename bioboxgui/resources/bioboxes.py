@@ -7,26 +7,31 @@ from bioboxgui.api import auth, roles_accepted
 from bioboxgui import models
 from config import FOLDERS
 
+# the standard form of an image
 regular_image = {
     'dockerhub': fields.String,
     'repo': fields.String,
     'source': fields.String
 }
 
+# only needed for inclusion in tasks
 helper_interface = {
     'name': fields.String
 }
 
+# the standard form of a task a biobox can perform
 regular_task = {
     'name': fields.String,
     'interface': fields.Nested(helper_interface)
 }
 
+# the standard form of source for bioboxes
 regular_source = {
     'name': fields.String,
     'url': fields.String
 }
 
+# the standard form of a biobox
 regular_biobox = {
     'title': fields.String,
     'pmid': fields.Integer,
@@ -38,12 +43,16 @@ regular_biobox = {
     'source': fields.Nested(regular_source)
 }
 
+# the standard form of an input file
 regular_file = {
     'name': fields.String
 }
 
 class InputFiles(Resource):
-    """Accessing all the input files."""
+    """
+    Accessing all the input files.
+    """
+
     @auth.login_required
     @roles_accepted('common', 'trusted', 'admin')
     def get(self):
@@ -58,7 +67,16 @@ class InputFiles(Resource):
 
 
 class BioboxesAll(Resource):
+    """
+    Accessing all the bioboxes.
+    """
+
     def __init__(self):
+        """
+        Building the reqparser.
+
+        parses for interface name
+        """
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
             'interface',
@@ -72,6 +90,7 @@ class BioboxesAll(Resource):
         queries a list of available bioboxes.
 
         will be empty when no bioboxes are stored.
+
         :return: json formatted bioboxes.
         """
         args = self.reqparse.parse_args()
@@ -90,6 +109,8 @@ class BioboxesAll(Resource):
         """
         updates the stored bioboxes.
 
+        the sources are queried for the bioboxes.
+
         :return: json formatted bioboxes.
         """
         models.refresh()
@@ -97,6 +118,10 @@ class BioboxesAll(Resource):
 
 
 class BioboxId(Resource):
+    """
+    Accessing a biobox by its PMID.
+    """
+
     def get(self, biobox_id):
         """
         fetches a single biobox with the given id.
@@ -111,6 +136,10 @@ class BioboxId(Resource):
 
 
 class BioboxName(Resource):
+    """
+    Accessing a biobox by its name.
+    """
+
     def get(self, biobox_name):
         """
         fetches a single biobox with the given id.
@@ -127,5 +156,10 @@ class BioboxName(Resource):
 
 
 def get_all_bioboxes():
+    """
+    gets all the bioboxes.
+
+    :return: json formatted bioboxes
+    """
     bioboxes = models.Biobox.query.order_by(models.Biobox.title).all()
     return marshal(bioboxes, regular_biobox, envelope='bioboxes')

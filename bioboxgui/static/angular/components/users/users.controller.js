@@ -5,35 +5,50 @@
         .module("BioboxGui")
         .controller("UserController", UserController);
 
-    function UserController(users, userService, Notification, Constants, $rootScope, $route) {
+    /**
+     * controller handles user management.
+     *
+     * @param users prefetched while routing
+     */
+    function UserController(users, userService, Constants, Notification, $route, $rootScope) {
         var vm = this;
 
+        // exposed methods
         vm.getUser = getUser;
         vm.getUsers = getUsers;
         vm.createUser = createUser;
         vm.updateUser = updateUser;
         vm.deleteUser = deleteUser;
 
+        // available roles
         vm.Roles = Constants.Roles;
+
+        // data model
         vm.users = users;
         vm.selected_user = null;
         vm.user_roles = [];
         vm.roles = [];
 
+        // prepares the roles for selection
         for (var role in vm.Roles) {
             vm.roles.push({
                     name: role,
+                    // base is mandatory
                     disable: role == 'base',
                     ticked: role == 'base'
             });
         }
         
+        /**
+         * queries a user with the given name.
+         */
         function getUser(username) {
             userService.getUser(username)
                 .then(
                         function(user) {
                             vm.selected_user = user;
                             vm.user_roles = [];
+                            // prepares the roles for selection
                             for (var role in vm.Roles) {
                                 var hasRole = $rootScope.hasUserRole(user, [role]);
                                 vm.user_roles.push({
@@ -60,6 +75,9 @@
                     );
         }
 
+        /**
+         * queries a list of all the users.
+         */
         function getUsers() {
             userService.getUsers()
                 .then(
@@ -75,6 +93,9 @@
                     );
         }
 
+        /**
+         * creates the given user.
+         */
         function createUser(user) {
             userService.createUser(user).then(
                 function() {
@@ -92,6 +113,9 @@
             );
         }
 
+        /**
+         * updates the user with the given name.
+         */
         function updateUser(username, user) {
             var roles = [];
             var name = user.username ? user.username.slice(0) : username;
@@ -123,6 +147,9 @@
                 );
         }
 
+        /**
+         * deletes the user with the given name.
+         */
         function deleteUser(username) {
             userService.deleteUser(username)
                 .then(
@@ -130,7 +157,6 @@
                         Notification.success("Deleted user: " + username);
                         $route.reload();
                         getUsers();
-                        vm.selected_user = null;
                     },
                     function(error) {
                         var message;

@@ -1,3 +1,6 @@
+"""
+resource for biobox tasks.
+"""
 import binascii
 import datetime
 import hashlib
@@ -8,29 +11,34 @@ import time
 
 import requests
 import yaml
-from flask import abort
+from flask import abort, g
 from flask_restful import marshal, Resource, fields, reqparse
 
 from bioboxgui import app
 from bioboxgui.api import auth, roles_accepted
 
+# URL at which the jobproxy is reachable
 JOB_PROXY_URL = app.config.get('DOCKER_JP_URL')
 
+# minimal form of a task.
 simple_task = {
     'id': fields.String
 }
 
+# standard form of a mount poin.
 full_mount = {
     'host': fields.String,
     'container': fields.String
 }
 
+# standard form of the mount points of container.
 full_mounts = {
     'bbx_file': fields.Nested(full_mount),
     'input_file': fields.Nested(full_mount),
     'outputdir': fields.Nested(full_mount)
 }
 
+# standard form of the task a conainer is supposed to run.
 full_task = {
     'id': fields.String,
     'code': fields.String,
@@ -42,7 +50,16 @@ full_task = {
 
 
 class TasksAll(Resource):
+    """
+    Accessing all the tasks.
+    """
+
     def __init__(self):
+        """
+        creating a reqparser.
+
+        user, container, cmd, file
+        """
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
             'user', type=str, required=True, location='json'
@@ -56,16 +73,32 @@ class TasksAll(Resource):
         self.reqparse.add_argument(
             'file', type=str, required=True, location='json'
         )
+        self.reqparse.add_argument(
+            'cores', type=str, required=False, location='json'
+        )
+        self.reqparse.add_argument(
+            'memory', type=str, required=False, location='json'
+        )
+        self.reqparse.add_argument(
+            'cputime', type=str, required=False, location='json'
+        )
 
     @auth.login_required
     @roles_accepted('common', 'admin', 'trusted')
     def post(self):
         '''
         creates a new task.
+
         :return: string of the task id
         '''
         timestamp = time.time()
         s = self.reqparse.parse_args(strict=True)
+        if s['cores'] or s['memory'] or s['cputime']:
+            for role in g.user.roles:
+                if role.name == 'admin' or role.name == 'trusted':
+                    break;
+            else:
+                abort(403)
         print(s)
         ts = datetime\
             .datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d_%H-%M-%S')
@@ -97,8 +130,8 @@ class TasksAll(Resource):
 
         args = {
             'user': s['user'],
-            'cores': 1,
-            'memory': 128,
+            'cores': int(s['cores']) if s['cores'] else 1,
+            'memory': int(s['memory']) if s['memory'] else 128,
             'cmd': 'docker run'
                    ' -v {}:/bbx/input/biobox.yaml'
                    ' -v {}:/bbx/input/reads.fq.gz'
@@ -109,7 +142,7 @@ class TasksAll(Resource):
                 os.path.join(app.config.get('HOST_BASE'), 'input', 'files', s['file']),
                 os.path.join(app.config.get('HOST_BASE'), 'output', job),
                 s['container'], s['cmd']),
-            'cputime': 10
+            'cputime': int(s['cputime']) if s['cputime'] else 10
         }
 
         print(args)
@@ -127,6 +160,7 @@ class TasksAll(Resource):
     def get(self):
         '''
         queries all the tasks.
+
         :return: json formatted list of tasks.
         '''
         try:
@@ -185,11 +219,16 @@ class TasksAll(Resource):
 
 
 class TaskId(Resource):
+    """
+    Access one task by its id.
+    """
+
     @auth.login_required
     @roles_accepted('common', 'trusted', 'admin')
     def get(self, task_id):
         '''
         queries the state of given task.
+
         :param task_id: the id of the task to query.
         :return: json formatted task state
         '''
@@ -205,6 +244,7 @@ class TaskId(Resource):
     def delete(self, task_id):
         '''
         deletes a specific task.
+
         :param task_id: the task's id
         :return: none
         '''

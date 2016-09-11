@@ -5,13 +5,19 @@
         .module('BioboxGui')
         .factory('loginService', loginService);
 
-    function loginService($log, $q, $route, sessionService, gatewayService) {
+    /**
+     * service handles logging in and out of the user.
+     */
+    function loginService(gatewayService, sessionService, $log, $q, $route) {
         var service = {
             login: login,
             logout: logout
         };
         return service;
 
+        /**
+         * logs in the user.
+         */
         function login(user) {
             return gatewayService.post('/token', user)
                 .then(
@@ -37,6 +43,9 @@
                      );
         }
 
+        /**
+         * logs the user out.
+         */
         function logout() {
             return gatewayService.delete('/token')
                 .then(

@@ -5,14 +5,22 @@
         .module("BioboxGui")
         .factory("gatewayService", gatewayService);
 
-    function gatewayService($http, $q, $log, Constants) {
+    /**
+     * service that serves as gateway in an attempt to streamline API calls.
+     *
+     * exposes the basic http REST methods to the basURL of the REST API.
+     * default error handling and message generation.
+     */
+    function gatewayService(Constants, $http, $q, $log) {
+        // exposed methods
         var service = {
-            get: get,
-            put: put,
-            post: post,
-            delete: deletem
-        };
-        var baseURL = Constants.Api.baseURL + Constants.Api.version;
+                get: get,
+                put: put,
+                post: post,
+                delete: deletem
+            },
+            // the base url for the REST API
+            baseURL = Constants.Api.baseURL + Constants.Api.version;
         return service;
 
 
@@ -48,10 +56,17 @@
                 );
         }
 
+        /**
+         * passing through a success response.
+         */
         function success(response) {
             return response;
         }
 
+        /**
+         * handling error responses with a log message and
+         * returning a default error message to be used by controllers.
+         */
         function error(response) {
             $log.warn('Error from server: ', response);
             var message;

@@ -8,6 +8,9 @@
 
     routes.$inject = ['$routeProvider', '$locationProvider', '$httpProvider', '$windowProvider', 'Constants'];
 
+    /**
+     * configures the routing of the application.
+     */
     function routes($routeProvider, $locationProvider, $httpProvider, $windowProvider, Constants) {
         $routeProvider
             .when('/', {

@@ -5,10 +5,18 @@
         .module('BioboxGui')
         .controller('LoginController', LoginController);
 
+    /**
+     * handles logging in of the user.
+     */
     function LoginController(loginService, Notification, $window) {
         var vm = this;
+        
+        // exposed methods
         vm.login = login;
 
+        /**
+         * logs in the given user.
+         */
         function login(user) {
             if (user !== {}) {
                 loginService.login(user)

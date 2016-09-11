@@ -48,6 +48,7 @@
             <input class="btn btn-primary" type="submit" name="submitUser" id="submitUser" value="Submit" />
         </div>
     </form>
+    <button class="btn btn-danger" ng-click="main.deleteUser(main.selected_user.username)"><span class="glyphicon glyphicon-trash">  </span></button>
 </div>
 
 <div class="col-md-9" ng-if="!main.selected_user" ng-model="user">

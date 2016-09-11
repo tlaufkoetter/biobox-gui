@@ -1,3 +1,6 @@
+"""
+contains the user resource.
+"""
 from flask import abort, g
 from flask_restful import Resource, marshal, reqparse, fields
 from itsdangerous import BadSignature, SignatureExpired
@@ -5,17 +8,21 @@ from itsdangerous import BadSignature, SignatureExpired
 from bioboxgui import models, db
 from bioboxgui.api import auth, basic_auth, roles_accepted
 
+# standard format of a user role.
 regular_role = {
     'name': fields.String,
     'description': fields.String
 }
 
+# standad format of a user.
 regular_user = {
     'username': fields.String,
     'email': fields.String,
     'roles': fields.List(fields.Nested(regular_role))
 }
 
+# standard format of a authentication token.
+# the user's roles are added for convenience.
 regular_token = {
     'token': fields.String,
     'roles': fields.List(fields.String)
@@ -26,8 +33,12 @@ class UserName(Resource):
     """
     Access a single user by their name.
     """
+
     def __init__(self):
-        """creates the reqparser.
+        """
+        creates the reqparser.
+
+        roles, username, email, password
         """
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
@@ -85,7 +96,8 @@ class UserName(Resource):
 
     @auth.login_required
     def put(self, username):
-        """Updates the given user.
+        """
+        Updates the given user.
 
         :param username: name of the user that is to be changed
         :returns: the updated json formatted user
@@ -157,6 +169,11 @@ class UserAll(Resource):
     Access the whole user pool
     """
     def __init__(self):
+        """
+        building a reqparser.
+
+        username, email, password, roles
+        """
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument(
             'username',
@@ -177,6 +194,13 @@ class UserAll(Resource):
             type=str,
             required=True,
             help='No password provided',
+            location='json'
+        )
+        self.reqparse.add_argument(
+            'roles',
+            type=list,
+            required=False,
+            help='the users roles',
             location='json'
         )
         super(UserAll, self).__init__()
@@ -207,10 +231,20 @@ class UserAll(Resource):
         username = user_request['username']
         password = user_request['password']
         email = user_request['email']
+        new_roles = user_request['roles']
         if username is None or password is None:
             abort(400)  # missing arguments
         if models.User.query.filter_by(username=username).first() is not None:
             abort(400)  # existing user
+        if new_roles and new_roles is not []:
+            actual_roles = []
+            for new_role in new_roles:
+                role = models.Role.query.filter_by(name=new_role).first()
+                if role:
+                    actual_roles.append(role)
+                else:
+                    abort(404)
+            user.roles = actual_roles
         user = models.User(
             username=username,
             email=email,
@@ -227,10 +261,11 @@ class UserLogin(Resource):
     """
     Accesses the user session.
     """
+
     @basic_auth.login_required
     def post(self):
         """
-        Generates a authentication token.
+        Generates an authentication token.
 
         Login data has to be provided in the post data.
 

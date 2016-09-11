@@ -5,7 +5,11 @@
         .module('BioboxGui')
         .factory('sourceService', sourceService);
 
+    /**
+     * services manages the sources bioboxes are taken from.
+     */
     function sourceService(gatewayService, $log, $q) {
+        // exposed methods
         var service = {
             getSource: getSource,
             getSources: getSources,
@@ -14,6 +18,9 @@
         };
         return service;
 
+        /**
+         * queries the source with the given name.
+         */
         function getSource(sourcename) {
             return gatewayService.get('/sources/' + sourcename)
                 .then(
@@ -28,6 +35,9 @@
                     );
         }
 
+        /**
+         * queries all available sources.
+         */
         function getSources() {
             return gatewayService.get('/sources')
                 .then(
@@ -42,6 +52,9 @@
                     );
         }
 
+        /**
+         * adds the given source to the list of sources.
+         */
         function addSource(source) {
             return gatewayService.post('/sources', source)
                 .then(
@@ -55,6 +68,9 @@
                 );
         }
 
+        /**
+         * deletes the source and its associated bioboxes from the list.
+         */
         function deleteSource(name) {
             return gatewayService.delete('/sources/' + name)
                 .then(
